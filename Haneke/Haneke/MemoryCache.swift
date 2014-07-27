@@ -21,7 +21,7 @@ public class MemoryCache {
         cache.setObject(image, forKey: key)
     }
     
-    public func fetchImage (key : String) -> UIImage {
-        return cache.objectForKey(key) as UIImage
+    public func fetchImage (key : String) -> UIImage! {
+        return cache.objectForKey(key) as UIImage!
     }
 }
