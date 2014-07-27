@@ -25,11 +25,11 @@ class MemoryCacheTests: XCTestCase {
         let sut = MemoryCache()
         let key = "key"
         
-        assert(sut.fetchImage(key) == nil, "MemoryCache is empty")
+        XCTAssert(sut.fetchImage(key) == nil, "MemoryCache is empty")
         
         let image = UIImage()
         sut.setImage(image, key)
         
-        assert(sut.fetchImage(key) != nil, "MemoryCache is not empty")
+        XCTAssert(sut.fetchImage(key) != nil, "MemoryCache is not empty")
     }
 }
