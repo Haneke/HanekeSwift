@@ -32,4 +32,21 @@ class MemoryCacheTests: XCTestCase {
         
         XCTAssert(sut.fetchImage(key) != nil, "MemoryCache is not empty")
     }
+    
+    func testFetchImageWithNilKey () {
+        let sut = MemoryCache()
+        
+        XCTAssert(sut.fetchImage(nil) == nil, "nil key should returns nil image")
+    }
+    
+    func testFetchImageEqualImage () {
+        let sut = MemoryCache()
+        
+        let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
+        let key = "key"
+        
+        sut.setImage(image, key)
+        
+        XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
+    }
 }
