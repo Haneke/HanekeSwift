@@ -21,8 +21,11 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testInit() {
-        let sut = MemoryCache("test")
+        let name = "name"
+        let sut = MemoryCache(name)
+        
         XCTAssertNotNil(sut.memoryWarningObserver)
+        XCTAssertEqual(name, sut.name)
     }
     
     func testDeinit() {
