@@ -59,14 +59,30 @@ class MemoryCacheTests: XCTestCase {
         XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
     }
     
+    func testRemoveImageExisting() {
+        let sut = MemoryCache()
+        let key = "key"
+        sut.setImage(UIImage(), key)
+        
+        sut.removeImage(key)
+        
+        XCTAssertNil(sut.fetchImage(key))
+    }
+    
+    func testRemoveImageInexisting() {
+        let sut = MemoryCache()
+        
+        sut.removeImage("key")
+    }
+    
     func testOnMemoryWarning() {
         let sut = MemoryCache()
         let key = "key"
         sut.setImage(UIImage(), key)
         XCTAssertNotNil(sut.fetchImage(key))
-
+        
         sut.onMemoryWarning()
-
+        
         XCTAssertNil(sut.fetchImage(key))
     }
     
