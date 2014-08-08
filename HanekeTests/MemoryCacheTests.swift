@@ -14,16 +14,16 @@ import Haneke
 class MemoryCacheTests: XCTestCase {
     
     func testInit() {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         XCTAssertNotNil(sut.memoryWarningObserver)
     }
     
     func testDeinit() {
-        weak var sut = MemoryCache()
+        weak var sut = MemoryCache("test")
     }
     
     func testSetImage () {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         let image = UIImage()
         let key = "key"
         
@@ -31,7 +31,7 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testFetchImage () {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         let key = "key"
         
         XCTAssert(sut.fetchImage(key) == nil, "MemoryCache is empty")
@@ -43,13 +43,13 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testFetchImageWithNilKey () {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         
         XCTAssert(sut.fetchImage(nil) == nil, "nil key should returns nil image")
     }
     
     func testFetchImageEqualImage () {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         
         let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
         let key = "key"
@@ -60,7 +60,7 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testRemoveImageExisting() {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         let key = "key"
         sut.setImage(UIImage(), key)
         
@@ -70,13 +70,13 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testRemoveImageInexisting() {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         
         sut.removeImage("key")
     }
     
     func testOnMemoryWarning() {
-        let sut = MemoryCache()
+        let sut = MemoryCache("test")
         let key = "key"
         sut.setImage(UIImage(), key)
         XCTAssertNotNil(sut.fetchImage(key))
@@ -99,7 +99,7 @@ class MemoryCacheTests: XCTestCase {
             }
         }
         
-        let sut = MemoryCacheMock()
+        let sut = MemoryCacheMock("test")
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)
