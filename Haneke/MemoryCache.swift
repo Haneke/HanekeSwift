@@ -17,6 +17,14 @@ public class MemoryCache {
     
     let memoryWarningObserver : NSObjectProtocol?
     
+    lazy var path : String = {
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let hanekePathComponent = "io.haneke";
+        let hanekePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
+        let path = hanekePath.stringByAppendingPathComponent(self.name)
+        return path
+    }()
+    
     public init(_ name : String) {
         self.name = name
         

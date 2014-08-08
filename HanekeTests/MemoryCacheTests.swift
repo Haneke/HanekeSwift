@@ -17,7 +17,7 @@ class MemoryCacheTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        sut = MemoryCache("test")
+        sut = MemoryCache(self.name)
     }
     
     func testInit() {
@@ -30,6 +30,14 @@ class MemoryCacheTests: XCTestCase {
     
     func testDeinit() {
         weak var sut = MemoryCache("test")
+    }
+    
+    func testPath() {
+        let sut = self.sut!
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let path = cachesPath.stringByAppendingPathComponent("io.haneke").stringByAppendingPathComponent(self.name)
+        
+        XCTAssertEqual(sut.path, path)
     }
     
     func testSetImage () {
