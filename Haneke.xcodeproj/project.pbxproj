@@ -12,6 +12,7 @@
 		A095C9621980418C00CD0F4C /* Haneke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A095C9561980418C00CD0F4C /* Haneke.framework */; };
 		A095C973198041D100CD0F4C /* MemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* MemoryCache.swift */; };
 		A095C975198045D200CD0F4C /* MemoryCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* MemoryCacheTests.swift */; };
+		A0D7D64D1994E1EF000CAF46 /* MemoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* MemoryCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -224,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0D7D64D1994E1EF000CAF46 /* MemoryCache.swift in Sources */,
 				A095C975198045D200CD0F4C /* MemoryCacheTests.swift in Sources */,
 				36C9E04F198C03F80083574B /* UIImageExtensions.swift in Sources */,
 			);
