@@ -13,8 +13,24 @@ public class MemoryCache {
     
     let cache = NSCache()
     
+    let memoryWarningObserver : NSObjectProtocol?
+    
     public init () {
+        let notifications = NSNotificationCenter.defaultCenter()
         
+        // Using block-based observer to avoid subclassing NSObject
+        memoryWarningObserver = notifications.addObserverForName(UIApplicationDidReceiveMemoryWarningNotification,
+            object: nil,
+            queue: NSOperationQueue.mainQueue(),
+            usingBlock: { [unowned self] (notification : NSNotification!) -> Void in
+                self.onMemoryWarning()
+            }
+        )
+    }
+    
+    deinit {
+        let notifications = NSNotificationCenter.defaultCenter()
+        notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
     public func setImage (image: UIImage, _ key: String) {
@@ -23,5 +39,11 @@ public class MemoryCache {
     
     public func fetchImage (key : String?) -> UIImage! {
         return cache.objectForKey(key) as UIImage!
+    }
+    
+    // Notifications
+    
+    func onMemoryWarning() {
+        cache.removeAllObjects()
     }
 }

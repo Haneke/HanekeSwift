@@ -13,6 +13,15 @@ import Haneke
 
 class MemoryCacheTests: XCTestCase {
     
+    func testInit() {
+        let sut = MemoryCache()
+        XCTAssertNotNil(sut.memoryWarningObserver)
+    }
+    
+    func testDeinit() {
+        weak var sut = MemoryCache()
+    }
+    
     func testSetImage () {
         let sut = MemoryCache()
         let image = UIImage()
@@ -48,5 +57,37 @@ class MemoryCacheTests: XCTestCase {
         sut.setImage(image, key)
         
         XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
+    }
+    
+    func testOnMemoryWarning() {
+        let sut = MemoryCache()
+        let key = "key"
+        sut.setImage(UIImage(), key)
+        XCTAssertNotNil(sut.fetchImage(key))
+
+        sut.onMemoryWarning()
+
+        XCTAssertNil(sut.fetchImage(key))
+    }
+    
+    func testUIApplicationDidReceiveMemoryWarningNotification() {
+        let expectation = expectationWithDescription("onMemoryWarning")
+        
+        class MemoryCacheMock : MemoryCache {
+            
+            var expectation : XCTestExpectation?
+            
+            override func onMemoryWarning() {
+                super.onMemoryWarning()
+                expectation!.fulfill()
+            }
+        }
+        
+        let sut = MemoryCacheMock()
+        sut.expectation = expectation // XCode crashes if we use the original expectation directly
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        
+        waitForExpectationsWithTimeout(0, nil)
     }
 }
