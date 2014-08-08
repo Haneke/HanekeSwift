@@ -24,4 +24,8 @@ public class MemoryCache {
     public func fetchImage (key : String?) -> UIImage! {
         return cache.objectForKey(key) as UIImage!
     }
+    
+    public func removeImage(key : String) {
+        cache.removeObjectForKey(key)
+    }
 }
