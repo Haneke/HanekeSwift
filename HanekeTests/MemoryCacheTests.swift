@@ -35,6 +35,7 @@ class MemoryCacheTests: XCTestCase {
     func testPath() {
         let sut = self.sut!
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        // TODO: Escape name and use MD5 if name is too long
         let path = cachesPath.stringByAppendingPathComponent("io.haneke").stringByAppendingPathComponent(self.name)
         
         XCTAssertEqual(sut.path, path)
