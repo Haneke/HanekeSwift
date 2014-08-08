@@ -45,7 +45,7 @@ public class MemoryCache {
         cache.removeObjectForKey(key)
     }
     
-    // Notifications
+    // MARK: Notifications
     
     func onMemoryWarning() {
         cache.removeAllObjects()
