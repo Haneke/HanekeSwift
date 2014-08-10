@@ -19,6 +19,12 @@ class DiskCacheTests: XCTestCase {
         sut = DiskCache(self.name)
     }
     
+    override func tearDown() {
+        let fileManager = NSFileManager.defaultManager()
+        fileManager.removeItemAtPath(sut!.cachePath, error:nil)
+        super.tearDown()
+    }
+    
     func testBasePath() {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
         let basePath = cachesPath.stringByAppendingPathComponent(HanekeDomain)
@@ -35,6 +41,11 @@ class DiskCacheTests: XCTestCase {
         let sut = self.sut!
         let cachePath = DiskCache.basePath().stringByAppendingPathComponent(sut.name)
         XCTAssertEqual(sut.cachePath, cachePath)
+        
+        let fileManager = NSFileManager.defaultManager()
+        var isDirectory: ObjCBool = ObjCBool(0)
+        XCTAssertTrue(fileManager.fileExistsAtPath(cachePath, isDirectory: &isDirectory))
+        XCTAssertTrue(isDirectory)
     }
     
     func testCacheQueue() {
@@ -44,6 +55,53 @@ class DiskCacheTests: XCTestCase {
         let label = String.stringWithUTF8String(dispatch_queue_get_label(sut.cacheQueue))!
 
         XCTAssertEqual(label, expectedLabel)
+    }
+    
+    func testSetData() {
+        let sut = self.sut!
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()));
+        let key = "key"
+        let path = sut.pathForKey(key)
+        
+        sut.setData(data, key: key)
+        
+        let expectation = self.expectationWithDescription(self.name)
+        
+        dispatch_async(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+            let resultData = NSData(contentsOfFile:path)
+            XCTAssertEqual(resultData, data)
+            expectation.fulfill()
+        })
+        
+        self.waitForExpectationsWithTimeout(0.5, nil)
+    }
+    
+    func testSetDataNil() {
+        let sut = self.sut!
+        let key = self.name
+        let path = sut.pathForKey(key)
+        
+        sut.setData({ return nil }(), key: key)
+        
+        let expectation = self.expectationWithDescription(self.name)
+        
+        dispatch_async(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+            expectation.fulfill()
+        })
+        
+        self.waitForExpectationsWithTimeout(0.5, nil)
+    }
+    
+    func testPathForKey() {
+        let sut = self.sut!
+        let key = self.name
+        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key)
+
+        XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }
 
 }

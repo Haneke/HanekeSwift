@@ -26,6 +26,11 @@ public class DiskCache {
     public lazy var cachePath : String = {
         let basePath = DiskCache.basePath()
         let cachePath = basePath.stringByAppendingPathComponent(self.name)
+        var error : NSError? = nil
+        let success = NSFileManager.defaultManager().createDirectoryAtPath(cachePath, withIntermediateDirectories: true, attributes: nil, error: &error)
+        if (!success) {
+            NSLog("Failed to create directory %@ with error %@", cachePath, error!);
+        }
         return cachePath
     }()
 
@@ -41,7 +46,7 @@ public class DiskCache {
     
     public func setData(getData : @autoclosure () -> NSData?, key : String) {
         dispatch_async(cacheQueue, {
-            let path = self.cachePath.stringByAppendingPathComponent(key)
+            let path = self.pathForKey(key)
             var error: NSError? = nil
             if let data = getData() {
                 let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error: &error)
@@ -53,4 +58,10 @@ public class DiskCache {
             }
         })
     }
+
+    public func pathForKey(key : String) -> String {
+        let path = self.cachePath.stringByAppendingPathComponent(key)
+        return path
+    }
+
 }
