@@ -32,15 +32,6 @@ class MemoryCacheTests: XCTestCase {
         weak var sut = MemoryCache("test")
     }
     
-    func testPath() {
-        let sut = self.sut!
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        // TODO: Escape name and use MD5 if name is too long
-        let path = cachesPath.stringByAppendingPathComponent("io.haneke").stringByAppendingPathComponent(self.name)
-        
-        XCTAssertEqual(sut.path, path)
-    }
-    
     func testSetImage () {
         let sut = self.sut!
         let image = UIImage()
@@ -74,7 +65,6 @@ class MemoryCacheTests: XCTestCase {
         let key = "key"
         
         sut.setImage(image, key)
-        
         XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
     }
     

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Haneke
 
 public class MemoryCache {
     
@@ -15,19 +16,14 @@ public class MemoryCache {
     
     let cache = NSCache()
     
-    let memoryWarningObserver : NSObjectProtocol?
+    let diskCache : DiskCache
     
-    lazy var path : String = {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let hanekePathComponent = "io.haneke";
-        let hanekePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
-        let path = hanekePath.stringByAppendingPathComponent(self.name)
-        return path
-    }()
+    let memoryWarningObserver : NSObjectProtocol?
     
     public init(_ name : String) {
         self.name = name
-        
+        self.diskCache = DiskCache(self.name)
+
         let notifications = NSNotificationCenter.defaultCenter()
         // Using block-based observer to avoid subclassing NSObject
         memoryWarningObserver = notifications.addObserverForName(UIApplicationDidReceiveMemoryWarningNotification,
@@ -46,6 +42,8 @@ public class MemoryCache {
     
     public func setImage (image: UIImage, _ key: String) {
         cache.setObject(image, forKey: key)
+        // Image data is sent as @autoclosure to be executed in the disk cache queue.
+        diskCache.setData(image.hnk_data(), key: key)
     }
     
     public func fetchImage (key : String?) -> UIImage! {
