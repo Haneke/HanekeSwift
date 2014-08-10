@@ -13,17 +13,36 @@ import Haneke
 
 class MemoryCacheTests: XCTestCase {
     
+    var sut : MemoryCache?
+    
+    override func setUp() {
+        super.setUp()
+        sut = MemoryCache(self.name)
+    }
+    
     func testInit() {
-        let sut = MemoryCache()
+        let name = "name"
+        let sut = MemoryCache(name)
+        
         XCTAssertNotNil(sut.memoryWarningObserver)
+        XCTAssertEqual(name, sut.name)
     }
     
     func testDeinit() {
-        weak var sut = MemoryCache()
+        weak var sut = MemoryCache("test")
+    }
+    
+    func testPath() {
+        let sut = self.sut!
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        // TODO: Escape name and use MD5 if name is too long
+        let path = cachesPath.stringByAppendingPathComponent("io.haneke").stringByAppendingPathComponent(self.name)
+        
+        XCTAssertEqual(sut.path, path)
     }
     
     func testSetImage () {
-        let sut = MemoryCache()
+        let sut = self.sut!
         let image = UIImage()
         let key = "key"
         
@@ -31,7 +50,7 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testFetchImage () {
-        let sut = MemoryCache()
+        let sut = self.sut!
         let key = "key"
         
         XCTAssert(sut.fetchImage(key) == nil, "MemoryCache is empty")
@@ -43,13 +62,13 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testFetchImageWithNilKey () {
-        let sut = MemoryCache()
+        let sut = self.sut!
         
         XCTAssert(sut.fetchImage(nil) == nil, "nil key should returns nil image")
     }
     
     func testFetchImageEqualImage () {
-        let sut = MemoryCache()
+        let sut = self.sut!
         
         let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
         let key = "key"
@@ -60,7 +79,7 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testRemoveImageExisting() {
-        let sut = MemoryCache()
+        let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
         
@@ -70,13 +89,13 @@ class MemoryCacheTests: XCTestCase {
     }
     
     func testRemoveImageInexisting() {
-        let sut = MemoryCache()
+        let sut = self.sut!
         
         sut.removeImage("key")
     }
     
     func testOnMemoryWarning() {
-        let sut = MemoryCache()
+        let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
         XCTAssertNotNil(sut.fetchImage(key))
@@ -99,7 +118,7 @@ class MemoryCacheTests: XCTestCase {
             }
         }
         
-        let sut = MemoryCacheMock()
+        let sut = MemoryCacheMock("test")
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)

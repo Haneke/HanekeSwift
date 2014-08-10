@@ -11,13 +11,24 @@ import UIKit
 
 public class MemoryCache {
     
+    let name : String
+    
     let cache = NSCache()
     
     let memoryWarningObserver : NSObjectProtocol?
     
-    public init () {
-        let notifications = NSNotificationCenter.defaultCenter()
+    lazy var path : String = {
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let hanekePathComponent = "io.haneke";
+        let hanekePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
+        let path = hanekePath.stringByAppendingPathComponent(self.name)
+        return path
+    }()
+    
+    public init(_ name : String) {
+        self.name = name
         
+        let notifications = NSNotificationCenter.defaultCenter()
         // Using block-based observer to avoid subclassing NSObject
         memoryWarningObserver = notifications.addObserverForName(UIApplicationDidReceiveMemoryWarningNotification,
             object: nil,
