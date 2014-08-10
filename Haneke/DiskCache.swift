@@ -21,15 +21,22 @@ public class DiskCache {
         return basePath
     }
     
-    let cachePath : String
-    let cacheQueue : dispatch_queue_t
+    public let name : String
+
+    public lazy var cachePath : String = {
+        let basePath = DiskCache.basePath()
+        let cachePath = basePath.stringByAppendingPathComponent(self.name)
+        return cachePath
+    }()
+
+    public lazy var cacheQueue : dispatch_queue_t = {
+        let queueName = HanekeDomain + "." + self.name
+        let cacheQueue = dispatch_queue_create(queueName, nil)
+        return cacheQueue
+    }()
     
     public init(_ name : String) {
-        let basePath = DiskCache.basePath();
-        cachePath = basePath.stringByAppendingPathComponent(name);
-
-        let queueName = HanekeDomain + "." + name
-        cacheQueue = dispatch_queue_create(queueName, nil)
+        self.name = name
     }
     
     public func setData(getData : @autoclosure () -> NSData?, key : String) {
