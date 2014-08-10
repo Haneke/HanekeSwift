@@ -38,6 +38,8 @@ class MemoryCacheTests: XCTestCase {
         let key = "key"
         
         sut.setImage(image, key)
+        
+        // TODO: Test that image has been set in the disk cache
     }
     
     func testFetchImage () {
