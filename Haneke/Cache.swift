@@ -1,5 +1,5 @@
 //
-//  MemoryCache.swift
+//  Cache.swift
 //  Haneke
 //
 //  Created by Luis Ascorbe on 23/07/14.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Haneke
 
-public class MemoryCache {
+public class Cache {
     
     let name : String
     
