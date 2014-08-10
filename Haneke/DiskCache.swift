@@ -15,7 +15,7 @@ public class DiskCache {
     
     public class func basePath() -> String {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let hanekePathComponent = HanekeDomain;
+        let hanekePathComponent = HanekeDomain
         let basePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
         // TODO: Do not recaculate basePath value
         return basePath
@@ -41,12 +41,12 @@ public class DiskCache {
     
     public func setData(getData : @autoclosure () -> NSData?, key : String) {
         dispatch_async(cacheQueue, {
-            let path = self.cachePath.stringByAppendingPathComponent(key);
+            let path = self.cachePath.stringByAppendingPathComponent(key)
             var error: NSError? = nil
             if let data = getData() {
                 let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error: &error)
                 if (!success) {
-                    NSLog("Failed to write key %@ with error", key, error!);
+                    NSLog("Failed to write key %@ with error", key, error!)
                 }
             } else {
                 NSLog("Failed to get data for key %@", key);
