@@ -16,6 +16,7 @@
 		A0D7D68119978F9A000CAF46 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D68019978F9A000CAF46 /* DiskCache.swift */; };
 		A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
 		A0D7D6861997B57A000CAF46 /* DiskCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */; };
+		A0D7D6891997C4C4000CAF46 /* UIImage+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		A0D7D68019978F9A000CAF46 /* DiskCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCache.swift; sourceTree = "<group>"; };
 		A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Haneke.swift"; sourceTree = "<group>"; };
 		A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCacheTests.swift; sourceTree = "<group>"; };
+		A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+HanekeTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,10 +104,11 @@
 		A095C9651980418C00CD0F4C /* HanekeTests */ = {
 			isa = PBXGroup;
 			children = (
-				A095C974198045D200CD0F4C /* MemoryCacheTests.swift */,
-				36C9E04E198C03F80083574B /* UIImageExtensions.swift */,
-				A095C9661980418C00CD0F4C /* Supporting Files */,
 				A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */,
+				A095C974198045D200CD0F4C /* MemoryCacheTests.swift */,
+				A095C9661980418C00CD0F4C /* Supporting Files */,
+				A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */,
+				A0D7D6871997C4AC000CAF46 /* Utils */,
 			);
 			path = HanekeTests;
 			sourceTree = "<group>";
@@ -124,6 +127,14 @@
 				A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		A0D7D6871997C4AC000CAF46 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				36C9E04E198C03F80083574B /* UIImageExtensions.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -248,6 +259,7 @@
 				A0D7D6861997B57A000CAF46 /* DiskCacheTests.swift in Sources */,
 				A095C975198045D200CD0F4C /* MemoryCacheTests.swift in Sources */,
 				36C9E04F198C03F80083574B /* UIImageExtensions.swift in Sources */,
+				A0D7D6891997C4C4000CAF46 /* UIImage+HanekeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
