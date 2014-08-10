@@ -14,7 +14,7 @@ public class MemoryCache {
     
     let name : String
     
-    let cache = NSCache()
+    let memoryCache = NSCache()
     
     let diskCache : DiskCache
     
@@ -41,22 +41,22 @@ public class MemoryCache {
     }
     
     public func setImage (image: UIImage, _ key: String) {
-        cache.setObject(image, forKey: key)
+        memoryCache.setObject(image, forKey: key)
         // Image data is sent as @autoclosure to be executed in the disk cache queue.
         diskCache.setData(image.hnk_data(), key: key)
     }
     
     public func fetchImage (key : String?) -> UIImage! {
-        return cache.objectForKey(key) as UIImage!
+        return memoryCache.objectForKey(key) as UIImage!
     }
 
     public func removeImage(key : String) {
-        cache.removeObjectForKey(key)
+        memoryCache.removeObjectForKey(key)
     }
     
     // MARK: Notifications
     
     func onMemoryWarning() {
-        cache.removeAllObjects()
+        memoryCache.removeAllObjects()
     }
 }
