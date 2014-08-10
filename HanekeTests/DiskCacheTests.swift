@@ -48,6 +48,17 @@ class DiskCacheTests: XCTestCase {
         XCTAssertTrue(isDirectory)
     }
     
+    func testCachePathEmtpyName() {
+        let sut = DiskCache("")
+        let cachePath = DiskCache.basePath()
+        XCTAssertEqual(sut.cachePath, cachePath)
+        
+        let fileManager = NSFileManager.defaultManager()
+        var isDirectory: ObjCBool = ObjCBool(0)
+        XCTAssertTrue(fileManager.fileExistsAtPath(cachePath, isDirectory: &isDirectory))
+        XCTAssertTrue(isDirectory)
+    }
+    
     func testCacheQueue() {
         let sut = self.sut!
         let expectedLabel = HanekeDomain + "." + sut.name
