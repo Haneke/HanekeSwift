@@ -1,5 +1,5 @@
 //
-//  MemoryCacheTests.swift
+//  CacheTests.swift
 //  Haneke
 //
 //  Created by Luis Ascorbe on 23/07/14.
@@ -11,34 +11,25 @@ import UIKit
 import XCTest
 import Haneke
 
-class MemoryCacheTests: XCTestCase {
+class CacheTests: XCTestCase {
     
-    var sut : MemoryCache?
+    var sut : Cache?
     
     override func setUp() {
         super.setUp()
-        sut = MemoryCache(self.name)
+        sut = Cache(self.name)
     }
     
     func testInit() {
         let name = "name"
-        let sut = MemoryCache(name)
+        let sut = Cache(name)
         
         XCTAssertNotNil(sut.memoryWarningObserver)
         XCTAssertEqual(name, sut.name)
     }
     
     func testDeinit() {
-        weak var sut = MemoryCache("test")
-    }
-    
-    func testPath() {
-        let sut = self.sut!
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        // TODO: Escape name and use MD5 if name is too long
-        let path = cachesPath.stringByAppendingPathComponent("io.haneke").stringByAppendingPathComponent(self.name)
-        
-        XCTAssertEqual(sut.path, path)
+        weak var sut = Cache("test")
     }
     
     func testSetImage () {
@@ -47,6 +38,8 @@ class MemoryCacheTests: XCTestCase {
         let key = "key"
         
         sut.setImage(image, key)
+        
+        // TODO: Test that image has been set in the disk cache
     }
     
     func testFetchImage () {
@@ -74,7 +67,6 @@ class MemoryCacheTests: XCTestCase {
         let key = "key"
         
         sut.setImage(image, key)
-        
         XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
     }
     
@@ -108,7 +100,7 @@ class MemoryCacheTests: XCTestCase {
     func testUIApplicationDidReceiveMemoryWarningNotification() {
         let expectation = expectationWithDescription("onMemoryWarning")
         
-        class MemoryCacheMock : MemoryCache {
+        class CacheMock : Cache {
             
             var expectation : XCTestExpectation?
             
@@ -118,7 +110,7 @@ class MemoryCacheTests: XCTestCase {
             }
         }
         
-        let sut = MemoryCacheMock("test")
+        let sut = CacheMock("test")
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)

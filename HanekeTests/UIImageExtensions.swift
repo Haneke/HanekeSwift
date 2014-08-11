@@ -17,7 +17,7 @@ extension UIImage {
         return imageData.isEqualToData(theOtherImageData);
     }
     
-    class func imageWithColor(color: UIColor, _ size: CGSize, _ opaque: Bool) -> UIImage{
+    class func imageWithColor(color: UIColor, _ size: CGSize = CGSize(width: 1, height: 1), _ opaque: Bool = true) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(size, opaque, 0);
         let context = UIGraphicsGetCurrentContext();
         CGContextSetFillColorWithColor(context, color.CGColor);

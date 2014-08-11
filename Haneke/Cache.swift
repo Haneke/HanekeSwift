@@ -1,5 +1,5 @@
 //
-//  MemoryCache.swift
+//  Cache.swift
 //  Haneke
 //
 //  Created by Luis Ascorbe on 23/07/14.
@@ -8,26 +8,22 @@
 
 import Foundation
 import UIKit
+import Haneke
 
-public class MemoryCache {
+public class Cache {
     
     let name : String
     
-    let cache = NSCache()
+    let memoryCache = NSCache()
+    
+    let diskCache : DiskCache
     
     let memoryWarningObserver : NSObjectProtocol?
     
-    lazy var path : String = {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let hanekePathComponent = "io.haneke";
-        let hanekePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
-        let path = hanekePath.stringByAppendingPathComponent(self.name)
-        return path
-    }()
-    
     public init(_ name : String) {
         self.name = name
-        
+        self.diskCache = DiskCache(self.name)
+
         let notifications = NSNotificationCenter.defaultCenter()
         // Using block-based observer to avoid subclassing NSObject
         memoryWarningObserver = notifications.addObserverForName(UIApplicationDidReceiveMemoryWarningNotification,
@@ -45,20 +41,22 @@ public class MemoryCache {
     }
     
     public func setImage (image: UIImage, _ key: String) {
-        cache.setObject(image, forKey: key)
+        memoryCache.setObject(image, forKey: key)
+        // Image data is sent as @autoclosure to be executed in the disk cache queue.
+        diskCache.setData(image.hnk_data(), key: key)
     }
     
     public func fetchImage (key : String?) -> UIImage! {
-        return cache.objectForKey(key) as UIImage!
+        return memoryCache.objectForKey(key) as UIImage!
     }
 
     public func removeImage(key : String) {
-        cache.removeObjectForKey(key)
+        memoryCache.removeObjectForKey(key)
     }
     
     // MARK: Notifications
     
     func onMemoryWarning() {
-        cache.removeAllObjects()
+        memoryCache.removeAllObjects()
     }
 }
