@@ -49,12 +49,24 @@ public class DiskCache {
             let path = self.pathForKey(key)
             var error: NSError? = nil
             if let data = getData() {
-                let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error: &error)
+                let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
                 if (!success) {
                     NSLog("Failed to write key %@ with error", key, error!)
                 }
             } else {
                 NSLog("Failed to get data for key %@", key);
+            }
+        })
+    }
+
+    public func removeData(key : String) {
+        dispatch_async(cacheQueue, {
+            var error: NSError? = nil
+            let fileManager = NSFileManager.defaultManager()
+            let path = self.pathForKey(key)
+            let success = fileManager.removeItemAtPath(path, error:&error)
+            if (!success) {
+                NSLog("Failed to remove key \(key) with error \(error!)")
             }
         })
     }
