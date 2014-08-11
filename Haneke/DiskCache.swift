@@ -29,7 +29,7 @@ public class DiskCache {
         var error : NSError? = nil
         let success = NSFileManager.defaultManager().createDirectoryAtPath(cachePath, withIntermediateDirectories: true, attributes: nil, error: &error)
         if (!success) {
-            NSLog("Failed to create directory %@ with error %@", cachePath, error!);
+            NSLog("Failed to create directory \(cachePath) with error \(error!)");
         }
         return cachePath
     }()
@@ -51,10 +51,10 @@ public class DiskCache {
             if let data = getData() {
                 let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
                 if (!success) {
-                    NSLog("Failed to write key %@ with error", key, error!)
+                    NSLog("Failed to write key \(key) with error \(error!)")
                 }
             } else {
-                NSLog("Failed to get data for key %@", key);
+                NSLog("Failed to get data for key \(key)");
             }
         })
     }
