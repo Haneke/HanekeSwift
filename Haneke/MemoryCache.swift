@@ -49,7 +49,30 @@ public class MemoryCache {
     }
     
     public func fetchImage (key : String?) -> UIImage! {
-        return cache.objectForKey(key) as UIImage!
+        var image = cache.objectForKey(key) as UIImage!
+        if !image {
+            return self.fetchImageFromDisk(key)
+        }
+        return image;
+    }
+
+    public func fetchImageFromDisk (key : String?) -> UIImage! {
+        let imagePath = self.pathForKey(key!)
+        var readError : NSError?
+        let imageData = NSData.dataWithContentsOfFile(imagePath, options: .DataReadingMappedIfSafe, error: &readError)
+        if !imageData {
+            if let error = readError {
+                let errorDescription = NSLocalizedString("Disk cache: Cannot read image from data at path \(path)", tableName: String?(), bundle: NSBundle(), value: String(), comment: String())
+                println(errorDescription)
+                return nil
+            }
+        }
+            
+        let image = UIImage.imageWithData(imageData)
+        if !image {
+            self.setImage(image, key!)
+        }
+        return image;
     }
 
     public func removeImage(key : String) {
@@ -60,5 +83,11 @@ public class MemoryCache {
     
     func onMemoryWarning() {
         cache.removeAllObjects()
+    }
+
+    // MARK: Utils
+
+    func pathForKey(key : String) -> String {
+        return path.stringByAppendingPathComponent(key);
     }
 }
