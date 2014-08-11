@@ -107,6 +107,36 @@ class DiskCacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(0.5, nil)
     }
     
+    func testRemoveDataExisting() {
+        let sut = self.sut!
+        let key = self.name
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()));
+        let path = sut.pathForKey(key)
+        sut.setData(data, key: key)
+        
+        sut.removeData(key)
+        
+        let expectation = self.expectationWithDescription("data removed")
+        dispatch_async(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(0.5, nil)
+    }
+    
+    func testRemoveDataInexisting() {
+        let sut = self.sut!
+        let key = self.name
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        
+        // Preconditions
+        XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        
+        sut.removeData(self.name)
+    }
+    
     func testPathForKey() {
         let sut = self.sut!
         let key = self.name
