@@ -57,21 +57,20 @@ public class MemoryCache {
     }
 
     public func fetchImageFromDisk (key : String?) -> UIImage! {
+        if key == nil { return nil }
+
         let imagePath = self.pathForKey(key!)
         var readError : NSError?
         let imageData = NSData.dataWithContentsOfFile(imagePath, options: .DataReadingMappedIfSafe, error: &readError)
         if !imageData {
             if let error = readError {
-                let errorDescription = NSLocalizedString("Disk cache: Cannot read image from data at path \(path)", tableName: String?(), bundle: NSBundle(), value: String(), comment: String())
-                println(errorDescription)
+                println("Disk cache: Cannot read image from data at path \(path)")
                 return nil
             }
         }
             
-        let image = UIImage.imageWithData(imageData)
-        if !image {
-            self.setImage(image, key!)
-        }
+        let image = UIImage(data: imageData)
+        self.setImage(image, key!)
         return image;
     }
 
