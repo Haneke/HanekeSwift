@@ -52,6 +52,7 @@ public class Cache {
 
     public func removeImage(key : String) {
         memoryCache.removeObjectForKey(key)
+        diskCache.removeData(key)
     }
     
     // MARK: Notifications
