@@ -107,6 +107,35 @@ class DiskCacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(0.5, nil)
     }
     
+    func testFetchData () {
+        let sut = self.sut!
+        let key = "key"
+        
+        XCTAssert(sut.getData(key) == nil, "Disk is empty")
+        
+        let image = NSData()
+        sut.setData(image, key: key)
+        
+        XCTAssert(sut.getData(key) != nil, "Disk is not empty")
+    }
+    
+    func testFetchDataWithNilKey () {
+        let sut = self.sut!
+        
+        XCTAssert(sut.getData(nil) == nil, "nil key should returns nil data")
+    }
+    
+    func testFetchDataEqualImage () {
+        let sut = self.sut!
+        
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()));
+        let key = "key"
+        
+        sut.setData(data, key: key)
+        
+        XCTAssert(data.isEqualToData(sut.getData(key)), "Fetched data is equal to the original one.")
+    }
+    
     func testRemoveDataExisting() {
         let sut = self.sut!
         let key = self.name

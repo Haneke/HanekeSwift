@@ -70,37 +70,6 @@ class CacheTests: XCTestCase {
         XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
     }
     
-    func testFetchImageFromDisk () {
-        let sut = self.sut!
-        let key = "key"
-        
-        XCTAssert(sut.fetchImageFromDisk(key) == nil, "Disk is empty")
-        
-        let image = UIImage()
-        sut.setImage(image, key)
-        sut.onMemoryWarning()
-        
-        XCTAssert(sut.fetchImage(key) != nil, "Disk is not empty")
-    }
-    
-    func testFetchImageFromDiskWithNilKey () {
-        let sut = self.sut!
-        
-        XCTAssert(sut.fetchImageFromDisk(nil) == nil, "nil key should returns nil image")
-    }
-    
-    func testFetchImageFromDiskEqualImage () {
-        let sut = self.sut!
-        
-        let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
-        let key = "key"
-        
-        sut.setImage(image, key)
-        sut.onMemoryWarning()
-        
-        XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
-    }
-    
     func testRemoveImageExisting() {
         let sut = self.sut!
         let key = "key"
