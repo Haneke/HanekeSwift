@@ -55,28 +55,12 @@ public class Cache {
     }
     
     public func fetchImage (key : String?) -> UIImage! {
-        var image = cache.objectForKey(key) as UIImage!
+        var image = memoryCache.objectForKey(key) as UIImage!
         if !image {
-            return self.fetchImageFromDisk(key)
+            let imageData = diskCache.getData(key)
+            image = UIImage(data: imageData)
+            memoryCache.setObject(image, forKey: key)
         }
-        return image;
-    }
-
-    public func fetchImageFromDisk (key : String?) -> UIImage! {
-        if key == nil { return nil }
-
-        let imagePath = self.pathForKey(key!)
-        var readError : NSError?
-        let imageData = NSData.dataWithContentsOfFile(imagePath, options: .DataReadingMappedIfSafe, error: &readError)
-        if !imageData {
-            if let error = readError {
-                println("Disk cache: Cannot read image from data at path \(path)")
-                return nil
-            }
-        }
-            
-        let image = UIImage(data: imageData)
-        self.setImage(image, key!)
         return image;
     }
 
