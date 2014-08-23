@@ -54,10 +54,16 @@ public class DiskCache {
             let path = self.pathForKey(key)
             var error: NSError? = nil
             if let data = getData() {
+                let fileManager = NSFileManager.defaultManager()
+                let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
                 let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
                 if (!success) {
                     NSLog("Failed to write key \(key) with error \(error!)")
                 }
+                if let attributes = previousAttributes {
+                    self.size -= attributes.fileSize()
+                }
+                self.size += data.length
             } else {
                 NSLog("Failed to get data for key \(key)");
             }

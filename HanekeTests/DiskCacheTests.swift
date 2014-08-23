@@ -101,22 +101,51 @@ class DiskCacheTests: XCTestCase {
     func testSetData() {
         let sut = self.sut!
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()));
-        let key = "key"
+        let key = self.name
         let path = sut.pathForKey(key)
         
         sut.setData(data, key: key)
         
-        let expectation = self.expectationWithDescription(self.name)
-        
-        dispatch_async(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)
             XCTAssertEqual(resultData, data)
-            expectation.fulfill()
+            XCTAssertEqual(sut.size, UInt64(data.length))
         })
+    }
+    
+    func testSetDataSizeGreaterThanZero() {
+        let sut = self.sut!
+        let originalData = NSData.dataWithLength(5)
+        let lengths = [5, 14]
+        let keys = ["1", "2"]
+        sut.setData(NSData.dataWithLength(lengths[0]), key: keys[0])
         
-        self.waitForExpectationsWithTimeout(0.5, nil)
+        sut.setData(NSData.dataWithLength(lengths[1]), key: keys[1])
+        
+        dispatch_sync(sut.cacheQueue, {
+            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, combine: +)))
+        })
+    }
+    
+    func testSetDataReplace() {
+        let sut = self.sut!
+        let originalData = NSData.dataWithLength(5)
+        let data = NSData.dataWithLength(14)
+        let key = self.name
+        let path = sut.pathForKey(key)
+        sut.setData(originalData, key: key)
+        
+        sut.setData(data, key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+            let resultData = NSData(contentsOfFile:path)
+            XCTAssertEqual(resultData, data)
+            XCTAssertEqual(sut.size, UInt64(data.length))
+        })
     }
     
     func testSetDataNil() {
@@ -126,15 +155,11 @@ class DiskCacheTests: XCTestCase {
         
         sut.setData({ return nil }(), key: key)
         
-        let expectation = self.expectationWithDescription(self.name)
-        
-        dispatch_async(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            expectation.fulfill()
+            XCTAssertEqual(sut.size, 0)
         })
-        
-        self.waitForExpectationsWithTimeout(0.5, nil)
     }
     
     func testRemoveDataExisting() {
