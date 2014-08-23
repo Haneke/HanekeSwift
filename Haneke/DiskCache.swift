@@ -75,8 +75,13 @@ public class DiskCache {
             var error: NSError? = nil
             let fileManager = NSFileManager.defaultManager()
             let path = self.pathForKey(key)
+            let attributesOpt : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
             let success = fileManager.removeItemAtPath(path, error:&error)
-            if (!success) {
+            if (success) {
+                if let attributes = attributesOpt {
+                    self.size -= attributes.fileSize()
+                }
+            } else {
                 NSLog("Failed to remove key \(key) with error \(error!)")
             }
         })

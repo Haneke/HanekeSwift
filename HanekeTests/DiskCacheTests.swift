@@ -162,6 +162,23 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
+    func testRemoveDataTwoKeys() {
+        let sut = self.sut!
+        let keys = ["1", "2"]
+        let datas = [NSData.dataWithLength(5), NSData.dataWithLength(7)]
+        sut.setData(datas[0], key: keys[0])
+        sut.setData(datas[1], key: keys[1])
+
+        sut.removeData(keys[1])
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            let path = sut.pathForKey(keys[1])
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+            XCTAssertEqual(sut.size, UInt64(datas[0].length))
+        })
+    }
+    
     func testRemoveDataExisting() {
         let sut = self.sut!
         let key = self.name
@@ -171,13 +188,11 @@ class DiskCacheTests: XCTestCase {
         
         sut.removeData(key)
         
-        let expectation = self.expectationWithDescription("data removed")
-        dispatch_async(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            expectation.fulfill()
+            XCTAssertEqual(sut.size, 0)
         })
-        self.waitForExpectationsWithTimeout(0.5, nil)
     }
     
     func testRemoveDataInexisting() {
