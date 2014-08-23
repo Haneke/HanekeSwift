@@ -32,9 +32,39 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testInit() {
-        let name = "test"
+        let name = self.name
+
         let sut = DiskCache(name)
-        XCTAssertEqual(name, sut.name)
+        
+        XCTAssertEqual(sut.name, name)
+        XCTAssertEqual(sut.size, 0)
+    }
+    
+    func testInitWithOneFile() {
+        let name = self.name
+        let directory = DiskCache(name).cachePath
+        let expectedSize = 8
+        self.writeDataWithLength(expectedSize, directory: directory)
+        
+        let sut = DiskCache(name)
+        
+        dispatch_sync(sut.cacheQueue, {
+            XCTAssertEqual(sut.size, UInt64(expectedSize))
+        });
+    }
+    
+    func testInitWithTwoFiles() {
+        let name = self.name
+        let directory = DiskCache(name).cachePath
+        let lengths = [4, 7];
+        self.writeDataWithLength(lengths[0], directory: directory)
+        self.writeDataWithLength(lengths[1], directory: directory)
+        
+        let sut = DiskCache(name)
+        
+        dispatch_sync(sut.cacheQueue, {
+            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
+        });
     }
     
     func testCachePath() {
@@ -143,6 +173,18 @@ class DiskCacheTests: XCTestCase {
         let expectedPath = sut.cachePath.stringByAppendingPathComponent(key)
 
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
+    }
+
+    
+    // MARK: Helpers
+
+    var dataIndex = 0;
+    
+    func writeDataWithLength(length : Int, directory : String) {
+        let data = NSData.dataWithLength(length)
+        let path = directory.stringByAppendingPathComponent("\(dataIndex)")
+        data.writeToFile(path, atomically: true)
+        dataIndex++
     }
 
 }
