@@ -23,6 +23,8 @@ public class DiskCache {
     
     public let name : String
 
+    public var size : UInt64 = 0
+
     public lazy var cachePath : String = {
         let basePath = DiskCache.basePath()
         let cachePath = basePath.stringByAppendingPathComponent(self.name)
@@ -42,6 +44,9 @@ public class DiskCache {
     
     public init(_ name : String) {
         self.name = name
+        dispatch_async(cacheQueue, {
+            self.calculateSize()
+        })
     }
     
     public func setData(getData : @autoclosure () -> NSData?, key : String) {
@@ -49,10 +54,16 @@ public class DiskCache {
             let path = self.pathForKey(key)
             var error: NSError? = nil
             if let data = getData() {
+                let fileManager = NSFileManager.defaultManager()
+                let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
                 let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
                 if (!success) {
                     NSLog("Failed to write key \(key) with error \(error!)")
                 }
+                if let attributes = previousAttributes {
+                    self.size -= attributes.fileSize()
+                }
+                self.size += data.length
             } else {
                 NSLog("Failed to get data for key \(key)");
             }
@@ -64,8 +75,13 @@ public class DiskCache {
             var error: NSError? = nil
             let fileManager = NSFileManager.defaultManager()
             let path = self.pathForKey(key)
+            let attributesOpt : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
             let success = fileManager.removeItemAtPath(path, error:&error)
-            if (!success) {
+            if (success) {
+                if let attributes = attributesOpt {
+                    self.size -= attributes.fileSize()
+                }
+            } else {
                 NSLog("Failed to remove key \(key) with error \(error!)")
             }
         })
@@ -74,6 +90,25 @@ public class DiskCache {
     public func pathForKey(key : String) -> String {
         let path = self.cachePath.stringByAppendingPathComponent(key)
         return path
+    }
+    
+    private func calculateSize() {
+        let fileManager = NSFileManager.defaultManager()
+        size = 0
+        let cachePath = self.cachePath
+        var error : NSError?
+        if let contents = fileManager.contentsOfDirectoryAtPath(cachePath, error: &error) as? [String] {
+            for pathComponent in contents {
+                let path = cachePath.stringByAppendingPathComponent(pathComponent)
+                if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
+                    size += attributes.fileSize()
+                } else {
+                    NSLog("Failed to read file size of \(path) with error \(error!)");
+                }
+            }
+        } else {
+            NSLog("Failed to list directory with error \(error!)");
+        }
     }
 
 }
