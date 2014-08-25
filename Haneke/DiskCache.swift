@@ -31,7 +31,7 @@ public class DiskCache {
         var error : NSError? = nil
         let success = NSFileManager.defaultManager().createDirectoryAtPath(cachePath, withIntermediateDirectories: true, attributes: nil, error: &error)
         if (!success) {
-            NSLog("Failed to create directory \(cachePath) with error \(error!)");
+            NSLog("Failed to create directory \(cachePath) with error \(error!)")
         }
         return cachePath
     }()
@@ -65,7 +65,7 @@ public class DiskCache {
                 }
                 self.size += data.length
             } else {
-                NSLog("Failed to get data for key \(key)");
+                NSLog("Failed to get data for key \(key)")
             }
         })
     }
@@ -103,11 +103,11 @@ public class DiskCache {
                 if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
                     size += attributes.fileSize()
                 } else {
-                    NSLog("Failed to read file size of \(path) with error \(error!)");
+                    NSLog("Failed to read file size of \(path) with error \(error!)")
                 }
             }
         } else {
-            NSLog("Failed to list directory with error \(error!)");
+            NSLog("Failed to list directory with error \(error!)")
         }
     }
 

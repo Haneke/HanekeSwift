@@ -11,20 +11,20 @@ import UIKit
 extension UIImage {
     
     func isEqualPixelByPixel(theOtherImage: UIImage!) -> Bool {
-        let imageData = UIImagePNGRepresentation(self);
-        let theOtherImageData = UIImagePNGRepresentation(theOtherImage);
+        let imageData = UIImagePNGRepresentation(self)
+        let theOtherImageData = UIImagePNGRepresentation(theOtherImage)
         
-        return imageData.isEqualToData(theOtherImageData);
+        return imageData.isEqualToData(theOtherImageData)
     }
     
     class func imageWithColor(color: UIColor, _ size: CGSize = CGSize(width: 1, height: 1), _ opaque: Bool = true) -> UIImage{
-        UIGraphicsBeginImageContextWithOptions(size, opaque, 0);
-        let context = UIGraphicsGetCurrentContext();
-        CGContextSetFillColorWithColor(context, color.CGColor);
-        CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height));
-        let image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        return image;
+        UIGraphicsBeginImageContextWithOptions(size, opaque, 0)
+        let context = UIGraphicsGetCurrentContext()
+        CGContextSetFillColorWithColor(context, color.CGColor)
+        CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
 }
 

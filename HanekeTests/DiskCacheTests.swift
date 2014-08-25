@@ -50,13 +50,13 @@ class DiskCacheTests: XCTestCase {
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(expectedSize))
-        });
+        })
     }
     
     func testInitWithTwoFiles() {
         let name = self.name
         let directory = DiskCache(name).cachePath
-        let lengths = [4, 7];
+        let lengths = [4, 7]
         self.writeDataWithLength(lengths[0], directory: directory)
         self.writeDataWithLength(lengths[1], directory: directory)
         
@@ -64,7 +64,7 @@ class DiskCacheTests: XCTestCase {
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
-        });
+        })
     }
     
     func testCachePath() {
@@ -100,7 +100,7 @@ class DiskCacheTests: XCTestCase {
     
     func testSetData() {
         let sut = self.sut!
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()));
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
         let key = self.name
         let path = sut.pathForKey(key)
         
@@ -182,7 +182,7 @@ class DiskCacheTests: XCTestCase {
     func testRemoveDataExisting() {
         let sut = self.sut!
         let key = self.name
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()));
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
         let path = sut.pathForKey(key)
         sut.setData(data, key: key)
         
@@ -218,7 +218,7 @@ class DiskCacheTests: XCTestCase {
     
     // MARK: Helpers
 
-    var dataIndex = 0;
+    var dataIndex = 0
     
     func writeDataWithLength(length : Int, directory : String) {
         let data = NSData.dataWithLength(length)
