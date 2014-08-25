@@ -70,6 +70,22 @@ public class DiskCache {
         })
     }
 
+    public func getData (key : String?) -> NSData! {
+        if key == nil { return nil }
+
+        let imagePath = self.pathForKey(key!)
+        var readError : NSError?
+        let imageData = NSData.dataWithContentsOfFile(imagePath, options: .DataReadingMappedIfSafe, error: &readError)
+        if !imageData {
+            if let error = readError {
+                println("Disk cache: Cannot read image from data at path \(imagePath)")
+                return nil
+            }
+        }
+            
+        return imageData
+    }
+
     public func removeData(key : String) {
         dispatch_async(cacheQueue, {
             var error: NSError? = nil

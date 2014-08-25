@@ -20,6 +20,14 @@ public class Cache {
     
     let memoryWarningObserver : NSObjectProtocol?
     
+    lazy var path : String = {
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let hanekePathComponent = "io.haneke";
+        let hanekePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
+        let path = hanekePath.stringByAppendingPathComponent(self.name)
+        return path
+    }()
+    
     public init(_ name : String) {
         self.name = name
         self.diskCache = DiskCache(self.name)
@@ -47,7 +55,13 @@ public class Cache {
     }
     
     public func fetchImage (key : String?) -> UIImage! {
-        return memoryCache.objectForKey(key) as UIImage!
+        var image = memoryCache.objectForKey(key) as UIImage!
+        if !image {
+            let imageData = diskCache.getData(key)
+            image = UIImage(data: imageData)
+            memoryCache.setObject(image, forKey: key)
+        }
+        return image;
     }
 
     public func removeImage(key : String) {
@@ -59,5 +73,11 @@ public class Cache {
     
     func onMemoryWarning() {
         memoryCache.removeAllObjects()
+    }
+
+    // MARK: Utils
+
+    func pathForKey(key : String) -> String {
+        return path.stringByAppendingPathComponent(key);
     }
 }

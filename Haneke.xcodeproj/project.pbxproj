@@ -86,10 +86,10 @@
 		A095C9581980418C00CD0F4C /* Haneke */ = {
 			isa = PBXGroup;
 			children = (
-				A0D7D6821997B2D8000CAF46 /* Extensions */,
-				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
 				A095C95B1980418C00CD0F4C /* Haneke.h */,
 				A095C972198041D100CD0F4C /* Cache.swift */,
+				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
+				A0D7D6821997B2D8000CAF46 /* Extensions */,
 				A095C9591980418C00CD0F4C /* Supporting Files */,
 			);
 			path = Haneke;
@@ -108,9 +108,9 @@
 			children = (
 				A095C974198045D200CD0F4C /* CacheTests.swift */,
 				A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */,
-				A095C9661980418C00CD0F4C /* Supporting Files */,
 				A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */,
 				A0D7D6871997C4AC000CAF46 /* Utils */,
+				A095C9661980418C00CD0F4C /* Supporting Files */,
 			);
 			path = HanekeTests;
 			sourceTree = "<group>";
