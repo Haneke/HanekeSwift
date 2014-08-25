@@ -37,7 +37,7 @@ public class Cache {
     
     deinit {
         let notifications = NSNotificationCenter.defaultCenter()
-        notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        notifications.removeObserver(memoryWarningObserver!, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
     public func setImage (image: UIImage, _ key: String) {
@@ -46,7 +46,7 @@ public class Cache {
         diskCache.setData(image.hnk_data(), key: key)
     }
     
-    public func fetchImage (key : String?) -> UIImage! {
+    public func fetchImage (key : String) -> UIImage! {
         return memoryCache.objectForKey(key) as UIImage!
     }
 

@@ -54,12 +54,6 @@ class CacheTests: XCTestCase {
         XCTAssert(sut.fetchImage(key) != nil, "MemoryCache is not empty")
     }
     
-    func testFetchImageWithNilKey () {
-        let sut = self.sut!
-        
-        XCTAssert(sut.fetchImage(nil) == nil, "nil key should returns nil image")
-    }
-    
     func testFetchImageEqualImage () {
         let sut = self.sut!
         
