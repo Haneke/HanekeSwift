@@ -18,6 +18,8 @@ extension NSFileManager {
 
             let sortedContents = contents.sorted({(URL1 : NSURL, URL2 : NSURL) -> Bool in
 
+                // Maybe there's a better way to do this. See: http://stackoverflow.com/questions/25502914/comparing-anyobject-in-swift
+
                 var value1 : AnyObject?
                 if !URL1.getResourceValue(&value1, forKey: property, error: nil) { return true }
                 var value2 : AnyObject?
