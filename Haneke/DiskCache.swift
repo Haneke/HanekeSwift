@@ -69,6 +69,7 @@ public class DiskCache {
                     self.size -= attributes.fileSize()
                 }
                 self.size += data.length
+                self.controlCapacity()
             } else {
                 NSLog("Failed to get data for key \(key)")
             }

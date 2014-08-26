@@ -206,6 +206,20 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
+    func testSetDataControlCapacity() {
+        let sut = DiskCache(self.name, capacity:0)
+        let key = self.name
+        let path = sut.pathForKey(key)
+        
+        sut.setData(NSData.dataWithLength(1), key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+            XCTAssertEqual(sut.size, 0)
+        })
+    }
+    
     func testRemoveDataTwoKeys() {
         let sut = self.sut!
         let keys = ["1", "2"]
