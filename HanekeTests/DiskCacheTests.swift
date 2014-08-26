@@ -142,6 +142,17 @@ class DiskCacheTests: XCTestCase {
         XCTAssertEqual(label, expectedLabel)
     }
     
+    func testSetCapacity() {
+        let sut = self.sut!
+        sut.setData(NSData.dataWithLength(1), key: self.name)
+        
+        sut.capacity = 0
+        
+        dispatch_sync(sut.cacheQueue, {
+            XCTAssertEqual(sut.size, 0)
+        })        
+    }
+    
     func testSetData() {
         let sut = self.sut!
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))

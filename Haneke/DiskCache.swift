@@ -26,7 +26,13 @@ public class DiskCache {
 
     public var size : UInt64 = 0
 
-    public var capacity : UInt64 = 0
+    public var capacity : UInt64 = 0 {
+        didSet {
+            dispatch_async(self.cacheQueue, {
+                self.controlCapacity()
+            })
+        }
+    }
 
     public lazy var cachePath : String = {
         let basePath = DiskCache.basePath()
