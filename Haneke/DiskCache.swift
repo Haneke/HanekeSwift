@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Haneke
 
 // TODO: Eventually move to Haneke.swift or similar.
 public let HanekeDomain = "io.haneke"
@@ -25,6 +26,8 @@ public class DiskCache {
 
     public var size : UInt64 = 0
 
+    public var capacity : UInt64 = 0
+
     public lazy var cachePath : String = {
         let basePath = DiskCache.basePath()
         let cachePath = basePath.stringByAppendingPathComponent(self.name)
@@ -42,8 +45,9 @@ public class DiskCache {
         return cacheQueue
     }()
     
-    public init(_ name : String) {
+    public init(_ name : String, capacity : UInt64) {
         self.name = name
+        self.capacity = capacity
         dispatch_async(cacheQueue, {
             self.calculateSize()
         })
@@ -110,5 +114,32 @@ public class DiskCache {
             NSLog("Failed to list directory with error \(error!)")
         }
     }
-
+    
+    private func controlCapacity() {
+        if size < capacity { return }
+        
+        let fileManager = NSFileManager.defaultManager()
+        let cachePath = self.cachePath
+        fileManager.enumerateContentsOfDirectoryAtPath(cachePath, orderedByProperty: NSURLContentModificationDateKey, ascending: false) { (URL : NSURL, _, inout stop : Bool) -> Void in
+            
+            if let path = URL.path {
+                self.removeFileAtPath(path)
+ 
+                if self.size < self.capacity {
+                    stop = true
+                }
+            }
+        }
+    }
+    
+    private func removeFileAtPath(path:String) {
+        var error : NSError?
+        let fileManager = NSFileManager.defaultManager()
+        if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
+            let fileSize = attributes.fileSize()
+            self.size -= fileSize
+        } else {
+            NSLog("Failed to remove file with error \(error)")
+        }
+    }
 }

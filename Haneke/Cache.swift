@@ -22,7 +22,7 @@ public class Cache {
     
     public init(_ name : String) {
         self.name = name
-        self.diskCache = DiskCache(self.name)
+        self.diskCache = DiskCache(self.name, capacity : 1000)
 
         let notifications = NSNotificationCenter.defaultCenter()
         // Using block-based observer to avoid subclassing NSObject

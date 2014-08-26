@@ -16,7 +16,7 @@ class DiskCacheTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        sut = DiskCache(self.name)
+        sut = DiskCache(self.name, capacity : UINT64_MAX)
     }
     
     override func tearDown() {
@@ -34,7 +34,7 @@ class DiskCacheTests: XCTestCase {
     func testInit() {
         let name = self.name
 
-        let sut = DiskCache(name)
+        let sut = DiskCache(name, capacity : UINT64_MAX)
         
         XCTAssertEqual(sut.name, name)
         XCTAssertEqual(sut.size, 0)
@@ -42,11 +42,11 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithOneFile() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
         let expectedSize = 8
         self.writeDataWithLength(expectedSize, directory: directory)
         
-        let sut = DiskCache(name)
+        let sut = DiskCache(name, capacity : UINT64_MAX)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(expectedSize))
@@ -55,12 +55,12 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithTwoFiles() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
         let lengths = [4, 7]
         self.writeDataWithLength(lengths[0], directory: directory)
         self.writeDataWithLength(lengths[1], directory: directory)
         
-        let sut = DiskCache(name)
+        let sut = DiskCache(name, capacity : UINT64_MAX)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
@@ -79,7 +79,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCachePathEmtpyName() {
-        let sut = DiskCache("")
+        let sut = DiskCache("", capacity : UINT64_MAX)
         let cachePath = DiskCache.basePath()
         XCTAssertEqual(sut.cachePath, cachePath)
         
