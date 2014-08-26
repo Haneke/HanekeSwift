@@ -100,7 +100,7 @@ class NSFileManager_HanekeTests: DiskTestCase {
         let sut = NSFileManager.defaultManager()
         
         let paths = [self.writeDataWithLength(1), self.writeDataWithLength(2)]
-        sut.setAttributes([NSURLContentModificationDateKey : NSDate.distantPast()], ofItemAtPath: paths[0], error: nil)
+        sut.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: paths[0], error: nil)
         
         var resultPaths : Array<String> = []
         
@@ -116,7 +116,7 @@ class NSFileManager_HanekeTests: DiskTestCase {
         let sut = NSFileManager.defaultManager()
         
         let paths = [self.writeDataWithLength(1), self.writeDataWithLength(2)]
-        sut.setAttributes([NSURLContentModificationDateKey : NSDate.distantPast()], ofItemAtPath: paths[1], error: nil)
+        sut.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: paths[1], error: nil)
         var resultPaths : Array<String> = []
         
         sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: NSURLContentModificationDateKey, ascending: false) { (URL : NSURL, index : Int, _) -> Void in

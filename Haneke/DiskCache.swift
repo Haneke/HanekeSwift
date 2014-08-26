@@ -48,8 +48,9 @@ public class DiskCache {
     public init(_ name : String, capacity : UInt64) {
         self.name = name
         self.capacity = capacity
-        dispatch_async(cacheQueue, {
+        dispatch_async(self.cacheQueue, {
             self.calculateSize()
+            self.controlCapacity()
         })
     }
     
@@ -116,18 +117,16 @@ public class DiskCache {
     }
     
     private func controlCapacity() {
-        if size < capacity { return }
+        if self.size <= self.capacity { return }
         
         let fileManager = NSFileManager.defaultManager()
         let cachePath = self.cachePath
-        fileManager.enumerateContentsOfDirectoryAtPath(cachePath, orderedByProperty: NSURLContentModificationDateKey, ascending: false) { (URL : NSURL, _, inout stop : Bool) -> Void in
+        fileManager.enumerateContentsOfDirectoryAtPath(cachePath, orderedByProperty: NSURLContentModificationDateKey, ascending: true) { (URL : NSURL, _, inout stop : Bool) -> Void in
             
             if let path = URL.path {
                 self.removeFileAtPath(path)
- 
-                if self.size < self.capacity {
-                    stop = true
-                }
+
+                stop = self.size <= self.capacity
             }
         }
     }
@@ -136,8 +135,14 @@ public class DiskCache {
         var error : NSError?
         let fileManager = NSFileManager.defaultManager()
         if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
+            let modificationDate = attributes.fileModificationDate()
+            NSLog("%@", modificationDate!)
             let fileSize = attributes.fileSize()
-            self.size -= fileSize
+            if fileManager.removeItemAtPath(path, error: &error) {
+                self.size -= fileSize
+            } else {
+                NSLog("Failed to remove file with error \(error)")
+            }
         } else {
             NSLog("Failed to remove file with error \(error)")
         }
