@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Format {
+public struct Format {
     
     public let name : String
     
