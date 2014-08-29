@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Haneke
 
-let OriginalFormatName = "original"
+public let OriginalFormatName = "original"
 
 public class Cache {
     
@@ -20,8 +20,6 @@ public class Cache {
     
     public init(_ name : String) {
         self.name = name
-
-        self.registerFormat(Format(OriginalFormatName))
         
         let notifications = NSNotificationCenter.defaultCenter()
         // Using block-based observer to avoid subclassing NSObject
@@ -32,6 +30,8 @@ public class Cache {
                 self.onMemoryWarning()
             }
         )
+        
+        self.addFormat(Format(OriginalFormatName))
     }
     
     deinit {
@@ -44,6 +44,8 @@ public class Cache {
             memoryCache.setObject(image, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
             diskCache.setData(image.hnk_data(), key: key)
+        } else {
+            assertionFailure("Can't set image before adding format")
         }
     }
     
@@ -73,10 +75,10 @@ public class Cache {
 
     var formats : [String : (Format, NSCache, DiskCache)] = [:]
     
-    public func registerFormat(format : Format) {
+    public func addFormat(format : Format) {
         let name = self.name
         let memoryCache = NSCache()
-        let diskCache = DiskCache(name)
+        let diskCache = DiskCache(name, capacity : UINT64_MAX)
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
     
