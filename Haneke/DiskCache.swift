@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Haneke
 
 // TODO: Eventually move to Haneke.swift or similar.
 public let HanekeDomain = "io.haneke"
@@ -25,6 +26,14 @@ public class DiskCache {
 
     public var size : UInt64 = 0
 
+    public var capacity : UInt64 = 0 {
+        didSet {
+            dispatch_async(self.cacheQueue, {
+                self.controlCapacity()
+            })
+        }
+    }
+
     public lazy var cachePath : String = {
         let basePath = DiskCache.basePath()
         let cachePath = basePath.stringByAppendingPathComponent(self.name)
@@ -42,10 +51,12 @@ public class DiskCache {
         return cacheQueue
     }()
     
-    public init(_ name : String) {
+    public init(_ name : String, capacity : UInt64) {
         self.name = name
-        dispatch_async(cacheQueue, {
+        self.capacity = capacity
+        dispatch_async(self.cacheQueue, {
             self.calculateSize()
+            self.controlCapacity()
         })
     }
     
@@ -64,6 +75,7 @@ public class DiskCache {
                     self.size -= attributes.fileSize()
                 }
                 self.size += data.length
+                self.controlCapacity()
             } else {
                 NSLog("Failed to get data for key \(key)")
             }
@@ -110,5 +122,36 @@ public class DiskCache {
             NSLog("Failed to list directory with error \(error!)")
         }
     }
+    
+    private func controlCapacity() {
+        if self.size <= self.capacity { return }
+        
+        let fileManager = NSFileManager.defaultManager()
+        let cachePath = self.cachePath
+        fileManager.enumerateContentsOfDirectoryAtPath(cachePath, orderedByProperty: NSURLContentModificationDateKey, ascending: true) { (URL : NSURL, _, inout stop : Bool) -> Void in
+            
+            if let path = URL.path {
+                self.removeFileAtPath(path)
 
+                stop = self.size <= self.capacity
+            }
+        }
+    }
+    
+    private func removeFileAtPath(path:String) {
+        var error : NSError?
+        let fileManager = NSFileManager.defaultManager()
+        if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
+            let modificationDate = attributes.fileModificationDate()
+            NSLog("%@", modificationDate!)
+            let fileSize = attributes.fileSize()
+            if fileManager.removeItemAtPath(path, error: &error) {
+                self.size -= fileSize
+            } else {
+                NSLog("Failed to remove file with error \(error)")
+            }
+        } else {
+            NSLog("Failed to remove file with error \(error)")
+        }
+    }
 }
