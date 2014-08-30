@@ -13,7 +13,7 @@ import Haneke
 
 class CacheTests: XCTestCase {
     
-    var sut : Cache?
+    var sut : Cache!
     
     override func setUp() {
         super.setUp()
@@ -33,7 +33,6 @@ class CacheTests: XCTestCase {
     }
     
     func testSetImage () {
-        let sut = self.sut!
         let image = UIImage()
         let key = "key"
         
@@ -43,7 +42,6 @@ class CacheTests: XCTestCase {
     }
     
     func testFetchImage () {
-        let sut = self.sut!
         let key = "key"
         
         XCTAssert(sut.fetchImage(key) == nil, "MemoryCache is empty")
@@ -55,8 +53,6 @@ class CacheTests: XCTestCase {
     }
     
     func testFetchImageEqualImage () {
-        let sut = self.sut!
-        
         let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
         let key = "key"
         
@@ -65,7 +61,6 @@ class CacheTests: XCTestCase {
     }
     
     func testRemoveImageExisting() {
-        let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
         
@@ -75,13 +70,10 @@ class CacheTests: XCTestCase {
     }
     
     func testRemoveImageInexisting() {
-        let sut = self.sut!
-        
         sut.removeImage("key")
     }
     
     func testOnMemoryWarning() {
-        let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
         XCTAssertNotNil(sut.fetchImage(key))

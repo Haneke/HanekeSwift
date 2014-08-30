@@ -18,7 +18,7 @@ public class Cache {
     
     let diskCache : DiskCache
     
-    let memoryWarningObserver : NSObjectProtocol?
+    let memoryWarningObserver : NSObjectProtocol!
     
     public init(_ name : String) {
         self.name = name
@@ -37,7 +37,7 @@ public class Cache {
     
     deinit {
         let notifications = NSNotificationCenter.defaultCenter()
-        notifications.removeObserver(memoryWarningObserver!, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
     public func setImage (image: UIImage, _ key: String) {
