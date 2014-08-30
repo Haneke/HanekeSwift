@@ -12,6 +12,8 @@ public struct Format {
     
     public let name : String
     
+    public var diskCapacity : UInt64 = 0
+    
     public init(_ name : String) {
         self.name = name
     }

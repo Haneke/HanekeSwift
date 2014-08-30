@@ -31,7 +31,9 @@ public class Cache {
             }
         )
         
-        self.addFormat(Format(OriginalFormatName))
+        var originalFormat = Format(OriginalFormatName)
+        originalFormat.diskCapacity = UINT64_MAX
+        self.addFormat(originalFormat)
     }
     
     deinit {
@@ -78,7 +80,7 @@ public class Cache {
     public func addFormat(format : Format) {
         let name = self.name
         let memoryCache = NSCache()
-        let diskCache = DiskCache(name, capacity : UINT64_MAX)
+        let diskCache = DiskCache(name, capacity : format.diskCapacity)
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
     

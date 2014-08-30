@@ -16,6 +16,7 @@ class FormatTests: XCTestCase {
         let sut = Format(name)
         
         XCTAssertEqual(sut.name, name)
+        XCTAssertEqual(sut.diskCapacity, 0)
     }
     
 }

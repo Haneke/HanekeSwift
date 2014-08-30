@@ -39,6 +39,31 @@ class CacheTests: XCTestCase {
         sut.addFormat(format)
     }
     
+    func testAddFormat_DiskCapacityZero() {
+        let sut = self.sut!
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format(self.name)
+
+        sut.addFormat(format)
+
+        sut.setImage(image, key, formatName: format.name)
+        // TODO: Test that the image is not saved to the disk cache. Requires fetch method.
+    }
+    
+    func testAddFormat_DiskCapacityNonZero() {
+        let sut = self.sut!
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        var format = Format(self.name)
+        format.diskCapacity = UINT64_MAX
+
+        sut.addFormat(format)
+
+        sut.setImage(image, key, formatName: format.name)
+        // TODO: Test that the image is saved to the disk cache. Requires fetch method.
+    }
+    
     func testSetImageInDefaultFormat () {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
