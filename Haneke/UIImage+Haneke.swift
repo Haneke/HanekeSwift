@@ -10,7 +10,7 @@ import UIKit
 
 extension UIImage {
 
-    public func hnk_hasAlpha() -> Bool {
+    func hnk_hasAlpha() -> Bool {
         let alpha = CGImageGetAlphaInfo(self.CGImage)
         switch alpha {
         case .First, .Last, .PremultipliedFirst, .PremultipliedLast, .Only:
@@ -20,7 +20,7 @@ extension UIImage {
         }
     }
     
-    public func hnk_data() -> NSData? {
+    func hnk_data() -> NSData? {
         let hasAlpha = self.hnk_hasAlpha()
         let data = hasAlpha ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, 1)
         return data

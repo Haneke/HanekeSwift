@@ -58,10 +58,10 @@ extension NSFileManager {
 
 }
 
-public func < (lhs: NSDate, rhs: NSDate) -> Bool {
+func < (lhs: NSDate, rhs: NSDate) -> Bool {
     return lhs.compare(rhs) == NSComparisonResult.OrderedAscending
 }
 
-public func < (lhs: NSNumber, rhs: NSNumber) -> Bool {
+func < (lhs: NSNumber, rhs: NSNumber) -> Bool {
     return lhs.compare(rhs) == NSComparisonResult.OrderedAscending
 }
