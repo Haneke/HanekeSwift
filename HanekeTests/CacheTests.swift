@@ -32,13 +32,43 @@ class CacheTests: XCTestCase {
         weak var sut = Cache("test")
     }
     
-    func testSetImage () {
-        let image = UIImage()
+    func testAddFormat() {
+        let format = Format(self.name)
+        
+        sut.addFormat(format)
+    }
+    
+    func testSetImageInDefaultFormat () {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = "key"
         
         sut.setImage(image, key)
         
-        // TODO: Test that image has been set in the disk cache
+        let resultImage = sut.fetchImage(key, formatName: OriginalFormatName)
+        XCTAssertTrue(resultImage!.isEqualPixelByPixel(image))
+    }
+    
+    func testSetImageInFormat () {
+        let sut = self.sut!
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let format = Format(self.name)
+        sut.addFormat(format)
+        
+        sut.setImage(image, key, formatName : format.name)
+        
+        let resultImage = sut.fetchImage(key, formatName: format.name)
+        XCTAssertTrue(resultImage!.isEqualPixelByPixel(image))
+    }
+    
+    func testSetImageInInexistingFormat () {
+        let sut = self.sut!
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        
+        // TODO: Swift doesn't support XCAssertThrows yet. 
+        // See: http://stackoverflow.com/questions/25529625/testing-assertion-in-swift
+        // XCAssertThrows(sut.setImage(image, key, formatName : self.name))
     }
     
     func testFetchImage () {
@@ -69,8 +99,42 @@ class CacheTests: XCTestCase {
         XCTAssertNil(sut.fetchImage(key))
     }
     
+    func testRemoveImageExistingInFormat() {
+        let sut = self.sut!
+        let key = "key"
+        let format = Format(self.name)
+        sut.addFormat(format)
+        sut.setImage(UIImage(), key, formatName: format.name)
+        
+        sut.removeImage(key, formatName: format.name)
+        
+        XCTAssertNil(sut.fetchImage(key))
+    }
+    
+    func testRemoveImageExistingUsingAnotherFormat() {
+        let sut = self.sut!
+        let key = "key"
+        let format = Format(self.name)
+        sut.addFormat(format)
+        sut.setImage(UIImage(), key)
+        
+        sut.removeImage(key, formatName: format.name)
+        
+        XCTAssertNotNil(sut.fetchImage(key))
+    }
+    
+    func testRemoveImageExistingUsingInexistingFormat() {
+        let sut = self.sut!
+        let key = "key"
+        sut.setImage(UIImage(), key)
+        
+        sut.removeImage(key, formatName: self.name)
+        
+        XCTAssertNotNil(sut.fetchImage(key))
+    }
+    
     func testRemoveImageInexisting() {
-        sut.removeImage("key")
+        sut.removeImage(self.name)
     }
     
     func testOnMemoryWarning() {

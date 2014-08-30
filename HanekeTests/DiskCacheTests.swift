@@ -166,6 +166,23 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
+    func testSetData_EscapedFilename() {
+        let sut = self.sut!
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
+        let key = "http://haneke.io"
+        let path = sut.pathForKey(key)
+        
+        sut.setData(data, key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+            let resultData = NSData(contentsOfFile:path)
+            XCTAssertEqual(resultData, data)
+            XCTAssertEqual(sut.size, UInt64(data.length))
+        })
+    }
+    
     func testSetDataSizeGreaterThanZero() {
         let originalData = NSData.dataWithLength(5)
         let lengths = [5, 14]
@@ -268,7 +285,7 @@ class DiskCacheTests: XCTestCase {
     
     func testPathForKey() {
         let key = self.name
-        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key)
+        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.escapedFilename())
 
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }

@@ -100,7 +100,8 @@ public class DiskCache {
     }
 
     public func pathForKey(key : String) -> String {
-        let path = self.cachePath.stringByAppendingPathComponent(key)
+        let filename = key.escapedFilename()
+        let path = self.cachePath.stringByAppendingPathComponent(filename)
         return path
     }
     
