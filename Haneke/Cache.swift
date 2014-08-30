@@ -31,8 +31,7 @@ public class Cache {
             }
         )
         
-        var originalFormat = Format(OriginalFormatName)
-        originalFormat.diskCapacity = UINT64_MAX
+        var originalFormat = Format(OriginalFormatName, diskCapacity : UINT64_MAX)
         self.addFormat(originalFormat)
     }
     

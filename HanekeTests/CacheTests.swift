@@ -55,8 +55,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        var format = Format(self.name)
-        format.diskCapacity = UINT64_MAX
+        var format = Format(self.name, diskCapacity: UINT64_MAX)
 
         sut.addFormat(format)
 

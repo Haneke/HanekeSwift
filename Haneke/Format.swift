@@ -12,10 +12,11 @@ public struct Format {
     
     public let name : String
     
-    public var diskCapacity : UInt64 = 0
+    public let diskCapacity : UInt64
     
-    public init(_ name : String) {
+    public init(_ name : String, diskCapacity : UInt64 = 0) {
         self.name = name
+        self.diskCapacity = diskCapacity
     }
     
 }
