@@ -19,5 +19,10 @@ class FormatTests: XCTestCase {
         XCTAssertEqual(sut.diskCapacity, 0)
     }
     
+    // TODO: test default format
+    
+    // TODO: test resize image fill
+    
+    // TODO: test resize image fit
 }
 
