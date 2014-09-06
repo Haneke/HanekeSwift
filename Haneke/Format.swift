@@ -24,8 +24,11 @@ public struct Format {
     
     public var scaleMode: ScaleMode = .ScaleModeNone
     
-    public init(_ name : String) {
+    public let diskCapacity : UInt64
+    
+    public init(_ name : String, diskCapacity : UInt64 = 0) {
         self.name = name
+        self.diskCapacity = diskCapacity
     }
     
     public func resizedImageFromImage(originalImage: UIImage) -> UIImage {

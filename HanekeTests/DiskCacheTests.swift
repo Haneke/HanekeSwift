@@ -12,7 +12,7 @@ import Haneke
 
 class DiskCacheTests: XCTestCase {
 
-    var sut : DiskCache?
+    var sut : DiskCache!
     
     override func setUp() {
         super.setUp()
@@ -21,7 +21,7 @@ class DiskCacheTests: XCTestCase {
     
     override func tearDown() {
         let fileManager = NSFileManager.defaultManager()
-        fileManager.removeItemAtPath(sut!.cachePath, error:nil)
+        fileManager.removeItemAtPath(sut.cachePath, error:nil)
         super.tearDown()
     }
     
@@ -112,7 +112,6 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCachePath() {
-        let sut = self.sut!
         let cachePath = DiskCache.basePath().stringByAppendingPathComponent(sut.name)
         XCTAssertEqual(sut.cachePath, cachePath)
         
@@ -134,7 +133,6 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCacheQueue() {
-        let sut = self.sut!
         let expectedLabel = HanekeDomain + "." + sut.name
 
         let label = String.stringWithUTF8String(dispatch_queue_get_label(sut.cacheQueue))!
@@ -143,20 +141,35 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetCapacity() {
-        let sut = self.sut!
         sut.setData(NSData.dataWithLength(1), key: self.name)
         
         sut.capacity = 0
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, 0)
+            XCTAssertEqual(self.sut.size, 0)
         })        
     }
     
     func testSetData() {
-        let sut = self.sut!
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
         let key = self.name
+        let path = sut.pathForKey(key)
+        
+        sut.setData(data, key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+            let resultData = NSData(contentsOfFile:path)
+            XCTAssertEqual(resultData, data)
+            XCTAssertEqual(self.sut.size, UInt64(data.length))
+        })
+    }
+    
+    func testSetData_EscapedFilename() {
+        let sut = self.sut!
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
+        let key = "http://haneke.io"
         let path = sut.pathForKey(key)
         
         sut.setData(data, key: key)
@@ -171,7 +184,6 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetDataSizeGreaterThanZero() {
-        let sut = self.sut!
         let originalData = NSData.dataWithLength(5)
         let lengths = [5, 14]
         let keys = ["1", "2"]
@@ -180,12 +192,11 @@ class DiskCacheTests: XCTestCase {
         sut.setData(NSData.dataWithLength(lengths[1]), key: keys[1])
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, combine: +)))
+            XCTAssertEqual(self.sut.size, UInt64(lengths.reduce(0, combine: +)))
         })
     }
     
     func testSetDataReplace() {
-        let sut = self.sut!
         let originalData = NSData.dataWithLength(5)
         let data = NSData.dataWithLength(14)
         let key = self.name
@@ -199,12 +210,11 @@ class DiskCacheTests: XCTestCase {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, UInt64(data.length))
+            XCTAssertEqual(self.sut.size, UInt64(data.length))
         })
     }
     
     func testSetDataNil() {
-        let sut = self.sut!
         let key = self.name
         let path = sut.pathForKey(key)
         
@@ -213,7 +223,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(sut.size, 0)
+            XCTAssertEqual(self.sut.size, 0)
         })
     }
     
@@ -232,7 +242,6 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataTwoKeys() {
-        let sut = self.sut!
         let keys = ["1", "2"]
         let datas = [NSData.dataWithLength(5), NSData.dataWithLength(7)]
         sut.setData(datas[0], key: keys[0])
@@ -242,14 +251,13 @@ class DiskCacheTests: XCTestCase {
         
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
-            let path = sut.pathForKey(keys[1])
+            let path = self.sut.pathForKey(keys[1])
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(sut.size, UInt64(datas[0].length))
+            XCTAssertEqual(self.sut.size, UInt64(datas[0].length))
         })
     }
     
     func testRemoveDataExisting() {
-        let sut = self.sut!
         let key = self.name
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
         let path = sut.pathForKey(key)
@@ -260,12 +268,11 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(sut.size, 0)
+            XCTAssertEqual(self.sut.size, 0)
         })
     }
     
     func testRemoveDataInexisting() {
-        let sut = self.sut!
         let key = self.name
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
@@ -277,9 +284,8 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testPathForKey() {
-        let sut = self.sut!
         let key = self.name
-        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key)
+        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.escapedFilename())
 
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }

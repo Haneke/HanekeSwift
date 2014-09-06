@@ -13,7 +13,7 @@ import Haneke
 
 class CacheTests: XCTestCase {
     
-    var sut : Cache?
+    var sut : Cache!
     
     override func setUp() {
         super.setUp()
@@ -33,14 +33,36 @@ class CacheTests: XCTestCase {
     }
     
     func testAddFormat() {
-        let sut = self.sut!
         let format = Format(self.name)
         
         sut.addFormat(format)
     }
     
-    func testSetImageInDefaultFormat () {
+    func testAddFormat_DiskCapacityZero() {
         let sut = self.sut!
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format(self.name)
+
+        sut.addFormat(format)
+
+        sut.setImage(image, key, formatName: format.name)
+        // TODO: Test that the image is not saved to the disk cache. Requires fetch method.
+    }
+    
+    func testAddFormat_DiskCapacityNonZero() {
+        let sut = self.sut!
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        var format = Format(self.name, diskCapacity: UINT64_MAX)
+
+        sut.addFormat(format)
+
+        sut.setImage(image, key, formatName: format.name)
+        // TODO: Test that the image is saved to the disk cache. Requires fetch method.
+    }
+    
+    func testSetImageInDefaultFormat () {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = "key"
         
@@ -74,7 +96,6 @@ class CacheTests: XCTestCase {
     }
     
     func testFetchImage () {
-        let sut = self.sut!
         let key = "key"
         
         XCTAssert(sut.fetchImage(key) == nil, "MemoryCache is empty")
@@ -86,8 +107,6 @@ class CacheTests: XCTestCase {
     }
     
     func testFetchImageEqualImage () {
-        let sut = self.sut!
-        
         let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
         let key = "key"
         
@@ -96,7 +115,6 @@ class CacheTests: XCTestCase {
     }
     
     func testRemoveImageExisting() {
-        let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
         
@@ -140,13 +158,10 @@ class CacheTests: XCTestCase {
     }
     
     func testRemoveImageInexisting() {
-        let sut = self.sut!
-        
         sut.removeImage(self.name)
     }
     
     func testOnMemoryWarning() {
-        let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
         XCTAssertNotNil(sut.fetchImage(key))

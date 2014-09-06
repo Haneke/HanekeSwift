@@ -16,7 +16,7 @@ public class Cache {
     
     let name : String
     
-    let memoryWarningObserver : NSObjectProtocol?
+    let memoryWarningObserver : NSObjectProtocol!
     
     public init(_ name : String) {
         self.name = name
@@ -31,12 +31,13 @@ public class Cache {
             }
         )
         
-        self.addFormat(Format(OriginalFormatName))
+        var originalFormat = Format(OriginalFormatName, diskCapacity : UINT64_MAX)
+        self.addFormat(originalFormat)
     }
     
     deinit {
         let notifications = NSNotificationCenter.defaultCenter()
-        notifications.removeObserver(memoryWarningObserver!, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+        notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
     public func setImage (image: UIImage, _ key: String, formatName : String = OriginalFormatName) {
@@ -78,7 +79,7 @@ public class Cache {
     public func addFormat(format : Format) {
         let name = self.name
         let memoryCache = NSCache()
-        let diskCache = DiskCache(name, capacity : UINT64_MAX)
+        let diskCache = DiskCache(name, capacity : format.diskCapacity)
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
     
