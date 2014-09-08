@@ -128,10 +128,10 @@
 				A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
 				A0C6BA3B19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift */,
+				A06EE28119B18FE600572D17 /* String+HanekeTests.swift */,
 				A095C9661980418C00CD0F4C /* Supporting Files */,
 				A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */,
 				A0D7D6871997C4AC000CAF46 /* Utils */,
-				A06EE28119B18FE600572D17 /* String+HanekeTests.swift */,
 			);
 			path = HanekeTests;
 			sourceTree = "<group>";

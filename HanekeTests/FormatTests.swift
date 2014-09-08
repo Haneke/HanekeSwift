@@ -11,29 +11,76 @@ import Haneke
 
 class FormatTests: XCTestCase {
 
-    func testInit() {
+    func testDefaultInit() {
         let name = self.name
         let sut = Format(name)
         
         XCTAssertEqual(sut.name, name)
         XCTAssertEqual(sut.diskCapacity, 0)
+        XCTAssertEqual(sut.size, CGSizeZero)
+        XCTAssertEqual(sut.scaleMode, ScaleMode.ScaleModeFill)
+        XCTAssertTrue(sut.allowUpscaling, "Default format allows upscaling")
     }
     
-    // TODO: test default format
-    func testResizeImage() {
+    func testResizeImageScaleNone() {
 
-        let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
-        let sut = Format(self.name)
-        sut.size = CGSizeMake(30, 5);
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5), scaleMode: ScaleMode.ScaleModeNone)
+        let resizedImage = sut.resizedImageFromImage(originalImage)
         
-        
-        
-        XCTAssertEqual(sut.name, name)
-        XCTAssertEqual(sut.diskCapacity, 0)
+        XCTAssertEqual(originalImage.size.width, resizedImage.size.width)
+        XCTAssertEqual(originalImage.size.height, resizedImage.size.height)
+        XCTAssertNotEqual(resizedImage.size.width, 30)
+        XCTAssertNotEqual(resizedImage.size.height, 5)
     }
     
-    // TODO: test resize image fill
+    func testResizeImageScaleFill() {
+        
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5))
+        let resizedImage = sut.resizedImageFromImage(originalImage)
+        
+        XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
+        XCTAssertNotEqual(originalImage.size.height, resizedImage.size.height)
+        XCTAssertEqual(resizedImage.size.width, 30)
+        XCTAssertEqual(resizedImage.size.height, 5)
+    }
     
-    // TODO: test resize image fit
+    func testResizeImageScaleAspectFill() {
+        
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5), scaleMode: ScaleMode.ScaleModeAspectFill)
+        let resizedImage = sut.resizedImageFromImage(originalImage)
+        
+        XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
+        XCTAssertNotEqual(originalImage.size.height, resizedImage.size.height)
+        XCTAssertEqual(resizedImage.size.width, 30)
+        XCTAssertEqual(resizedImage.size.height, 30)
+    }
+    
+    func testResizeImageScaleAspectFit() {
+        
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5), scaleMode: ScaleMode.ScaleModeAspectFit)
+        let resizedImage = sut.resizedImageFromImage(originalImage)
+        
+        XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
+        XCTAssertNotEqual(originalImage.size.height, resizedImage.size.height)
+        XCTAssertEqual(resizedImage.size.width, 5)
+        XCTAssertEqual(resizedImage.size.height, 5)
+    }
+    
+    
+    func testResizeImageScaleAspectFillWithoutUpscaling() {
+        
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5), scaleMode: ScaleMode.ScaleModeAspectFill, allowUpscaling: false)
+        let resizedImage = sut.resizedImageFromImage(originalImage)
+        
+        XCTAssertEqual(originalImage.size.width, resizedImage.size.width)
+        XCTAssertEqual(originalImage.size.height, resizedImage.size.height)
+        XCTAssertEqual(resizedImage.size.width, 1)
+        XCTAssertEqual(resizedImage.size.height, 1)
+    }
 }
 

@@ -26,26 +26,41 @@ public struct Format {
     
     public let diskCapacity : UInt64
     
-    public init(_ name : String, diskCapacity : UInt64 = 0) {
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .ScaleModeFill, allowUpscaling: Bool = true) {
         self.name = name
         self.diskCapacity = diskCapacity
+        self.size = size
+        self.scaleMode = scaleMode
+        self.allowUpscaling = allowUpscaling
     }
     
     public func resizedImageFromImage(originalImage: UIImage) -> UIImage {
-        var resizedSize: CGSize
+        var resizeToSize: CGSize
         switch self.scaleMode {
         case .ScaleModeFill:
-            resizedSize = self.size
+            resizeToSize = self.size
         case .ScaleModeAspectFit:
-            resizedSize = originalImage.hnk_aspectFitSize(self.size)
+            resizeToSize = originalImage.hnk_aspectFitSize(self.size)
         case .ScaleModeAspectFill:
-            resizedSize = originalImage.hnk_aspectFillSize(self.size)
+            resizeToSize = originalImage.hnk_aspectFillSize(self.size)
         case .ScaleModeNone:
             return originalImage
         }
+
+        // If does not allow to scale the image
+        if (!self.allowUpscaling) {
+            if (resizeToSize.width > originalImage.size.width || resizeToSize.height > originalImage.size.height) {
+                return originalImage;
+            }
+        }
         
-        // TODO: Scaling
+        // Avoid unnecessary computations
+        if (resizeToSize.width == originalImage.size.width && resizeToSize.height == originalImage.size.height)
+        {
+            return originalImage;
+        }
         
-        return originalImage
+        let resizedImage = originalImage.hnk_imageByScalingToSize(resizeToSize)
+        return resizedImage
     }
 }
