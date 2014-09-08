@@ -20,6 +20,17 @@ class FormatTests: XCTestCase {
     }
     
     // TODO: test default format
+    func testResizeImage() {
+
+        let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
+        let sut = Format(self.name)
+        sut.size = CGSizeMake(30, 5);
+        
+        
+        
+        XCTAssertEqual(sut.name, name)
+        XCTAssertEqual(sut.diskCapacity, 0)
+    }
     
     // TODO: test resize image fill
     

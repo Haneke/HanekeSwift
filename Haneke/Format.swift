@@ -20,7 +20,7 @@ public struct Format {
     
     public var compressionQuality : Float = 1.0
 
-    public let size : CGSize = CGSizeZero
+    public var size : CGSize = CGSizeZero
     
     public var scaleMode: ScaleMode = .ScaleModeFill
     
@@ -32,6 +32,20 @@ public struct Format {
     }
     
     public func resizedImageFromImage(originalImage: UIImage) -> UIImage {
+        var resizedSize: CGSize
+        switch self.scaleMode {
+        case .ScaleModeFill:
+            resizedSize = self.size
+        case .ScaleModeAspectFit:
+            resizedSize = originalImage.hnk_aspectFitSize(self.size)
+        case .ScaleModeAspectFill:
+            resizedSize = originalImage.hnk_aspectFillSize(self.size)
+        case .ScaleModeNone:
+            return originalImage
+        }
+        
+        // TODO: Scaling
+        
         return originalImage
     }
 }
