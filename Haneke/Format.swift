@@ -9,24 +9,24 @@
 import Foundation
 
 public enum ScaleMode {
-    case ScaleModeFill, ScaleModeAspectFit, ScaleModeAspectFill, ScaleModeNone
+    case Fill, AspectFit, AspectFill, None
 }
 
 public struct Format {
     
     public let name : String
 
-    public var allowUpscaling : Bool = true
+    public var allowUpscaling : Bool
     
     public var compressionQuality : Float = 1.0
 
-    public var size : CGSize = CGSizeZero
+    public var size : CGSize
     
-    public var scaleMode: ScaleMode = .ScaleModeFill
+    public var scaleMode: ScaleMode
     
     public let diskCapacity : UInt64
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .ScaleModeFill, allowUpscaling: Bool = true) {
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .Fill, allowUpscaling: Bool = true) {
         self.name = name
         self.diskCapacity = diskCapacity
         self.size = size
@@ -37,13 +37,13 @@ public struct Format {
     public func resizedImageFromImage(originalImage: UIImage) -> UIImage {
         var resizeToSize: CGSize
         switch self.scaleMode {
-        case .ScaleModeFill:
+        case .Fill:
             resizeToSize = self.size
-        case .ScaleModeAspectFit:
+        case .AspectFit:
             resizeToSize = originalImage.hnk_aspectFitSize(self.size)
-        case .ScaleModeAspectFill:
+        case .AspectFill:
             resizeToSize = originalImage.hnk_aspectFillSize(self.size)
-        case .ScaleModeNone:
+        case .None:
             return originalImage
         }
 
