@@ -47,7 +47,7 @@ public struct Format {
             return originalImage
         }
 
-        // If does not allow to scale the image
+        // If does not allow to scale up the image
         if (!self.allowUpscaling) {
             if (resizeToSize.width > originalImage.size.width || resizeToSize.height > originalImage.size.height) {
                 return originalImage;
