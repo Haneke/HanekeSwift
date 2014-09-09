@@ -14,6 +14,10 @@ public let OriginalFormatName = "original"
 
 public class Cache {
     
+    public enum ErrorCode : Int {
+        case ObjectNotFound = -100
+    }
+    
     let name : String
     
     let memoryWarningObserver : NSObjectProtocol!
@@ -50,11 +54,20 @@ public class Cache {
         }
     }
     
-    public func fetchImage (key : String, formatName : String = OriginalFormatName) -> UIImage? {
+    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName, successBlock : (UIImage) -> (), failureBlock : ((NSError?) -> ())? = nil) {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
-            return memoryCache.objectForKey(key) as UIImage!
+            if let image = memoryCache.objectForKey(key) as? UIImage {
+                successBlock(image)
+                // TODO: Update disk cache access date
+            } else {
+                self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, successBlock: successBlock, failureBlock: failureBlock)
+            }
+        } else if let block = failureBlock {
+            let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
+            let description = String(format:localizedFormat, key)
+            let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+            block(error)
         }
-        return nil
     }
 
     public func removeImage(key : String, formatName : String = OriginalFormatName) {
@@ -82,5 +95,29 @@ public class Cache {
         let diskCache = DiskCache(name, capacity : format.diskCapacity)
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
+    
+    // MARK: Disk cache
+    
+    func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, successBlock : (UIImage) -> (), failureBlock : ((NSError?) -> ())?) {
+        diskCache.fetchData(key, successBlock: { data in
+            let image = UIImage(data : data)
+            // TODO: Image decompression
+            successBlock(image)
+            memoryCache.setObject(image, forKey: key)
+        }, failureBlock: { error in
+            if let block = failureBlock {
+                if (error?.code == NSFileReadNoSuchFileError) {
+                    let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
+                    let description = String(format:localizedFormat, key)
+                    let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+                    block(error)
+                } else {
+                    block(error)
+                }
+            }
+        })
+    }
+    
+    // MARK: Error
     
 }

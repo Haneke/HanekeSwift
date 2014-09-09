@@ -27,7 +27,7 @@ class DiskCacheTests: XCTestCase {
     
     func testBasePath() {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let basePath = cachesPath.stringByAppendingPathComponent(HanekeDomain)
+        let basePath = cachesPath.stringByAppendingPathComponent(Haneke.Domain)
         XCTAssertEqual(DiskCache.basePath(), basePath)
     }
     
@@ -133,7 +133,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCacheQueue() {
-        let expectedLabel = HanekeDomain + "." + sut.name
+        let expectedLabel = Haneke.Domain + "." + sut.name
 
         let label = String.stringWithUTF8String(dispatch_queue_get_label(sut.cacheQueue))!
 
@@ -238,6 +238,85 @@ class DiskCacheTests: XCTestCase {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
             XCTAssertEqual(sut.size, 0)
+        })
+    }
+    
+    func testFetchData() {
+        let data = NSData.dataWithLength(14)
+        let key = self.name
+        sut.setData(data, key : key)
+        
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchData(key, {
+            expectation.fulfill()
+            XCTAssertEqual($0, data)
+        })
+        
+        dispatch_sync(sut.cacheQueue, {
+            self.waitForExpectationsWithTimeout(0, nil)
+        })
+    }
+    
+    func testFetchData_Inexisting() {
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchData(key, successBlock : { data in
+            expectation.fulfill()
+            XCTFail("Expected failure")
+        }, failureBlock : { errorOpt in
+            expectation.fulfill()
+            let error = errorOpt!
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
+        })
+        
+        dispatch_sync(sut.cacheQueue, {
+            self.waitForExpectationsWithTimeout(0, nil)
+        })
+    }
+    
+    func testFetchData_Inexisting_NilFailureBlock() {
+        let key = self.name
+        
+        sut.fetchData(key, { data in
+            XCTFail("Expected failure")
+        })
+        
+        dispatch_sync(sut.cacheQueue, {})
+    }
+    
+    func testFetchData_UpdateAccessDate() {
+        let data = NSData.dataWithLength(19)
+        let key = self.name
+        sut.setData(data, key : key)
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        dispatch_sync(sut.cacheQueue, {
+            let _ = fileManager.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path, error: nil)
+        })
+        let expectation = self.expectationWithDescription(self.name)
+        
+        // Preconditions
+        dispatch_sync(sut.cacheQueue, {
+            let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
+            let accessDate = attributes[NSFileModificationDate] as NSDate
+            XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
+        })
+        
+        sut.fetchData(key, {
+            expectation.fulfill()
+            XCTAssertEqual($0, data)
+        })
+        
+        dispatch_sync(sut.cacheQueue, {
+            self.waitForExpectationsWithTimeout(0, nil)
+            
+            let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
+            let accessDate = attributes[NSFileModificationDate] as NSDate
+            let now = NSDate()
+            let interval = accessDate.timeIntervalSinceDate(now)
+            XCTAssertEqualWithAccuracy(interval, 0, 1)
         })
     }
     
