@@ -38,30 +38,6 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
     }
     
-    func testAddFormat_DiskCapacityZero() {
-        let sut = self.sut!
-        let key = self.name
-        let image = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format(self.name)
-
-        sut.addFormat(format)
-
-        sut.setImage(image, key, formatName: format.name)
-        // TODO: Test that the image is not saved to the disk cache. Requires fetch method.
-    }
-    
-    func testAddFormat_DiskCapacityNonZero() {
-        let sut = self.sut!
-        let key = self.name
-        let image = UIImage.imageWithColor(UIColor.greenColor())
-        var format = Format(self.name, diskCapacity: UINT64_MAX)
-
-        sut.addFormat(format)
-
-        sut.setImage(image, key, formatName: format.name)
-        // TODO: Test that the image is saved to the disk cache. Requires fetch method.
-    }
-    
     func testSetImageInDefaultFormat () {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
@@ -70,8 +46,8 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key)
         
         sut.fetchImageForKey(key, formatName: OriginalFormatName, {
-            expectation.fulfill()
             XCTAssertTrue($0.isEqualPixelByPixel(image))
+            expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
     }
@@ -103,6 +79,44 @@ class CacheTests: DiskTestCase {
         // XCAssertThrows(sut.setImage(image, key, formatName : self.name))
     }
     
+    func testSetImage_FormatWithouDiskCapacity() {
+        let sut = self.sut!
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format(self.name)
+        sut.addFormat(format)
+        let expectation = self.expectationWithDescription("fetch image")
+        
+        sut.setImage(image, key, formatName: format.name)
+
+        self.clearMemoryCache()
+        sut.fetchImageForKey(key, formatName: format.name, successBlock: {_ in
+            XCTFail("expected failure")
+            expectation.fulfill()
+            }, failureBlock: {_ in
+                expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testSetImage_FormatWithDiskCapacity() {
+        let sut = self.sut!
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        var format = Format(self.name, diskCapacity: UINT64_MAX)
+        sut.addFormat(format)
+        let expectation = self.expectationWithDescription("fetch image")
+        
+        sut.setImage(image, key, formatName: format.name)
+        
+        self.clearMemoryCache()
+        sut.fetchImageForKey(key, formatName: format.name, successBlock: {
+            XCTAssertTrue($0.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
     func testFetchImage_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
@@ -122,14 +136,13 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         sut.setImage(image, key)
-
         self.clearMemoryCache()
         
         sut.fetchImageForKey(key, successBlock: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
-
+        
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
