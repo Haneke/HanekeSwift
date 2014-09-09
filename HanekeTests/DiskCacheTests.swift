@@ -241,6 +241,51 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
+    func testFetchData() {
+        let data = NSData.dataWithLength(14)
+        let key = self.name
+        sut.setData(data, key : key)
+        
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchData(key, {
+            expectation.fulfill()
+            XCTAssertEqual($0, data)
+        })
+        
+        dispatch_sync(sut.cacheQueue, {
+            self.waitForExpectationsWithTimeout(0, nil)
+        })
+    }
+    
+    func testFetchData_Inexisting() {
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchData(key, successBlock : { data in
+            expectation.fulfill()
+            XCTFail("Expected failure")
+        }, failureBlock : { errorOpt in
+            expectation.fulfill()
+            let error = errorOpt!
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
+        })
+        
+        dispatch_sync(sut.cacheQueue, {
+            self.waitForExpectationsWithTimeout(0, nil)
+        })
+    }
+    
+    func testFetchData_Inexisting_NilFailureBlock() {
+        let key = self.name
+        
+        sut.fetchData(key, { data in
+            XCTFail("Expected failure")
+        })
+        
+        dispatch_sync(sut.cacheQueue, {})
+    }
+    
     func testRemoveDataTwoKeys() {
         let keys = ["1", "2"]
         let datas = [NSData.dataWithLength(5), NSData.dataWithLength(7)]
