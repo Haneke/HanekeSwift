@@ -64,12 +64,16 @@ class CacheTests: XCTestCase {
     
     func testSetImageInDefaultFormat () {
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let key = "key"
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
         
         sut.setImage(image, key)
         
-        let resultImage = sut.fetchImage(key, formatName: OriginalFormatName)
-        XCTAssertTrue(resultImage!.isEqualPixelByPixel(image))
+        sut.fetchImageForKey(key, formatName: OriginalFormatName, {
+            expectation.fulfill()
+            XCTAssertTrue($0.isEqualPixelByPixel(image))
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
     func testSetImageInFormat () {
@@ -78,11 +82,15 @@ class CacheTests: XCTestCase {
         let key = self.name
         let format = Format(self.name)
         sut.addFormat(format)
+        let expectation = self.expectationWithDescription(self.name)
         
         sut.setImage(image, key, formatName : format.name)
         
-        let resultImage = sut.fetchImage(key, formatName: format.name)
-        XCTAssertTrue(resultImage!.isEqualPixelByPixel(image))
+        sut.fetchImageForKey(key, formatName: format.name, {
+            expectation.fulfill()
+            XCTAssertTrue($0.isEqualPixelByPixel(image))
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
     func testSetImageInInexistingFormat () {
@@ -95,44 +103,66 @@ class CacheTests: XCTestCase {
         // XCAssertThrows(sut.setImage(image, key, formatName : self.name))
     }
     
-    func testFetchImage () {
-        let key = "key"
+    func testFetchImageForKey_Inexisting () {
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
         
-        XCTAssert(sut.fetchImage(key) == nil, "MemoryCache is empty")
-        
-        let image = UIImage()
-        sut.setImage(image, key)
-        
-        XCTAssert(sut.fetchImage(key) != nil, "MemoryCache is not empty")
+        sut.fetchImageForKey(key, formatName: OriginalFormatName, successBlock : { data in
+            expectation.fulfill()
+            XCTFail("Expected failure")
+        }, failureBlock : { _ in
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageEqualImage () {
+    func testFetchImage_Existing () {
         let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
-        let key = "key"
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
         
         sut.setImage(image, key)
-        XCTAssert(image.isEqualPixelByPixel(sut.fetchImage(key)), "Fetched image is equal to the original one.")
+        
+        sut.fetchImageForKey(key, formatName: OriginalFormatName, {
+            expectation.fulfill()
+            XCTAssertTrue($0.isEqualPixelByPixel(image))
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImageExisting() {
+    func testRemoveImage_Existing() {
         let key = "key"
         sut.setImage(UIImage(), key)
-        
+        let expectation = self.expectationWithDescription("fetch image")
+
         sut.removeImage(key)
         
-        XCTAssertNil(sut.fetchImage(key))
+        sut.fetchImageForKey(key, successBlock : { _ in
+            XCTFail("Expected failure")
+            expectation.fulfill()
+        }, failureBlock : { _ in
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImageExistingInFormat() {
+    func testRemoveImage_ExistingInFormat() {
         let sut = self.sut!
         let key = "key"
         let format = Format(self.name)
         sut.addFormat(format)
         sut.setImage(UIImage(), key, formatName: format.name)
+        let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeImage(key, formatName: format.name)
         
-        XCTAssertNil(sut.fetchImage(key))
+        sut.fetchImageForKey(key, formatName: format.name, successBlock : { data in
+            XCTFail("Expected failure")
+            expectation.fulfill()
+        }, failureBlock : { _ in
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
     func testRemoveImageExistingUsingAnotherFormat() {
@@ -141,20 +171,34 @@ class CacheTests: XCTestCase {
         let format = Format(self.name)
         sut.addFormat(format)
         sut.setImage(UIImage(), key)
+        let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeImage(key, formatName: format.name)
         
-        XCTAssertNotNil(sut.fetchImage(key))
+        sut.fetchImageForKey(key, successBlock : { _ in
+            expectation.fulfill()
+        }, failureBlock : { _ in
+            XCTFail("Expected success")
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
     func testRemoveImageExistingUsingInexistingFormat() {
         let sut = self.sut!
         let key = "key"
         sut.setImage(UIImage(), key)
+        let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeImage(key, formatName: self.name)
         
-        XCTAssertNotNil(sut.fetchImage(key))
+        sut.fetchImageForKey(key, successBlock : { _ in
+            expectation.fulfill()
+        }, failureBlock : { _ in
+            XCTFail("Expected success")
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
     func testRemoveImageInexisting() {
@@ -164,11 +208,17 @@ class CacheTests: XCTestCase {
     func testOnMemoryWarning() {
         let key = "key"
         sut.setImage(UIImage(), key)
-        XCTAssertNotNil(sut.fetchImage(key))
-        
+        let expectation = self.expectationWithDescription("fetch image")
+
         sut.onMemoryWarning()
         
-        XCTAssertNil(sut.fetchImage(key))
+        sut.fetchImageForKey(key, successBlock : { _ in
+            XCTFail("Expected failure")
+            expectation.fulfill()
+        }, failureBlock : { _ in
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
     }
     
     func testUIApplicationDidReceiveMemoryWarningNotification() {

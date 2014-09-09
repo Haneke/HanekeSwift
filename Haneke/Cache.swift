@@ -50,11 +50,16 @@ public class Cache {
         }
     }
     
-    public func fetchImage (key : String, formatName : String = OriginalFormatName) -> UIImage? {
+    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName, successBlock : (UIImage) -> (), failureBlock : ((NSError?) -> ())? = nil) {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
-            return memoryCache.objectForKey(key) as UIImage!
+            if let image = memoryCache.objectForKey(key) as? UIImage {
+                successBlock(image)
+            } else if let block = failureBlock {
+                block(nil)
+            }
+        } else if let block = failureBlock {
+            block(nil)
         }
-        return nil
     }
 
     public func removeImage(key : String, formatName : String = OriginalFormatName) {
