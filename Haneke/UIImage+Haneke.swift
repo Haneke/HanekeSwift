@@ -28,7 +28,7 @@ extension UIImage {
         }
     }
     
-    func hnk_data() -> NSData? {
+    func hnk_data() -> NSData! {
         let hasAlpha = self.hnk_hasAlpha()
         let data = hasAlpha ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, 1)
         return data
