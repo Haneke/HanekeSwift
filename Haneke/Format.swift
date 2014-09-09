@@ -40,9 +40,9 @@ public struct Format {
         case .Fill:
             resizeToSize = self.size
         case .AspectFit:
-            resizeToSize = originalImage.hnk_aspectFitSize(self.size)
+            resizeToSize = originalImage.size.hnk_aspectFitSize(self.size)
         case .AspectFill:
-            resizeToSize = originalImage.hnk_aspectFillSize(self.size)
+            resizeToSize = originalImage.size.hnk_aspectFillSize(self.size)
         case .None:
             return originalImage
         }

@@ -10,29 +10,6 @@ import UIKit
 
 extension UIImage {
 
-    func hnk_aspectFillSize(size: CGSize) -> CGSize {
-        let scaleWidth: CGFloat = size.width / self.size.width
-        let scaleHeight: CGFloat = size.height / self.size.height
-        let scale: CGFloat = max(scaleWidth, scaleHeight)
-
-        var resultSize: CGSize = CGSizeMake(self.size.width * scale, self.size.height * scale)
-        return CGSizeMake(ceil(resultSize.width), ceil(resultSize.height))
-    }
-
-    func hnk_aspectFitSize(size: CGSize) -> CGSize {
-        let targetAspect: CGFloat = size.width / size.height
-        let sourceAspect: CGFloat = self.size.width / self.size.height
-        var resultSize = size;
-
-        if (targetAspect > sourceAspect) {
-            resultSize.width = size.height * sourceAspect
-        }
-        else {
-            resultSize.height = size.width / sourceAspect
-        }
-        return CGSizeMake(ceil(resultSize.width), ceil(resultSize.height))
-    }
-
     func hnk_imageByScalingToSize(toSize: CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(toSize, !hnk_hasAlpha(), 0.0);
         drawInRect(CGRectMake(0, 0, toSize.width, toSize.height))
