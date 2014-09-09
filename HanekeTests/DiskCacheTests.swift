@@ -286,6 +286,40 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {})
     }
     
+    func testFetchData_UpdateAccessDate() {
+        let data = NSData.dataWithLength(19)
+        let key = self.name
+        sut.setData(data, key : key)
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        dispatch_sync(sut.cacheQueue, {
+            let _ = fileManager.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path, error: nil)
+        })
+        let expectation = self.expectationWithDescription(self.name)
+        
+        // Preconditions
+        dispatch_sync(sut.cacheQueue, {
+            let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
+            let accessDate = attributes[NSFileModificationDate] as NSDate
+            XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
+        })
+        
+        sut.fetchData(key, {
+            expectation.fulfill()
+            XCTAssertEqual($0, data)
+        })
+        
+        dispatch_sync(sut.cacheQueue, {
+            self.waitForExpectationsWithTimeout(0, nil)
+            
+            let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
+            let accessDate = attributes[NSFileModificationDate] as NSDate
+            let now = NSDate()
+            let interval = accessDate.timeIntervalSinceDate(now)
+            XCTAssertEqualWithAccuracy(interval, 0, 1)
+        })
+    }
+    
     func testRemoveDataTwoKeys() {
         let keys = ["1", "2"]
         let datas = [NSData.dataWithLength(5), NSData.dataWithLength(7)]

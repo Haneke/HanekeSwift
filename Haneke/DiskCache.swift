@@ -90,6 +90,7 @@ public class DiskCache {
                 dispatch_async(dispatch_get_main_queue(), {
                     successBlock(data)
                 })
+                self.updateAccessDateAtPath(path)
             } else if let block = failureBlock {
                 dispatch_async(dispatch_get_main_queue(), {
                     block(error)
@@ -152,6 +153,15 @@ public class DiskCache {
 
                 stop = self.size <= self.capacity
             }
+        }
+    }
+    
+    private func updateAccessDateAtPath(path : String) {
+        let fileManager = NSFileManager.defaultManager()
+        let now = NSDate()
+        var error : NSError?
+        if !fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error) {
+            NSLog("Failed to update access date with error \(error)")
         }
     }
     
