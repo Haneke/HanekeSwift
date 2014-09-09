@@ -273,14 +273,14 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataInexisting() {
-        let key = self.name
+        let key = "key"
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
         
         // Preconditions
         XCTAssertFalse(fileManager.fileExistsAtPath(path))
         
-        sut.removeData(self.name)
+        sut.removeData(key)
     }
     
     func testPathForKey() {

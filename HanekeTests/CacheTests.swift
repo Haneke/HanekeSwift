@@ -158,7 +158,7 @@ class CacheTests: XCTestCase {
     }
     
     func testRemoveImageInexisting() {
-        sut.removeImage(self.name)
+        sut.removeImage("key")
     }
     
     func testOnMemoryWarning() {
