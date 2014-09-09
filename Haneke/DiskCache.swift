@@ -9,14 +9,11 @@
 import Foundation
 import Haneke
 
-// TODO: Eventually move to Haneke.swift or similar.
-public let HanekeDomain = "io.haneke"
-
 public class DiskCache {
     
     public class func basePath() -> String {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let hanekePathComponent = HanekeDomain
+        let hanekePathComponent = Haneke.Domain
         let basePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
         // TODO: Do not recaculate basePath value
         return basePath
@@ -46,7 +43,7 @@ public class DiskCache {
     }()
 
     public lazy var cacheQueue : dispatch_queue_t = {
-        let queueName = HanekeDomain + "." + self.name
+        let queueName = Haneke.Domain + "." + self.name
         let cacheQueue = dispatch_queue_create(queueName, nil)
         return cacheQueue
     }()
@@ -78,6 +75,23 @@ public class DiskCache {
                 self.controlCapacity()
             } else {
                 NSLog("Failed to get data for key \(key)")
+            }
+        })
+    }
+    
+    public func fetchData(key : String, successBlock : (NSData) -> (), failureBlock : ((NSError?) -> ())? = nil) {
+        dispatch_async(cacheQueue, {
+            let path = self.pathForKey(key)
+            var error: NSError? = nil
+            if let data = NSData.dataWithContentsOfFile(path, options: NSDataReadingOptions.allZeros, error: &error) {
+                dispatch_async(dispatch_get_main_queue(), {
+                    successBlock(data)
+                })
+                self.updateAccessDateAtPath(path)
+            } else if let block = failureBlock {
+                dispatch_async(dispatch_get_main_queue(), {
+                    block(error)
+                })
             }
         })
     }
@@ -136,6 +150,15 @@ public class DiskCache {
 
                 stop = self.size <= self.capacity
             }
+        }
+    }
+    
+    private func updateAccessDateAtPath(path : String) {
+        let fileManager = NSFileManager.defaultManager()
+        let now = NSDate()
+        var error : NSError?
+        if !fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error) {
+            NSLog("Failed to update access date with error \(error)")
         }
     }
     
