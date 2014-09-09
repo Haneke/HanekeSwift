@@ -110,8 +110,10 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key, formatName: format.name)
         
         self.clearMemoryCache()
-        sut.fetchImageForKey(key, formatName: format.name, successBlock: {
-            XCTAssertTrue($0.isEqualPixelByPixel(image))
+        sut.fetchImageForKey(key, formatName: format.name, successBlock: {_ in
+            expectation.fulfill()
+        }, failureBlock : {_ in
+            XCTFail("expected success")
             expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
@@ -150,10 +152,29 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageForKey(key, formatName: OriginalFormatName, successBlock : { data in
+        sut.fetchImageForKey(key, successBlock : { data in
             XCTFail("Expected failure")
             expectation.fulfill()
-        }, failureBlock : { _ in
+        }, failureBlock : { error in
+            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.code, Cache.ErrorCode.ObjectNotFound.toRaw())
+            XCTAssertNotNil(error!.localizedDescription)
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testFetchImageForKey_InexistingFormat () {
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchImageForKey(key, formatName: self.name, successBlock : { data in
+            XCTFail("Expected failure")
+            expectation.fulfill()
+        }, failureBlock : { error in
+            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.code, Cache.ErrorCode.ObjectNotFound.toRaw())
+            XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)

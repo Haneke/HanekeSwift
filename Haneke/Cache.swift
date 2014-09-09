@@ -14,6 +14,10 @@ public let OriginalFormatName = "original"
 
 public class Cache {
     
+    public enum ErrorCode : Int {
+        case ObjectNotFound = -100
+    }
+    
     let name : String
     
     let memoryWarningObserver : NSObjectProtocol!
@@ -59,8 +63,10 @@ public class Cache {
                 self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, successBlock: successBlock, failureBlock: failureBlock)
             }
         } else if let block = failureBlock {
-            // TODO: HNKObjectNotFoundError
-            block(nil)
+            let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
+            let description = String(format:localizedFormat, key)
+            let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+            block(error)
         }
     }
 
@@ -101,15 +107,17 @@ public class Cache {
         }, failureBlock: { error in
             if let block = failureBlock {
                 if (error?.code == NSFileReadNoSuchFileError) {
-                    // TODO: HNKObjectNotFoundError
-                    block(nil)
+                    let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
+                    let description = String(format:localizedFormat, key)
+                    let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+                    block(error)
                 } else {
-                    if let block = failureBlock {
-                        block(error)
-                    }
+                    block(error)
                 }
             }
         })
     }
+    
+    // MARK: Error
     
 }
