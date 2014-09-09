@@ -11,7 +11,7 @@ import UIKit
 import XCTest
 import Haneke
 
-class CacheTests: XCTestCase {
+class CacheTests: DiskTestCase {
     
     var sut : Cache!
     
@@ -103,29 +103,45 @@ class CacheTests: XCTestCase {
         // XCAssertThrows(sut.setImage(image, key, formatName : self.name))
     }
     
-    func testFetchImageForKey_Inexisting () {
-        let key = self.name
-        let expectation = self.expectationWithDescription(self.name)
-        
-        sut.fetchImageForKey(key, formatName: OriginalFormatName, successBlock : { data in
-            expectation.fulfill()
-            XCTFail("Expected failure")
-        }, failureBlock : { _ in
-            expectation.fulfill()
-        })
-        self.waitForExpectationsWithTimeout(1, nil)
-    }
-    
-    func testFetchImage_Existing () {
-        let image = UIImage.imageWithColor(UIColor.cyanColor(), CGSizeMake(30, 30), true)
+    func testFetchImage_MemoryHit () {
+        let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
         sut.setImage(image, key)
         
-        sut.fetchImageForKey(key, formatName: OriginalFormatName, {
-            expectation.fulfill()
+        sut.fetchImageForKey(key, successBlock: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testFetchImage_MemoryMiss_DiskHit () {
+        let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        sut.setImage(image, key)
+
+        self.clearMemoryCache()
+        
+        sut.fetchImageForKey(key, successBlock: {
+            XCTAssertTrue($0.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testFetchImageForKey_MemoryMiss_DiskMiss () {
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchImageForKey(key, formatName: OriginalFormatName, successBlock : { data in
+            XCTFail("Expected failure")
+            expectation.fulfill()
+        }, failureBlock : { _ in
+            expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
     }
@@ -240,5 +256,11 @@ class CacheTests: XCTestCase {
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)
         
         waitForExpectationsWithTimeout(0, nil)
+    }
+    
+    // MARK: Helpers
+    
+    func clearMemoryCache() {
+        NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
 }

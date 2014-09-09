@@ -54,10 +54,12 @@ public class Cache {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             if let image = memoryCache.objectForKey(key) as? UIImage {
                 successBlock(image)
-            } else if let block = failureBlock {
-                block(nil)
+                // TODO: Update disk cache access date
+            } else {
+                self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, successBlock: successBlock, failureBlock: failureBlock)
             }
         } else if let block = failureBlock {
+            // TODO: HNKObjectNotFoundError
             block(nil)
         }
     }
@@ -86,6 +88,28 @@ public class Cache {
         let memoryCache = NSCache()
         let diskCache = DiskCache(name, capacity : format.diskCapacity)
         self.formats[format.name] = (format, memoryCache, diskCache)
+    }
+    
+    // MARK: Disk cache
+    
+    func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, successBlock : (UIImage) -> (), failureBlock : ((NSError?) -> ())?) {
+        diskCache.fetchData(key, successBlock: { data in
+            let image = UIImage(data : data)
+            // TODO: Image decompression
+            successBlock(image)
+            memoryCache.setObject(image, forKey: key)
+        }, failureBlock: { error in
+            if let block = failureBlock {
+                if (error?.code == NSFileReadNoSuchFileError) {
+                    // TODO: HNKObjectNotFoundError
+                    block(nil)
+                } else {
+                    if let block = failureBlock {
+                        block(error)
+                    }
+                }
+            }
+        })
     }
     
 }
