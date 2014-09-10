@@ -78,13 +78,12 @@ public class Cache {
                 doFailure?(error)
                 return
             }
-            entity.fetchImageWithSuccess(success: { image in
-                // TODO: Apply format in background
-               doSuccess(image)
-                self.setImage(image, key, formatName: formatName)
-            }, failure: { error in
-                let _ = doFailure?(error)
-            })
+            
+            if let (format, _, _) = self.formats[formatName] {
+                self.fetchImageFromEntity(entity, format: format, success: doSuccess, failure: doFailure)
+            }
+            
+            // Unreachable code. Formats can't be removed from Cache.
         })
     }
 
@@ -114,9 +113,9 @@ public class Cache {
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
     
-    // MARK: Disk cache
+    // MARK: Private
     
-    func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
         diskCache.fetchData(key, success: { data in
             let image = UIImage(data : data)
             // TODO: Image decompression
@@ -133,6 +132,23 @@ public class Cache {
                     block(error)
                 }
             }
+        })
+    }
+    
+    private func fetchImageFromEntity(entity : Entity, format : Format, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+        entity.fetchImageWithSuccess(success: { image in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                var formattedImage = format.apply(image)
+                if (formattedImage == image) {
+                    // TODO: formattedImage = image.hnk_decompressedImage()
+                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    doSuccess(formattedImage)
+                    self.setImage(formattedImage, entity.key, formatName: format.name)
+                })
+            })
+        }, failure: { error in
+            let _ = doFailure?(error)
         })
     }
     
