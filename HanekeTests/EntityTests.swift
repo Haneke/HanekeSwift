@@ -27,7 +27,7 @@ class EntityTests: XCTestCase {
         let entity = SimpleEntity(key: key, image: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        entitys.fetchImageWithSuccess(success: {
+        entity.fetchImageWithSuccess(success: {
             XCTAssertEqual($0, image)
             expectation.fulfill()
         }, failure: { _ in
