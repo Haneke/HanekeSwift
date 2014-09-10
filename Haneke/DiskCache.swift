@@ -87,7 +87,7 @@ public class DiskCache {
                 dispatch_async(dispatch_get_main_queue(), {
                     successBlock(data)
                 })
-                self.updateAccessDateAtPath(path)
+                self.updateDiskAccessDateAtPath(path)
             } else if let block = failureBlock {
                 dispatch_async(dispatch_get_main_queue(), {
                     block(error)
@@ -109,6 +109,16 @@ public class DiskCache {
                 }
             } else {
                 NSLog("Failed to remove key \(key) with error \(error!)")
+            }
+        })
+    }
+    
+    public func updateAccessDate(image : UIImage, key : String) {
+        dispatch_async(cacheQueue, {
+            let path = self.pathForKey(key)
+            let fileManager = NSFileManager.defaultManager()
+            if (!self.updateDiskAccessDateAtPath(path) && !fileManager.fileExistsAtPath(path)){
+                self.setData(image.hnk_data(), key: key)
             }
         })
     }
@@ -153,13 +163,15 @@ public class DiskCache {
         }
     }
     
-    private func updateAccessDateAtPath(path : String) {
+    private func updateDiskAccessDateAtPath(path : String) -> Bool {
         let fileManager = NSFileManager.defaultManager()
         let now = NSDate()
         var error : NSError?
-        if !fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error) {
-            NSLog("Failed to update access date with error \(error)")
+        let changesSucceed = fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error)
+        if !changesSucceed {
+            NSLog("Failed to update access date with error %@", error!)
         }
+        return changesSucceed;
     }
     
     private func removeFileAtPath(path:String) {

@@ -58,7 +58,7 @@ public class Cache {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             if let image = memoryCache.objectForKey(key) as? UIImage {
                 successBlock(image)
-                // TODO: Update disk cache access date
+                diskCache.updateAccessDate(image, key: key)
             } else {
                 self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, successBlock: successBlock, failureBlock: failureBlock)
             }
