@@ -118,10 +118,14 @@ public class Cache {
     
     func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
         diskCache.fetchData(key, success: { data in
-            let image = UIImage(data : data)
-            // TODO: Image decompression
-           doSuccess(image)
-            memoryCache.setObject(image, forKey: key)
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                let image = UIImage(data : data)
+                let decompressedImage = image.hnk_decompressedImage()
+                dispatch_async(dispatch_get_main_queue(), {
+                    doSuccess(image)
+                    memoryCache.setObject(decompressedImage, forKey: key)
+                })
+            })
         }, failure: { error in
             if let block = doFailure {
                 if (error?.code == NSFileReadNoSuchFileError) {
