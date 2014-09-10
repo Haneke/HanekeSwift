@@ -16,6 +16,7 @@ public class Cache {
     
     public enum ErrorCode : Int {
         case ObjectNotFound = -100
+        case FormatNotFound = -101
     }
     
     let name : String
@@ -63,11 +64,28 @@ public class Cache {
                 self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, successBlock: successBlock, failureBlock: failureBlock)
             }
         } else if let block = failureBlock {
-            let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
-            let description = String(format:localizedFormat, key)
-            let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+            let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
+            let description = String(format:localizedFormat, formatName)
+            let error = Haneke.errorWithCode(ErrorCode.FormatNotFound.toRaw(), description: description)
             block(error)
         }
+    }
+    
+    public func fetchImageForEntity(entity : Entity, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) {
+        let key = entity.key
+        self.fetchImageForKey(key, formatName: formatName, successBlock: doSuccess, failureBlock: { error in
+            if error?.code == ErrorCode.FormatNotFound.toRaw() {
+                doFailure?(error)
+                return
+            }
+            entity.fetchImageWithSuccess(success: { image in
+                // TODO: Apply format in background
+                doSuccess(image)
+                self.setImage(image, key, formatName: formatName)
+            }, failure: { error in
+                let _ = doFailure?(error)
+            })
+        })
     }
 
     public func removeImage(key : String, formatName : String = OriginalFormatName) {
