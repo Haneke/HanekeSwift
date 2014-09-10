@@ -95,10 +95,10 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key, formatName: format.name)
 
         self.clearMemoryCache()
-        sut.fetchImageForKey(key, formatName: format.name, successBlock: {_ in
+        sut.fetchImageForKey(key, formatName: format.name,  success: {_ in
             XCTFail("expected failure")
             expectation.fulfill()
-            }, failureBlock: {_ in
+            }, failure: {_ in
                 expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
@@ -115,9 +115,9 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key, formatName: format.name)
         
         self.clearMemoryCache()
-        sut.fetchImageForKey(key, formatName: format.name, successBlock: {_ in
+        sut.fetchImageForKey(key, formatName: format.name,  success: {_ in
             expectation.fulfill()
-        }, failureBlock : {_ in
+        }, failure : {_ in
             XCTFail("expected success")
             expectation.fulfill()
         })
@@ -131,7 +131,7 @@ class CacheTests: DiskTestCase {
         
         sut.setImage(image, key)
         
-        sut.fetchImageForKey(key, successBlock: {
+        sut.fetchImageForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -145,7 +145,7 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key)
         self.clearMemoryCache()
         
-        sut.fetchImageForKey(key, successBlock: {
+        sut.fetchImageForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -157,10 +157,10 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageForKey(key, successBlock : { data in
+        sut.fetchImageForKey(key,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
-        }, failureBlock : { error in
+        }, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Cache.ErrorCode.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -173,10 +173,10 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageForKey(key, formatName: self.name, successBlock : { data in
+        sut.fetchImageForKey(key, formatName: self.name,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
-        }, failureBlock : { error in
+        }, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Cache.ErrorCode.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -257,10 +257,10 @@ class CacheTests: DiskTestCase {
 
         sut.removeImage(key)
         
-        sut.fetchImageForKey(key, successBlock : { _ in
+        sut.fetchImageForKey(key,  success : { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }, failureBlock : { _ in
+        }, failure : { _ in
             expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
@@ -276,10 +276,10 @@ class CacheTests: DiskTestCase {
         
         sut.removeImage(key, formatName: format.name)
         
-        sut.fetchImageForKey(key, formatName: format.name, successBlock : { data in
+        sut.fetchImageForKey(key, formatName: format.name,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
-        }, failureBlock : { _ in
+        }, failure : { _ in
             expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
@@ -295,9 +295,9 @@ class CacheTests: DiskTestCase {
         
         sut.removeImage(key, formatName: format.name)
         
-        sut.fetchImageForKey(key, successBlock : { _ in
+        sut.fetchImageForKey(key,  success : { _ in
             expectation.fulfill()
-        }, failureBlock : { _ in
+        }, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         })
@@ -312,9 +312,9 @@ class CacheTests: DiskTestCase {
         
         sut.removeImage(key, formatName: self.name)
         
-        sut.fetchImageForKey(key, successBlock : { _ in
+        sut.fetchImageForKey(key,  success : { _ in
             expectation.fulfill()
-        }, failureBlock : { _ in
+        }, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         })
@@ -332,10 +332,10 @@ class CacheTests: DiskTestCase {
 
         sut.onMemoryWarning()
         
-        sut.fetchImageForKey(key, successBlock : { _ in
+        sut.fetchImageForKey(key,  success : { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }, failureBlock : { _ in
+        }, failure : { _ in
             expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)

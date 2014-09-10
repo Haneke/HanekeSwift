@@ -27,7 +27,7 @@ class SimpleEntity : Entity {
     }
     
     func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
-        doSuccess(image)
+       doSuccess(image)
     }
     
 }
