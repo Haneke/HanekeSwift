@@ -70,7 +70,6 @@ class FormatTests: XCTestCase {
         XCTAssertEqual(resizedImage.size.height, 5)
     }
     
-    
     func testResizeImageScaleAspectFillWithoutUpscaling() {
         
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)

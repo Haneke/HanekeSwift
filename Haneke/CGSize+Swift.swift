@@ -22,7 +22,7 @@ extension CGSize {
     func hnk_aspectFitSize(size: CGSize) -> CGSize {
         let targetAspect = size.width / size.height
         let sourceAspect = self.width / self.height
-        var resultSize = size;
+        var resultSize = size
 
         if (targetAspect > sourceAspect) {
             resultSize.width = size.height * sourceAspect
