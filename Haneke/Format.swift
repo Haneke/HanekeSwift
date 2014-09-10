@@ -16,13 +16,13 @@ public struct Format {
     
     public let name : String
 
-    public var allowUpscaling : Bool
+    public let allowUpscaling : Bool
     
-    public var compressionQuality : Float = 1.0
+    public let compressionQuality : Float = 1.0
 
-    public var size : CGSize
+    public let size : CGSize
     
-    public var scaleMode: ScaleMode
+    public let scaleMode: ScaleMode
     
     public let diskCapacity : UInt64
     
