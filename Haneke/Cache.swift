@@ -136,6 +136,4 @@ public class Cache {
         })
     }
     
-    // MARK: Error
-    
 }
