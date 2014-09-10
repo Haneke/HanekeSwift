@@ -37,5 +37,24 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image
     }
+    
+    class func imageGradientFromColor(fromColor : UIColor = UIColor.redColor(), toColor : UIColor = UIColor.greenColor(), size : CGSize = CGSizeMake(10, 20)) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false /* opaque */, 0 /* scale */)
+        let context = UIGraphicsGetCurrentContext()
+        let colorspace = CGColorSpaceCreateDeviceRGB()
+        let gradientNumberOfLocations : size_t = 2
+        let gradientLocations : [CGFloat] = [ 0.0, 1.0 ]
+        var r1 : CGFloat = 0, g1 : CGFloat = 0, b1 : CGFloat = 0, a1 : CGFloat = 0
+        fromColor.getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
+        var r2 : CGFloat = 0, g2 : CGFloat = 0 , b2 : CGFloat = 0, a2 : CGFloat = 0
+        toColor.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
+        let gradientComponents = [r1, g1, b1, a1, r2, g2, b2, a2];
+        let gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations);
+        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, size.height), 0);
+        let image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return image;
+    }
+    
 }
 
