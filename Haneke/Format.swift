@@ -50,14 +50,14 @@ public struct Format {
         // If does not allow to scale the image
         if (!self.allowUpscaling) {
             if (resizeToSize.width > originalImage.size.width || resizeToSize.height > originalImage.size.height) {
-                return originalImage;
+                return originalImage
             }
         }
         
         // Avoid unnecessary computations
         if (resizeToSize.width == originalImage.size.width && resizeToSize.height == originalImage.size.height)
         {
-            return originalImage;
+            return originalImage
         }
         
         let resizedImage = originalImage.hnk_imageByScalingToSize(resizeToSize)
