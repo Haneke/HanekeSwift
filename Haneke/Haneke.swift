@@ -17,4 +17,12 @@ public struct Haneke {
         return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
     }
     
+    public static var sharedCache : Cache {
+        struct Static {
+            static let name = "shared"
+            static let cache = Cache(name)
+        }
+        return Static.cache
+    }
+    
 }
