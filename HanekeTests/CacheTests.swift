@@ -221,14 +221,54 @@ class CacheTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let entity = SimpleEntity(key: key, image: image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the caches
+        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
         sut.fetchImageForEntity(entity, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         }, failure : { _ in
-            XCTFail("expected failure")
+            XCTFail("expected success")
             expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testFetchImageForEntity_ApplyFormat_ScaleModeFill () {
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
+        let entity = SimpleEntity(key: key, image: image)
+        let format = Format(self.name, size : CGSizeMake(10, 20), scaleMode : .Fill)
+        sut.addFormat(format)
+        let formattedImage = format.apply(image)
+        let expectation = self.expectationWithDescription(self.name)
+        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
+        
+        sut.fetchImageForEntity(entity, formatName : format.name, success : {
+            XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
+            expectation.fulfill()
+        }, failure : { _ in
+            XCTFail("expected sucesss")
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testFetchImageForEntity_ApplyFormat_ScaleModeFit () {
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
+        let entity = SimpleEntity(key: key, image: image)
+        let format = Format(self.name, size : CGSizeMake(10, 20), scaleMode : .AspectFit)
+        sut.addFormat(format)
+        let formattedImage = format.apply(image)
+        let expectation = self.expectationWithDescription(self.name)
+        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
+        
+        sut.fetchImageForEntity(entity, formatName : format.name, success : {
+            XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
+            expectation.fulfill()
+            }, failure : { _ in
+                XCTFail("expected sucesss")
+                expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
     }

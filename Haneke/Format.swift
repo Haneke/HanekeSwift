@@ -16,22 +16,30 @@ public struct Format {
     
     public let name : String
 
-    public var allowUpscaling : Bool
+    public let allowUpscaling : Bool
     
-    public var compressionQuality : Float = 1.0
+    public let compressionQuality : Float = 1.0
 
-    public var size : CGSize
+    public let size : CGSize
     
-    public var scaleMode: ScaleMode
+    public let scaleMode: ScaleMode
     
     public let diskCapacity : UInt64
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .Fill, allowUpscaling: Bool = true) {
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true) {
         self.name = name
         self.diskCapacity = diskCapacity
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
+    }
+    
+    // With Format<T> this could be func apply(object : T) -> T
+    public func apply(image : UIImage) -> UIImage {
+        // TODO: Pre-apply closure
+        let resizedImage = self.resizedImageFromImage(image)
+        // TODO: Post-apply closure
+        return resizedImage
     }
     
     public func resizedImageFromImage(originalImage: UIImage) -> UIImage {
@@ -46,6 +54,7 @@ public struct Format {
         case .None:
             return originalImage
         }
+        assert(self.size.width > 0 && self.size.height > 0, "Expected non-zero size. Use ScaleMode.None to avoid resizing.")
 
         // If does not allow to scale up the image
         if (!self.allowUpscaling) {
@@ -55,8 +64,7 @@ public struct Format {
         }
         
         // Avoid unnecessary computations
-        if (resizeToSize.width == originalImage.size.width && resizeToSize.height == originalImage.size.height)
-        {
+        if (resizeToSize.width == originalImage.size.width && resizeToSize.height == originalImage.size.height) {
             return originalImage
         }
         
