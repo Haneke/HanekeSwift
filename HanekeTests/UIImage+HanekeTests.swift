@@ -132,22 +132,6 @@ class UIImage_HanekeTests: XCTestCase {
         self._testDecompressedImageWithOrientation(.RightMirrored)
     }
     
-    // TODO: Move to CGSize+SwiftTests
-    
-    func testAspectFillSize() {
-        let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 1), false)
-        let sut: CGSize = image.size.hnk_aspectFillSize(CGSizeMake(10, 10))
-        
-        XCTAssertEqual(sut.height, 10)
-    }
-    
-    func testAspectFitSize() {
-        let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 1), false)
-        let sut: CGSize = image.size.hnk_aspectFitSize(CGSizeMake(20, 20))
-        
-        XCTAssertEqual(sut.height, 2)
-    }
-    
     // MARK: Helpers
     
     func _testDecompressedImageUsingColor(color : UIColor = UIColor.greenColor(), colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB(), alphaInfo :CGImageAlphaInfo, bitsPerComponent : size_t = 8) {
