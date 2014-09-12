@@ -49,7 +49,7 @@ public class Cache {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.setObject(image, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(image.hnk_data(format.compressionQuality), key: key)
+            diskCache.setData(image.hnk_data(compressionQuality: format.compressionQuality), key: key)
         } else {
             assertionFailure("Can't set image before adding format")
         }
