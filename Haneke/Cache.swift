@@ -46,10 +46,10 @@ public class Cache {
     }
     
     public func setImage (image: UIImage, _ key: String, formatName : String = OriginalFormatName) {
-        if let (_, memoryCache, diskCache) = self.formats[formatName] {
+        if let (format, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.setObject(image, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(image.hnk_data(), key: key)
+            diskCache.setData(image.hnk_data(format.compressionQuality), key: key)
         } else {
             assertionFailure("Can't set image before adding format")
         }

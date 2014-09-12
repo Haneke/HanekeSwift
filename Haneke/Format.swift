@@ -18,7 +18,7 @@ public struct Format {
 
     public let allowUpscaling : Bool
     
-    public let compressionQuality : Float = 1.0
+    public let compressionQuality : CGFloat = 1.0
 
     public let size : CGSize
     
@@ -26,12 +26,13 @@ public struct Format {
     
     public let diskCapacity : UInt64
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true) {
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : CGFloat = 1.0) {
         self.name = name
         self.diskCapacity = diskCapacity
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
+        self.compressionQuality = compressionQuality
     }
     
     // With Format<T> this could be func apply(object : T) -> T
