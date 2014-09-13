@@ -35,6 +35,7 @@
 		A0EE773219BFDFA500B315A0 /* EntityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0EE773119BFDFA500B315A0 /* EntityTests.swift */; };
 		A0EE773319BFDFF500B315A0 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E8119BF94AA0002511F /* Entity.swift */; };
 		A0FDBF9219AD444500326016 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0FDBF9119AD444500326016 /* Format.swift */; };
+		D18894C919C340C5008E9E4C /* CGSize+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18894C819C340C5008E9E4C /* CGSize+HanekeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+HanekeTests.swift"; sourceTree = "<group>"; };
 		A0EE773119BFDFA500B315A0 /* EntityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityTests.swift; sourceTree = "<group>"; };
 		A0FDBF9119AD444500326016 /* Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
+		D18894C819C340C5008E9E4C /* CGSize+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+HanekeTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				A095C974198045D200CD0F4C /* CacheTests.swift */,
+				D18894C819C340C5008E9E4C /* CGSize+HanekeTests.swift */,
 				A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */,
 				A0EE773119BFDFA500B315A0 /* EntityTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
@@ -305,6 +308,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D18894C919C340C5008E9E4C /* CGSize+HanekeTests.swift in Sources */,
 				A06EE28319B1902C00572D17 /* String+Haneke.swift in Sources */,
 				A0C6BA3D19ACA216007111E9 /* NSFileManager+Haneke.swift in Sources */,
 				A0C6BA3C19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift in Sources */,

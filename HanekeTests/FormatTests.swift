@@ -23,7 +23,7 @@ class FormatTests: XCTestCase {
     }
     
     func testResizeImageScaleNone() {
-
+        
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
         let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5), scaleMode: .None)
         let resizedImage = sut.resizedImageFromImage(originalImage)
