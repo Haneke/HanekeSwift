@@ -132,16 +132,28 @@ class UIImage_HanekeTests: XCTestCase {
         self._testDecompressedImageWithOrientation(.RightMirrored)
     }
     
-    func testSetDataCompressionQuality_LessThan0() {
+    func testDataCompressionQuality() {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSizeMake(10, 10))
+        let data = image.hnk_data()
+        let notExpectedData = image.hnk_data(compressionQuality: 0.5)
         
-        XCTAssertEqual(image.hnk_data(compressionQuality: -1.0), image.hnk_data(compressionQuality: 0.0), "The min compression quality is 0.0")
+        XCTAssertNotEqual(data, notExpectedData)
     }
     
-    func testSetDataCompressionQuality_MoreThan1() {
+    func testDataCompressionQuality_LessThan0() {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSizeMake(10, 10))
+        let data = image.hnk_data(compressionQuality: -1.0)
+        let expectedData = image.hnk_data(compressionQuality: 0.0)
         
-        XCTAssertEqual(image.hnk_data(compressionQuality: 10.0), image.hnk_data(compressionQuality: 1.0), "The min compression quality is 1.0")
+        XCTAssertEqual(data, expectedData, "The min compression quality is 0.0")
+    }
+    
+    func testDataCompressionQuality_MoreThan1() {
+        let image = UIImage.imageWithColor(UIColor.redColor(), CGSizeMake(10, 10))
+        let data = image.hnk_data(compressionQuality: 10.0)
+        let expectedData = image.hnk_data(compressionQuality: 1.0)
+        
+        XCTAssertEqual(data, expectedData, "The min compression quality is 1.0")
     }
     
     // MARK: Helpers
