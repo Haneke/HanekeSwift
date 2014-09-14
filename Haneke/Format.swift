@@ -12,6 +12,8 @@ public enum ScaleMode {
     case Fill, AspectFit, AspectFill, None
 }
 
+public typealias ResizeClosure = (UIImage) -> (UIImage)
+
 public struct Format {
     
     public let name : String
@@ -26,21 +28,35 @@ public struct Format {
     
     public let diskCapacity : UInt64
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0) {
+    public let preResizeClosure : ResizeClosure?
+
+    public let postResizeClosure : ResizeClosure?
+    
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0, preResizeClosure : ResizeClosure? = nil, postResizeClosure : ResizeClosure? = nil) {
+        
         self.name = name
         self.diskCapacity = diskCapacity
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
         self.compressionQuality = compressionQuality
+        
+        self.preResizeClosure = preResizeClosure
+        self.postResizeClosure = postResizeClosure
     }
     
     // With Format<T> this could be func apply(object : T) -> T
-    public func apply(image : UIImage) -> UIImage {
-        // TODO: Pre-apply closure
-        let resizedImage = self.resizedImageFromImage(image)
-        // TODO: Post-apply closure
-        return resizedImage
+    public func apply(OriginalImage : UIImage) -> UIImage {
+        var image = OriginalImage
+        if let preResizeClosure = self.preResizeClosure {
+            image = preResizeClosure(image)
+        }
+        image = self.resizedImageFromImage(image)
+        if let postResizeClosure = self.postResizeClosure {
+            image = postResizeClosure(image)
+        }
+        
+        return image
     }
     
     public func resizedImageFromImage(originalImage: UIImage) -> UIImage {
