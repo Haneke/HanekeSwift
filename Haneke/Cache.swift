@@ -16,6 +16,7 @@ public class Cache {
     
     public enum ErrorCode : Int {
         case ObjectNotFound = -100
+        case FormatNotFound = -101
     }
     
     let name : String
@@ -45,29 +46,45 @@ public class Cache {
     }
     
     public func setImage (image: UIImage, _ key: String, formatName : String = OriginalFormatName) {
-        if let (_, memoryCache, diskCache) = self.formats[formatName] {
+        if let (format, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.setObject(image, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(image.hnk_data(), key: key)
+            diskCache.setData(image.hnk_data(compressionQuality: format.compressionQuality), key: key)
         } else {
             assertionFailure("Can't set image before adding format")
         }
     }
     
-    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName, successBlock : (UIImage) -> (), failureBlock : ((NSError?) -> ())? = nil) {
+    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             if let image = memoryCache.objectForKey(key) as? UIImage {
-                successBlock(image)
+                doSuccess(image)
                 diskCache.updateAccessDate(image, key: key)
             } else {
-                self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, successBlock: successBlock, failureBlock: failureBlock)
+                self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache,  success: doSuccess, failure: doFailure)
             }
-        } else if let block = failureBlock {
-            let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
-            let description = String(format:localizedFormat, key)
-            let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+        } else if let block =  doFailure {
+            let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
+            let description = String(format:localizedFormat, formatName)
+            let error = Haneke.errorWithCode(ErrorCode.FormatNotFound.toRaw(), description: description)
             block(error)
         }
+    }
+    
+    public func fetchImageForEntity(entity : Entity, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) {
+        let key = entity.key
+        self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
+            if error?.code == ErrorCode.FormatNotFound.toRaw() {
+                doFailure?(error)
+                return
+            }
+            
+            if let (format, _, _) = self.formats[formatName] {
+                self.fetchImageFromEntity(entity, format: format, success: doSuccess, failure: doFailure)
+            }
+            
+            // Unreachable code. Formats can't be removed from Cache.
+        })
     }
 
     public func removeImage(key : String, formatName : String = OriginalFormatName) {
@@ -96,16 +113,20 @@ public class Cache {
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
     
-    // MARK: Disk cache
+    // MARK: Private
     
-    func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, successBlock : (UIImage) -> (), failureBlock : ((NSError?) -> ())?) {
-        diskCache.fetchData(key, successBlock: { data in
-            let image = UIImage(data : data)
-            // TODO: Image decompression
-            successBlock(image)
-            memoryCache.setObject(image, forKey: key)
-        }, failureBlock: { error in
-            if let block = failureBlock {
+    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+        diskCache.fetchData(key, success: { data in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                let image = UIImage(data : data)
+                let decompressedImage = image.hnk_decompressedImage()
+                dispatch_async(dispatch_get_main_queue(), {
+                    doSuccess(image)
+                    memoryCache.setObject(decompressedImage, forKey: key)
+                })
+            })
+        }, failure: { error in
+            if let block = doFailure {
                 if (error?.code == NSFileReadNoSuchFileError) {
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
@@ -118,6 +139,21 @@ public class Cache {
         })
     }
     
-    // MARK: Error
+    private func fetchImageFromEntity(entity : Entity, format : Format, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+        entity.fetchImageWithSuccess(success: { image in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                var formattedImage = format.apply(image)
+                if (formattedImage == image) {
+                    // TODO: formattedImage = image.hnk_decompressedImage()
+                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    doSuccess(formattedImage)
+                    self.setImage(formattedImage, entity.key, formatName: format.name)
+                })
+            })
+        }, failure: { error in
+            let _ = doFailure?(error)
+        })
+    }
     
 }

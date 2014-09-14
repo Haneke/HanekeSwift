@@ -262,10 +262,10 @@ class DiskCacheTests: XCTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchData(key, successBlock : { data in
+        sut.fetchData(key,  success : { data in
             expectation.fulfill()
             XCTFail("Expected failure")
-        }, failureBlock : { errorOpt in
+        }, failure : { errorOpt in
             expectation.fulfill()
             let error = errorOpt!
             XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
@@ -352,14 +352,14 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataInexisting() {
-        let key = "key"
+        let key = self.name
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
         
         // Preconditions
         XCTAssertFalse(fileManager.fileExistsAtPath(path))
         
-        sut.removeData(key)
+        sut.removeData(self.name)
     }
     
     func testPathForKey() {
