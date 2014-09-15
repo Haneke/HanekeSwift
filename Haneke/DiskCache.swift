@@ -59,23 +59,7 @@ public class DiskCache {
     
     public func setData(getData : @autoclosure () -> NSData?, key : String) {
         dispatch_async(cacheQueue, {
-            let path = self.pathForKey(key)
-            var error: NSError? = nil
-            if let data = getData() {
-                let fileManager = NSFileManager.defaultManager()
-                let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
-                let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
-                if (!success) {
-                    NSLog("Failed to write key \(key) with error \(error!)")
-                }
-                if let attributes = previousAttributes {
-                    self.size -= attributes.fileSize()
-                }
-                self.size += data.length
-                self.controlCapacity()
-            } else {
-                NSLog("Failed to get data for key \(key)")
-            }
+            self.setDataSync(getData, key: key)
         })
     }
     
@@ -118,7 +102,7 @@ public class DiskCache {
             let path = self.pathForKey(key)
             let fileManager = NSFileManager.defaultManager()
             if (!self.updateDiskAccessDateAtPath(path) && !fileManager.fileExistsAtPath(path)){
-                self.setData(image.hnk_data(), key: key)
+                self.setDataSync(image.hnk_data(), key: key)
             }
         })
     }
@@ -163,15 +147,35 @@ public class DiskCache {
         }
     }
     
+    public func setDataSync(getData : @autoclosure () -> NSData?, key : String) {
+        let path = self.pathForKey(key)
+        var error: NSError? = nil
+        if let data = getData() {
+            let fileManager = NSFileManager.defaultManager()
+            let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
+            let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
+            if (!success) {
+                NSLog("Failed to write key \(key) with error \(error!)")
+            }
+            if let attributes = previousAttributes {
+                self.size -= attributes.fileSize()
+            }
+            self.size += data.length
+            self.controlCapacity()
+        } else {
+            NSLog("Failed to get data for key \(key)")
+        }
+    }
+    
     private func updateDiskAccessDateAtPath(path : String) -> Bool {
         let fileManager = NSFileManager.defaultManager()
         let now = NSDate()
         var error : NSError?
-        let changesSucceed = fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error)
-        if !changesSucceed {
-            NSLog("Failed to update access date with error %@", error!)
+        let success = fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error)
+        if !success {
+            NSLog("Failed to update access date with error \(error!)")
         }
-        return changesSucceed;
+        return success;
     }
     
     private func removeFileAtPath(path:String) {
