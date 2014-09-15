@@ -14,11 +14,7 @@ extension NSHTTPURLResponse {
         let expectedContentLength = self.expectedContentLength;
         if (expectedContentLength > -1) {
             let dataLength = data.length;
-            if (Int64(dataLength) < expectedContentLength) {
-                return true
-            } else {
-                return false
-            }
+            return Int64(dataLength) >= expectedContentLength
         }
         return true
     }
