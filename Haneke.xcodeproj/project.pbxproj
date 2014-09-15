@@ -10,6 +10,7 @@
 		36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C9E04E198C03F80083574B /* UIImage+Test.swift */; };
+		8CB2F24519C7A3EE005BF7E9 /* DiskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2F24419C7A3EE005BF7E9 /* DiskEntity.swift */; };
 		A02088BA19A89C6100CE8F01 /* NSData+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02088B919A89C6100CE8F01 /* NSData+Test.swift */; };
 		A03F7E7E19BF59880002511F /* Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E7D19BF59880002511F /* Haneke.swift */; };
 		A03F7E8019BF60040002511F /* HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E7F19BF60040002511F /* HanekeTests.swift */; };
@@ -50,6 +51,7 @@
 /* Begin PBXFileReference section */
 		36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Swift.swift"; sourceTree = "<group>"; };
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
+		8CB2F24419C7A3EE005BF7E9 /* DiskEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskEntity.swift; sourceTree = "<group>"; };
 		A02088B919A89C6100CE8F01 /* NSData+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSData+Test.swift"; sourceTree = "<group>"; };
 		A03F7E7D19BF59880002511F /* Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Haneke.swift; sourceTree = "<group>"; };
 		A03F7E7F19BF60040002511F /* HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HanekeTests.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				A095C95B1980418C00CD0F4C /* Haneke.h */,
 				A03F7E7D19BF59880002511F /* Haneke.swift */,
 				A095C9591980418C00CD0F4C /* Supporting Files */,
+				8CB2F24419C7A3EE005BF7E9 /* DiskEntity.swift */,
 			);
 			path = Haneke;
 			sourceTree = "<group>";
@@ -298,6 +301,7 @@
 				A095C973198041D100CD0F4C /* Cache.swift in Sources */,
 				A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */,
 				A0D7D68119978F9A000CAF46 /* DiskCache.swift in Sources */,
+				8CB2F24519C7A3EE005BF7E9 /* DiskEntity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
