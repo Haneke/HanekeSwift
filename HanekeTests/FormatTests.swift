@@ -81,5 +81,37 @@ class FormatTests: XCTestCase {
         XCTAssertEqual(resizedImage.size.width, 1)
         XCTAssertEqual(resizedImage.size.height, 1)
     }
+    
+    func testApplyFormatWithPreResizeClosure() {
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 2, height: 2), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, preResizeClosure: {(image) in
+                return UIImage.imageWithColor(UIColor.blueColor(), CGSize(width: 2, height: 2), false)
+            })
+        
+        let data: UIImage = sut.apply(originalImage)
+        let notExpectedData: UIImage = sut.resizedImageFromImage(originalImage)
+            
+        XCTAssertEqual(data.size, notExpectedData.size)
+        XCTAssertFalse(data.isEqualPixelByPixel(notExpectedData))
+        
+        XCTAssertTrue(data.getPixelColor(CGPoint(x: 1, y: 1)).isEqual(UIColor.blueColor()))
+        XCTAssertEqual(notExpectedData.getPixelColor(CGPoint(x: 1, y: 1)), UIColor.redColor())
+    }
+    
+    func testApplyFormatWithResizesClosure() {
+        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 2, height: 2), false)
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, postResizeClosure: {(image) in
+            return UIImage.imageWithColor(UIColor.blueColor(), CGSize(width: 2, height: 2), false)
+        })
+        
+        let data: UIImage = sut.apply(originalImage)
+        let notExpectedData: UIImage = sut.resizedImageFromImage(originalImage)
+        
+        XCTAssertNotEqual(data.size, notExpectedData.size)
+        XCTAssertFalse(data.isEqualPixelByPixel(notExpectedData))
+        
+        XCTAssertTrue(data.getPixelColor(CGPoint(x: 1, y: 1)).isEqual(UIColor.blueColor()))
+        XCTAssertEqual(notExpectedData.getPixelColor(CGPoint(x: 1, y: 1)), UIColor.redColor())
+    }
 }
 
