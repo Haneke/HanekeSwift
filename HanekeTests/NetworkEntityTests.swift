@@ -90,6 +90,28 @@ class NetworkEntityTests: XCTestCase {
     func testFetchImage_Failure_InvalidStatusCode_404() {
         self.testFetchImageFailureWithInvalidStatusCode(404)
     }
+
+    func testFetchImage_Failure_InvalidData() {
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+        }, withStubResponse: { _ in
+            let data = NSData()
+            return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+        })
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.fetchImageWithSuccess(success: {_ in
+            XCTFail("expected failure")
+            expectation.fulfill()
+        }) {
+            XCTAssertEqual($0!.domain, Haneke.Domain)
+            XCTAssertEqual($0!.code, NetworkEntity.ErrorCode.InvalidData.toRaw())
+            XCTAssertNotNil($0!.localizedDescription)
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
     
     func testFetchImage_Failure_MissingData() {
         OHHTTPStubs.stubRequestsPassingTest({ _ in

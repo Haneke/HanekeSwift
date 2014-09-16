@@ -11,6 +11,7 @@ import UIKit
 public class NetworkEntity : Entity {
     
     public enum ErrorCode : Int {
+        case InvalidData = -400
         case MissingData = -401
         case InvalidStatusCode = -402
     }
@@ -79,10 +80,17 @@ public class NetworkEntity : Entity {
             let localizedFormat = NSLocalizedString("Request expected %ld bytes and received %ld bytes", comment: "Error description")
             let description = String(format:localizedFormat, response.expectedContentLength, data.length)
             self.failWithCode(.MissingData, localizedDescription: description, failure: doFailure)
-            return;
+            return
         }
         
-        let image = UIImage(data:data)
+        let image : UIImage! = UIImage(data:data)
+        if image == nil {
+            let localizedFormat = NSLocalizedString("Failed to load image from data at URL %@", comment: "Error description")
+            let description = String(format:localizedFormat, URL.absoluteString!)
+            self.failWithCode(.InvalidData, localizedDescription: description, failure: doFailure)
+            return
+        }
+
         dispatch_async(dispatch_get_main_queue(), { doSuccess(image) })
 
     }
