@@ -14,6 +14,7 @@ public protocol Entity {
     
     func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ()))
     
+    func cancelFetch()
 }
 
 class SimpleEntity : Entity {
@@ -29,5 +30,7 @@ class SimpleEntity : Entity {
     func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
        doSuccess(image)
     }
+    
+    func cancelFetch() {}
     
 }
