@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import XCTest
-import Haneke
 
 class CacheTests: DiskTestCase {
     

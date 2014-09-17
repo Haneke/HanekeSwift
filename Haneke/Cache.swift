@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Haneke
 
 public let OriginalFormatName = "original"
 
