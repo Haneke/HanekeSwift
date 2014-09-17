@@ -19,8 +19,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        let fileManager = NSFileManager.defaultManager()
-        fileManager.removeItemAtPath(sut.cachePath, error:nil)
+        sut.removeAllData()
         super.tearDown()
     }
     
