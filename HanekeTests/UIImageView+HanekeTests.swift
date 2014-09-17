@@ -18,6 +18,13 @@ class UIImageView_HanekeTests: XCTestCase {
         sut = UIImageView(frame: CGRectMake(0, 0, 10, 10))
     }
     
+    override func tearDown() {
+        let format = sut.hnk_format
+        let cache = Haneke.sharedCache
+        cache.removeImage(self.name, formatName: format.name) // TODO: Clear whole cache
+        super.tearDown()
+    }
+    
     func testScaleMode_ScaleToFill() {
         sut.contentMode = .ScaleToFill
         XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.Fill)
@@ -133,6 +140,119 @@ class UIImageView_HanekeTests: XCTestCase {
         let format = sut.hnk_format
         
         XCTAssertEqual(format.scaleMode, sut.hnk_scaleMode)
+    }
+    
+    // MARK: setImageFromEntity
+    
+
+    func testSetImageFromEntity_MemoryMiss() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = SimpleEntity(key: key, image: image)
+        
+        sut.hnk_setImageFromEntity(entity)
+
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+    }
+    
+    func testSetImageFromEntity_MemoryHit() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = SimpleEntity(key: key, image: image)
+        let cache = Haneke.sharedCache
+        let format = sut.hnk_format
+        cache.setImage(image, key, formatName: format.name)
+        
+        sut.hnk_setImageFromEntity(entity)
+        
+        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testSetImageFromEntity_ImageSet_MemoryMiss() {
+        let previousImage = UIImage.imageWithColor(UIColor.redColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = SimpleEntity(key: key, image: image)
+        sut.image = previousImage
+        
+        sut.hnk_setImageFromEntity(entity)
+        
+        XCTAssertEqual(sut.image!, previousImage)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+    }
+
+    func testSetImageFromEntity_UsingPlaceholder_MemoryMiss() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = SimpleEntity(key: key, image: image)
+        
+        sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
+        
+        XCTAssertEqual(sut.image!, placeholder)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+    }
+    
+    func testSetImageFromEntity_UsingPlaceholder_MemoryHit() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = SimpleEntity(key: key, image: image)
+        let cache = Haneke.sharedCache
+        let format = sut.hnk_format
+        cache.setImage(image, key, formatName: format.name)
+        
+        sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
+        
+        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testSetImageFromEntity_Success() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = SimpleEntity(key: key, image: image)
+        sut.contentMode = .Center // No resizing
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromEntity(entity, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testSetImageFromEntity_Failure() {
+        class MockEntity : Entity {
+            let key = "test"
+            
+            func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+                let error = Haneke.errorWithCode(0, description: "test")
+                doFailure(error)
+            }
+            
+            func cancelFetch() {}
+            
+        }
+        
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let entity = MockEntity()
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromEntity(entity, failure:{error in
+            XCTAssertEqual(error!.domain, Haneke.Domain)
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
 
 }
