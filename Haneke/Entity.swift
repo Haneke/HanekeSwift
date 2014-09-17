@@ -22,15 +22,16 @@ public protocol Entity : class {
 class SimpleEntity : Entity {
     
     let key : String
-    let image : UIImage
+    let getImage : () -> UIImage
     
-    init(key : String, image : UIImage) {
+    init(key : String, image getImage : @autoclosure () -> UIImage) {
         self.key = key
-        self.image = image
+        self.getImage = getImage
     }
     
     func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
-       doSuccess(image)
+        let image = getImage()
+        doSuccess(image)
     }
     
     func cancelFetch() {}

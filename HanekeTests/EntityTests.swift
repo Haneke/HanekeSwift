@@ -18,7 +18,7 @@ class EntityTests: XCTestCase {
         let entity = SimpleEntity(key: key, image: image)
 
         XCTAssertEqual(entity.key, key)
-        XCTAssertEqual(entity.image, image)
+        XCTAssertEqual(entity.getImage(), image)
     }
     
     func testSimpleEntityFetch() {

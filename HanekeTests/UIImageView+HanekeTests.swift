@@ -142,8 +142,85 @@ class UIImageView_HanekeTests: XCTestCase {
         XCTAssertEqual(format.scaleMode, sut.hnk_scaleMode)
     }
     
-    // MARK: setImageFromEntity
+    // MARK: setImage
+
+    func testSetImage_MemoryMiss() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        
+        sut.hnk_setImage(image, key: key)
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, key)
+    }
     
+    func testSetImage_MemoryHit() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let cache = Haneke.sharedCache
+        let format = sut.hnk_format
+        cache.setImage(image, key, formatName: format.name)
+        
+        sut.hnk_setImage(image, key: key)
+        
+        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testSetImage_ImageSet_MemoryMiss() {
+        let previousImage = UIImage.imageWithColor(UIColor.redColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        sut.image = previousImage
+        
+        sut.hnk_setImage(image, key: key)
+        
+        XCTAssertEqual(sut.image!, previousImage)
+        XCTAssertEqual(sut.hnk_entity.key, key)
+    }
+    
+    func testSetImage_UsingPlaceholder_MemoryMiss() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        
+        sut.hnk_setImage(image, key: key, placeholder: placeholder)
+        
+        XCTAssertEqual(sut.image!, placeholder)
+        XCTAssertEqual(sut.hnk_entity.key, key)
+    }
+    
+    func testSetImage_UsingPlaceholder_MemoryHit() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let cache = Haneke.sharedCache
+        let format = sut.hnk_format
+        cache.setImage(image, key, formatName: format.name)
+        
+        sut.hnk_setImage(image, key: key, placeholder: placeholder)
+        
+        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testSetImage_Success() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        sut.contentMode = .Center // No resizing
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImage(image, key: key, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    // MARK: setImageFromEntity
 
     func testSetImageFromEntity_MemoryMiss() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
