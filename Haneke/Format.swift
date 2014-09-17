@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-public enum ScaleMode {
-    case Fill, AspectFit, AspectFill, None
+public enum ScaleMode : String {
+    case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
 }
 
 public struct Format {
