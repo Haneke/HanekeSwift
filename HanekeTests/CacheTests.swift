@@ -20,7 +20,7 @@ class CacheTests: DiskTestCase {
     }
     
     override func tearDown() {
-        // TODO: Clear cache
+        sut.removeAllImages()
         super.tearDown()
     }
     
@@ -229,7 +229,6 @@ class CacheTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let entity = SimpleEntity(key: key, image: image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
         let didSuccess = sut.fetchImageForEntity(entity, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
@@ -251,7 +250,6 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
         let formattedImage = format.apply(image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
         let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
@@ -273,7 +271,6 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
         let formattedImage = format.apply(image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
         let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
@@ -379,6 +376,26 @@ class CacheTests: DiskTestCase {
     
     func testRemoveImageInexisting() {
         sut.removeImage(self.name)
+    }
+    
+    func testRemoveAllImages_One() {
+        let key = "key"
+        sut.setImage(UIImage(), key)
+        let expectation = self.expectationWithDescription("fetch image")
+        
+        sut.removeAllImages()
+        
+        sut.fetchImageForKey(key,  success : { _ in
+            XCTFail("expected failure")
+            expectation.fulfill()
+            }, failure : { _ in
+                expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(1, nil)
+    }
+    
+    func testRemoveAllImages_None() {
+        sut.removeAllImages()
     }
     
     func testOnMemoryWarning() {

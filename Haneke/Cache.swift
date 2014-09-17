@@ -96,6 +96,13 @@ public class Cache {
         }
     }
     
+    public func removeAllImages() {
+        for (_, (_, memoryCache, diskCache)) in self.formats {
+            memoryCache.removeAllObjects()
+            diskCache.removeAllData()
+        }
+    }
+    
     // MARK: Notifications
     
     func onMemoryWarning() {
