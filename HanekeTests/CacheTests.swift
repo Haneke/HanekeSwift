@@ -130,10 +130,12 @@ class CacheTests: DiskTestCase {
         
         sut.setImage(image, key)
         
-        sut.fetchImageForKey(key,  success: {
+        let didSuccess = sut.fetchImageForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
+        
+        XCTAssertTrue(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -144,11 +146,12 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key)
         self.clearMemoryCache()
         
-        sut.fetchImageForKey(key,  success: {
+        let didSuccess = sut.fetchImageForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -156,7 +159,7 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageForKey(key,  success : { data in
+        let didSuccess = sut.fetchImageForKey(key,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
@@ -165,6 +168,8 @@ class CacheTests: DiskTestCase {
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
+        
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -172,7 +177,7 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageForKey(key, formatName: self.name,  success : { data in
+        let didSuccess = sut.fetchImageForKey(key, formatName: self.name,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
@@ -181,6 +186,8 @@ class CacheTests: DiskTestCase {
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
+        
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -189,13 +196,14 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let entity = SimpleEntity(key: key, image: image)
         let expectation = self.expectationWithDescription(self.name)
-        
         sut.setImage(image, key)
         
-        sut.fetchImageForEntity(entity, success: {
+        let didSuccess = sut.fetchImageForEntity(entity, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
+        
+        XCTAssertTrue(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -207,11 +215,12 @@ class CacheTests: DiskTestCase {
         sut.setImage(image, key)
         self.clearMemoryCache()
         
-        sut.fetchImageForEntity(entity, success: {
+        let didSuccess = sut.fetchImageForEntity(entity, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -222,13 +231,15 @@ class CacheTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
-        sut.fetchImageForEntity(entity, success : {
+        let didSuccess = sut.fetchImageForEntity(entity, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         }, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         })
+        
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -242,13 +253,15 @@ class CacheTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
-        sut.fetchImageForEntity(entity, formatName : format.name, success : {
+        let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
             expectation.fulfill()
         }, failure : { _ in
             XCTFail("expected sucesss")
             expectation.fulfill()
         })
+        
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -262,13 +275,15 @@ class CacheTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         sut.removeImage(key) // TODO: This shouldn't be necessary when teardown clears the cache
         
-        sut.fetchImageForEntity(entity, formatName : format.name, success : {
+        let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
             expectation.fulfill()
             }, failure : { _ in
                 XCTFail("expected sucesss")
                 expectation.fulfill()
         })
+        
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -277,7 +292,7 @@ class CacheTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let entity = SimpleEntity(key: self.name, image: image)
 
-        sut.fetchImageForEntity(entity, formatName: self.name, success : { data in
+        let didSuccess = sut.fetchImageForEntity(entity, formatName: self.name, success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
@@ -286,6 +301,8 @@ class CacheTests: DiskTestCase {
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
+        
+        XCTAssertFalse(didSuccess)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
