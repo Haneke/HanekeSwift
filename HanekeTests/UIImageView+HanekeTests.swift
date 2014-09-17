@@ -19,9 +19,11 @@ class UIImageView_HanekeTests: XCTestCase {
     }
     
     override func tearDown() {
+        OHHTTPStubs.removeAllStubs()
+        
         let format = sut.hnk_format
         let cache = Haneke.sharedCache
-        cache.removeImage(self.name, formatName: format.name) // TODO: Clear whole cache
+        cache.removeAllImages()
         super.tearDown()
     }
     
@@ -323,6 +325,114 @@ class UIImageView_HanekeTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromEntity(entity, failure:{error in
+            XCTAssertEqual(error!.domain, Haneke.Domain)
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    // MARK: setImageFromURL
+    
+    func testSetImageFromURL_MemoryMiss() {
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        
+        sut.hnk_setImageFromURL(URL)
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+    }
+    
+    func testSetImageFromURL_MemoryHit() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        let cache = Haneke.sharedCache
+        let format = sut.hnk_format
+        cache.setImage(image, entity.key, formatName: format.name)
+        
+        sut.hnk_setImageFromURL(URL)
+        
+        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testSetImageFromURL_ImageSet_MemoryMiss() {
+        let previousImage = UIImage.imageWithColor(UIColor.redColor())
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        sut.image = previousImage
+        
+        sut.hnk_setImageFromURL(URL)
+        
+        XCTAssertEqual(sut.image!, previousImage)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+    }
+    
+    func testSetImageFromURL_UsingPlaceholder_MemoryMiss() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        
+        sut.hnk_setImageFromURL(URL, placeholder: placeholder)
+        
+        XCTAssertEqual(sut.image!, placeholder)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+    }
+    
+    func testSetImageFromURL_UsingPlaceholder_MemoryHit() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        let cache = Haneke.sharedCache
+        let format = sut.hnk_format
+        cache.setImage(image, entity.key, formatName: format.name)
+        
+        sut.hnk_setImageFromURL(URL, placeholder: placeholder)
+        
+        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testSetImageFromURL_Success() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                let data = UIImagePNGRepresentation(image)
+                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+        })
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        sut.contentMode = .Center // No resizing
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromURL(URL, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testSetImageFromURL_Failure() {
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                let data = NSData.dataWithLength(100)
+                return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
+        })
+        let URL = NSURL(string: "http://haneke.io")
+        let entity = NetworkEntity(URL: URL)
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromURL(URL, failure:{error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             expectation.fulfill()
         })
