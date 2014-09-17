@@ -8,7 +8,9 @@
 
 import UIKit
 
-public protocol Entity {
+@objc
+// Entity must be class and @objc to be associated with UIImageView. When Swift supports stored properties we might be able to change it.
+public protocol Entity : class {
 
     var key : String { get }
     

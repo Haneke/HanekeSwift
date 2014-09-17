@@ -54,25 +54,27 @@ public class Cache {
         }
     }
     
-    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) {
+    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             if let image = memoryCache.objectForKey(key) as? UIImage {
                 doSuccess(image)
+                return true
                 // TODO: Update disk cache access date
             } else {
                 self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache,  success: doSuccess, failure: doFailure)
             }
-        } else if let block =  doFailure {
+        } else if let block = doFailure {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
             let error = Haneke.errorWithCode(ErrorCode.FormatNotFound.toRaw(), description: description)
             block(error)
         }
+        return false
     }
     
-    public func fetchImageForEntity(entity : Entity, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) {
+    public func fetchImageForEntity(entity : Entity, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         let key = entity.key
-        self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
+        let didSuccess = self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
             if error?.code == ErrorCode.FormatNotFound.toRaw() {
                 doFailure?(error)
                 return
@@ -84,6 +86,7 @@ public class Cache {
             
             // Unreachable code. Formats can't be removed from Cache.
         })
+        return didSuccess
     }
 
     public func removeImage(key : String, formatName : String = OriginalFormatName) {
