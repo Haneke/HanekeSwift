@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Haneke
 
 public class DiskCache {
     

@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
+import UIKit
 import XCTest
-import Haneke
 import ImageIO
 import MobileCoreServices
 

@@ -6,9 +6,8 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import XCTest
-import Haneke
 
 class DiskCacheTests: XCTestCase {
 

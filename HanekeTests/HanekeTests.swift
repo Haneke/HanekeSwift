@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import Haneke
 
 class HanekeTests: XCTestCase {
 
