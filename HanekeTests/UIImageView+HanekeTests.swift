@@ -220,33 +220,6 @@ class UIImageView_HanekeTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
-    func testSetImage_Failure() {
-        class MockEntity : Entity {
-            let key = "test"
-            
-            func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
-                let error = Haneke.errorWithCode(0, description: "test")
-                doFailure(error)
-            }
-            
-            func cancelFetch() {}
-            
-        }
-        
-        let image = UIImage.imageWithColor(UIColor.greenColor())
-        let key = self.name
-        let expectation = self.expectationWithDescription(self.name)
-        
-        sut.hnk_setImage(image, key: key, failure:{error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
-            expectation.fulfill()
-        })
-        
-        XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, key)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
-    }
-    
     // MARK: setImageFromEntity
 
     func testSetImageFromEntity_MemoryMiss() {

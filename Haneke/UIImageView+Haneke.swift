@@ -28,9 +28,9 @@ public extension UIImageView {
             return UIImageView.hnk_formatWithSize(viewSize, scaleMode: scaleMode)
     }
     
-    public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
+    public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil) {
         let entity = SimpleEntity(key: key, image: image)
-        self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess, failure: doFailure)
+        self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess)
     }
     
     public func hnk_setImageFromEntity(entity : Entity, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
