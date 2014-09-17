@@ -51,6 +51,13 @@ public extension UIImageView {
         }
     }
     
+    public func hnk_cancelSetImage() {
+        if let entity = self.hnk_entity {
+            entity.cancelFetch()
+            self.hnk_entity = nil
+        }
+    }
+    
     // MARK: Internal
     
     var hnk_entity : Entity! {
@@ -129,7 +136,7 @@ public extension UIImageView {
     }
     
     func hnk_shouldCancelForKey(key:String) -> Bool {
-        if self.hnk_entity.key == key { return false }
+        if self.hnk_entity?.key == key { return false }
         
         NSLog("Cancelled set image for \(key.lastPathComponent)")
         return true

@@ -441,5 +441,27 @@ class UIImageView_HanekeTests: XCTestCase {
         XCTAssertEqual(sut.hnk_entity.key, entity.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
+    
+    // MARK: cancelSetImage
+    
+    func testCancelSetImage() {
+        sut.hnk_cancelSetImage()
+        
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testCancelSetImage_AfterSetImage() {
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        sut.hnk_setImageFromURL(URL, success: { _ in
+            XCTFail("unexpected success")
+        }, failure: { _ in
+            XCTFail("unexpected failure")
+        })
+        
+        sut.hnk_cancelSetImage()
+        
+        XCTAssertNil(sut.hnk_entity)
+        self.waitFor(0.1)
+    }
 
 }
