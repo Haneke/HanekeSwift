@@ -168,7 +168,7 @@ public extension UIImageView {
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false
-        let didSetImage = cache.fetchImageForEntity(entity, formatName: format.name, success: {[weak self] (image) -> () in
+        let didSetImage = cache.fetchValueForEntity(entity, formatName: format.name, success: {[weak self] (image) -> () in
             if let strongSelf = self {
                 if strongSelf.hnk_shouldCancelForKey(entity.key) { return }
                 

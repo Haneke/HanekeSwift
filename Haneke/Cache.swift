@@ -55,30 +55,30 @@ public class Cache<T : DataConvertible where T.Result == T> {
         notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
-    public func setImage (image: T, _ key: String, formatName : String = OriginalFormatName) {
+    public func setValue (value : T, _ key: String, formatName : String = OriginalFormatName) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            let wrapper = ObjectWrapper(value: image)
+            let wrapper = ObjectWrapper(value: value)
             memoryCache.setObject(wrapper, forKey: key)
-            // Image data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(dataFromObject(image, format: format), key: key)
+            // Value data is sent as @autoclosure to be executed in the disk cache queue.
+            diskCache.setData(dataFromValue(value, format: format), key: key)
         } else {
-            assertionFailure("Can't set image before adding format")
+            assertionFailure("Can't set value before adding format")
         }
     }
     
-    func dataFromObject(object : T, format : Format<T>) -> NSData {
-        if let data = format.convertToData?(object) {
+    func dataFromValue(value : T, format : Format<T>) -> NSData {
+        if let data = format.convertToData?(value) {
             return data
         }
-        return object.asData()
+        return value.asData()
     }
     
-    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
                 if let result = wrapper.value as? T {
                     doSuccess(result)
-                    diskCache.updateAccessDate(dataFromObject(result, format: format), key: key)
+                    diskCache.updateAccessDate(dataFromValue(result, format: format), key: key)
                     return true
                 }
             }
@@ -94,16 +94,16 @@ public class Cache<T : DataConvertible where T.Result == T> {
         return false
     }
     
-    public func fetchImageForEntity(entity : Fetcher<T>, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchValueForEntity(entity : Fetcher<T>, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         let key = entity.key
-        let didSuccess = self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
+        let didSuccess = self.fetchValueForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
                 doFailure?(error)
                 return
             }
             
             if let (format, _, _) = self.formats[formatName] {
-                self.fetchImageFromEntity(entity, format: format, success: doSuccess, failure: doFailure)
+                self.fetchValueFromEntity(entity, format: format, success: doSuccess, failure: doFailure)
             }
             
             // Unreachable code. Formats can't be removed from Cache.
@@ -111,14 +111,14 @@ public class Cache<T : DataConvertible where T.Result == T> {
         return didSuccess
     }
 
-    public func removeImage(key : String, formatName : String = OriginalFormatName) {
+    public func removeValue(key : String, formatName : String = OriginalFormatName) {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.removeObjectForKey(key)
             diskCache.removeData(key)
         }
     }
     
-    public func removeAllImages() {
+    public func removeAllValues() {
         for (_, (_, memoryCache, diskCache)) in self.formats {
             memoryCache.removeAllObjects()
             diskCache.removeAllData()
@@ -174,16 +174,16 @@ public class Cache<T : DataConvertible where T.Result == T> {
         })
     }
     
-    private func fetchImageFromEntity(entity : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
-        entity.fetchWithSuccess(success: { result in
+    private func fetchValueFromEntity(entity : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
+        entity.fetchWithSuccess(success: { value in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                var formatted = format.apply(result)
+                var formatted = format.apply(value)
                 // if (formatted == result) {
                     // TODO: formattedImage = image.hnk_decompressedImage()
                 // }
                 dispatch_async(dispatch_get_main_queue(), {
                     doSuccess(formatted)
-                    self.setImage(formatted, entity.key, formatName: format.name)
+                    self.setValue(formatted, entity.key, formatName: format.name)
                 })
             })
         }, failure: { error in

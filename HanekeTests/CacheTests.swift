@@ -20,7 +20,7 @@ class CacheTests: DiskTestCase {
     }
     
     override func tearDown() {
-        sut.removeAllImages()
+        sut.removeAllValues()
         super.tearDown()
     }
     
@@ -42,21 +42,21 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
     }
     
-    func testSetImageInDefaultFormat () {
+    func testSetValueInDefaultFormat () {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         
-        sut.fetchImageForKey(key, formatName: OriginalFormatName, {
+        sut.fetchValueForKey(key, formatName: OriginalFormatName, {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testSetImageInFormat () {
+    func testSetValueInFormat () {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
@@ -64,26 +64,26 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.setImage(image, key, formatName : format.name)
+        sut.setValue(image, key, formatName : format.name)
         
-        sut.fetchImageForKey(key, formatName: format.name, {
+        sut.fetchValueForKey(key, formatName: format.name, {
             expectation.fulfill()
             XCTAssertTrue($0.isEqualPixelByPixel(image))
         })
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testSetImageInInexistingFormat () {
+    func testSetValueInInexistingFormat () {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         
         // TODO: Swift doesn't support XCAssertThrows yet. 
         // See: http://stackoverflow.com/questions/25529625/testing-assertion-in-swift
-        // XCAssertThrows(sut.setImage(image, key, formatName : self.name))
+        // XCAssertThrows(sut.setValue(image, key, formatName : self.name))
     }
     
-    func testSetImage_FormatWithouDiskCapacity() {
+    func testSetValue_FormatWithouDiskCapacity() {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
@@ -91,10 +91,10 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.setImage(image, key, formatName: format.name)
+        sut.setValue(image, key, formatName: format.name)
 
         self.clearMemoryCache()
-        sut.fetchImageForKey(key, formatName: format.name,  success: {_ in
+        sut.fetchValueForKey(key, formatName: format.name,  success: {_ in
             XCTFail("expected failure")
             expectation.fulfill()
             }, failure: {_ in
@@ -103,7 +103,7 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testSetImage_FormatWithDiskCapacity() {
+    func testSetValue_FormatWithDiskCapacity() {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
@@ -111,10 +111,10 @@ class CacheTests: DiskTestCase {
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.setImage(image, key, formatName: format.name)
+        sut.setValue(image, key, formatName: format.name)
         
         self.clearMemoryCache()
-        sut.fetchImageForKey(key, formatName: format.name,  success: {_ in
+        sut.fetchValueForKey(key, formatName: format.name,  success: {_ in
             expectation.fulfill()
         }, failure : {_ in
             XCTFail("expected success")
@@ -123,14 +123,14 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForKey_MemoryHit () {
+    func testFetchValueForKey_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         
-        let didSuccess = sut.fetchImageForKey(key,  success: {
+        let didSuccess = sut.fetchValueForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -139,14 +139,14 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForKey_MemoryMiss_DiskHit () {
+    func testFetchValueForKey_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let didSuccess = sut.fetchImageForKey(key,  success: {
+        let didSuccess = sut.fetchValueForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -155,11 +155,11 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForKey_MemoryMiss_DiskMiss () {
+    func testFetchValueForKey_MemoryMiss_DiskMiss () {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchImageForKey(key,  success : { data in
+        let didSuccess = sut.fetchValueForKey(key,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
@@ -173,11 +173,11 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForKey_InexistingFormat () {
+    func testFetchValueForKey_InexistingFormat () {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchImageForKey(key, formatName: self.name,  success : { data in
+        let didSuccess = sut.fetchValueForKey(key, formatName: self.name,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
@@ -191,14 +191,14 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForEntity_MemoryHit () {
+    func testFetchValueForEntity_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         
-        let didSuccess = sut.fetchImageForEntity(entity, success: {
+        let didSuccess = sut.fetchValueForEntity(entity, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -207,15 +207,15 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForEntity_MemoryMiss_DiskHit () {
+    func testFetchValueForEntity_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
         let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let didSuccess = sut.fetchImageForEntity(entity, success: {
+        let didSuccess = sut.fetchValueForEntity(entity, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -224,13 +224,13 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForEntity_MemoryMiss_DiskMiss () {
+    func testFetchValueForEntity_MemoryMiss_DiskMiss () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchImageForEntity(entity, success : {
+        let didSuccess = sut.fetchValueForEntity(entity, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         }, failure : { _ in
@@ -242,7 +242,7 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForEntity_ApplyFormat_ScaleModeFill () {
+    func testFetchValueForEntity_ApplyFormat_ScaleModeFill () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
         let entity = SimpleEntity<UIImage>(key: key, thing: image)
@@ -255,7 +255,7 @@ class CacheTests: DiskTestCase {
         let formattedImage = resizer.resizeImage(image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
+        let didSuccess = sut.fetchValueForEntity(entity, formatName : format.name, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
             expectation.fulfill()
         }, failure : { _ in
@@ -267,12 +267,12 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchImageForEntity_InexistingFormat () {
+    func testFetchValueForEntity_InexistingFormat () {
         let expectation = self.expectationWithDescription(self.name)
         let image = UIImage.imageWithColor(UIColor.redColor())
         let entity = SimpleEntity<UIImage>(key: self.name, thing: image)
 
-        let didSuccess = sut.fetchImageForEntity(entity, formatName: self.name, success : { data in
+        let didSuccess = sut.fetchValueForEntity(entity, formatName: self.name, success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
@@ -286,14 +286,14 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImage_Existing() {
+    func testRemoveValue_Existing() {
         let key = self.name
-        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key)
+        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key)
         let expectation = self.expectationWithDescription("fetch image")
 
-        sut.removeImage(key)
+        sut.removeValue(key)
         
-        sut.fetchImageForKey(key,  success : { _ in
+        sut.fetchValueForKey(key,  success : { _ in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { _ in
@@ -302,17 +302,17 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImage_ExistingInFormat() {
+    func testRemoveValue_ExistingInFormat() {
         let sut = self.sut!
         let key = "key"
         let format = Format<UIImage>(self.name)
         sut.addFormat(format)
-        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key, formatName: format.name)
+        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key, formatName: format.name)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeImage(key, formatName: format.name)
+        sut.removeValue(key, formatName: format.name)
         
-        sut.fetchImageForKey(key, formatName: format.name,  success : { data in
+        sut.fetchValueForKey(key, formatName: format.name,  success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { _ in
@@ -321,17 +321,17 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImageExistingUsingAnotherFormat() {
+    func testRemoveValueExistingUsingAnotherFormat() {
         let sut = self.sut!
         let key = "key"
         let format = Format<UIImage>(self.name)
         sut.addFormat(format)
-        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key)
+        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeImage(key, formatName: format.name)
+        sut.removeValue(key, formatName: format.name)
         
-        sut.fetchImageForKey(key,  success : { _ in
+        sut.fetchValueForKey(key,  success : { _ in
             expectation.fulfill()
         }, failure : { _ in
             XCTFail("expected success")
@@ -340,16 +340,16 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImageExistingUsingInexistingFormat() {
+    func testRemoveValueExistingUsingInexistingFormat() {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeImage(key, formatName: self.name)
+        sut.removeValue(key, formatName: self.name)
         
-        sut.fetchImageForKey(key,  success : { _ in
+        sut.fetchValueForKey(key,  success : { _ in
             expectation.fulfill()
         }, failure : { _ in
             XCTFail("expected success")
@@ -358,18 +358,18 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveImageInexisting() {
-        sut.removeImage(self.name)
+    func testRemoveValueInexisting() {
+        sut.removeValue(self.name)
     }
     
-    func testRemoveAllImages_One() {
+    func testRemoveAllValues_One() {
         let key = self.name
-        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key)
+        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeAllImages()
+        sut.removeAllValues()
         
-        sut.fetchImageForKey(key,  success : { _ in
+        sut.fetchValueForKey(key,  success : { _ in
             XCTFail("expected failure")
             expectation.fulfill()
             }, failure : { _ in
@@ -378,19 +378,19 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveAllImages_None() {
-        sut.removeAllImages()
+    func testRemoveAllValues_None() {
+        sut.removeAllValues()
     }
     
     func testOnMemoryWarning() {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        sut.setImage(image, key)
+        sut.setValue(image, key)
         let expectation = self.expectationWithDescription("fetch image")
 
         sut.onMemoryWarning()
         
-        let sync = sut.fetchImageForKey(key,  success : { _ in
+        let sync = sut.fetchValueForKey(key,  success : { _ in
             expectation.fulfill()
         }, failure : { _ in
             XCTFail("expected success")
