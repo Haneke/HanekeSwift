@@ -8,13 +8,18 @@
 
 import UIKit
 
-public class NetworkEntity : Entity {
-    
-    public enum ErrorCode : Int {
-        case InvalidData = -400
-        case MissingData = -401
-        case InvalidStatusCode = -402
+extension Haneke {
+    public struct NetworkEntity {
+        // It'd be better to define this in the NetworkEntity class but Swift doesn't allow to declare an enum in a generic type
+        public enum ErrorCode : Int {
+            case InvalidData = -400
+            case MissingData = -401
+            case InvalidStatusCode = -402
+        }
     }
+}
+
+public class NetworkEntity<T : DataConvertible> : Fetcher {
     
     let URL : NSURL
     
@@ -32,7 +37,7 @@ public class NetworkEntity : Entity {
     
     public var key : String { return URL.absoluteString! }
     
-    public func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+    public func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
         self.cancelled = false
         self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data : NSData!, response : NSURLResponse!, error : NSError!) -> Void in
             if let strongSelf = self {
@@ -49,7 +54,7 @@ public class NetworkEntity : Entity {
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
 
         if cancelled { return }
         
@@ -83,19 +88,19 @@ public class NetworkEntity : Entity {
             return
         }
         
-        let image : UIImage! = UIImage(data:data)
-        if image == nil {
+        let thing : DataConvertible? = T.convertFromData(data)
+        if thing == nil {
             let localizedFormat = NSLocalizedString("Failed to load image from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: doFailure)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue(), { doSuccess(image) })
+        dispatch_async(dispatch_get_main_queue(), { doSuccess(thing!) })
 
     }
     
-    private func failWithCode(code : ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
+    private func failWithCode(code : Haneke.NetworkEntity.ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
         let error = Haneke.errorWithCode(code.toRaw(), description: localizedDescription)
         dispatch_async(dispatch_get_main_queue(), { doFailure(error) })

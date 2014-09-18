@@ -72,7 +72,7 @@ public class Cache {
         return false
     }
     
-    public func fetchImageForEntity(entity : Entity, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchImageForEntity(entity : Fetcher, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         let key = entity.key
         let didSuccess = self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
             if error?.code == ErrorCode.FormatNotFound.toRaw() {
@@ -148,9 +148,10 @@ public class Cache {
         })
     }
     
-    private func fetchImageFromEntity(entity : Entity, format : Format, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
-        entity.fetchImageWithSuccess(success: { image in
+    private func fetchImageFromEntity(entity : Fetcher, format : Format, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+        entity.fetchWithSuccess(success: { result in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                let image = result as UIImage
                 var formattedImage = format.apply(image)
                 if (formattedImage == image) {
                     // TODO: formattedImage = image.hnk_decompressedImage()

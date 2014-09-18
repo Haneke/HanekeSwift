@@ -8,28 +8,35 @@
 
 import UIKit
 
-public protocol Entity {
+public protocol DataConvertible {
+    
+    class func convertFromData(data : NSData) -> DataConvertible?
+    
+}
+
+public protocol Fetcher {
 
     var key : String { get }
     
-    func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ()))
+    func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ()))
     
     func cancelFetch()
 }
 
-class SimpleEntity : Entity {
+class SimpleEntity<T : DataConvertible> : Fetcher {
     
     let key : String
-    let getImage : () -> UIImage
     
-    init(key : String, image getImage : @autoclosure () -> UIImage) {
+    let getThing : () -> T
+    
+    init(key : String, thing getThing : @autoclosure () -> T) {
         self.key = key
-        self.getImage = getImage
+        self.getThing = getThing
     }
     
-    func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
-        let image = getImage()
-        doSuccess(image)
+    func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
+        let thing = getThing()
+        doSuccess(thing)
     }
     
     func cancelFetch() {}

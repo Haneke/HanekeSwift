@@ -9,6 +9,15 @@
 import UIKit
 import ObjectiveC
 
+extension UIImage : DataConvertible {
+    
+    public class func convertFromData(data : NSData) -> DataConvertible?  {
+        let image : UIImage? = UIImage(data : data) // Workaround for init that returns nil
+        return image
+    }
+    
+}
+
 public extension Haneke {
     public struct UIKit {
         public struct DefaultFormat {
@@ -19,7 +28,7 @@ public extension Haneke {
     }
 }
 
-var _associations : [COpaquePointer: Entity] = [:]
+var _associations : [COpaquePointer: Fetcher] = [:]
 
 @objc protocol HasAssociatedSwift : class {
     
@@ -52,7 +61,7 @@ func _setDeallocWitnessIfNeeded(object : NSObject) {
 
 extension NSObject : HasAssociatedSwift {
     
-    var associatedThing : Entity! {
+    var associatedThing : Fetcher! {
         get {
             let key = getKey()
             return _associations[key]
@@ -88,16 +97,16 @@ public extension UIImageView {
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess, failure: doFailure)
     }
     
     public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil) {
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess)
     }
     
-    public func hnk_setImageFromEntity(entity : Entity, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
+    public func hnk_setImageFromEntity(entity : Fetcher, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
 
         self.hnk_entity = entity
         
@@ -119,7 +128,7 @@ public extension UIImageView {
     
     // MARK: Internal
     
-    var hnk_entity : Entity! {
+    var hnk_entity : Fetcher! {
         get {
             return self.associatedThing
         }
@@ -158,7 +167,7 @@ public extension UIImageView {
         return format
     }
     
-    func hnk_fetchImageForEntity(entity : Entity, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
+    func hnk_fetchImageForEntity(entity : Fetcher, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false

@@ -194,7 +194,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setImage(image, key)
         
@@ -210,7 +210,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setImage(image, key)
         self.clearMemoryCache()
@@ -227,7 +227,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_MemoryMiss_DiskMiss () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
         let didSuccess = sut.fetchImageForEntity(entity, success : {
@@ -245,7 +245,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_ApplyFormat_ScaleModeFill () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let format = Format(self.name, size : CGSizeMake(10, 20), scaleMode : .Fill)
         sut.addFormat(format)
         let formattedImage = format.apply(image)
@@ -266,7 +266,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_ApplyFormat_ScaleModeFit () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let format = Format(self.name, size : CGSizeMake(10, 20), scaleMode : .AspectFit)
         sut.addFormat(format)
         let formattedImage = format.apply(image)
@@ -287,7 +287,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_InexistingFormat () {
         let expectation = self.expectationWithDescription(self.name)
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let entity = SimpleEntity(key: self.name, image: image)
+        let entity = SimpleEntity(key: self.name, thing: image)
 
         let didSuccess = sut.fetchImageForEntity(entity, formatName: self.name, success : { data in
             XCTFail("expected failure")

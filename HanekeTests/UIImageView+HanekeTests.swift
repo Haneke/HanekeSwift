@@ -227,7 +227,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromEntity_MemoryMiss() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         
         sut.hnk_setImageFromEntity(entity)
 
@@ -238,7 +238,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromEntity_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setImage(image, key, formatName: format.name)
@@ -253,7 +253,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         sut.image = previousImage
         
         sut.hnk_setImageFromEntity(entity)
@@ -266,7 +266,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         
         sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
         
@@ -278,7 +278,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setImage(image, key, formatName: format.name)
@@ -292,7 +292,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromEntity_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, image: image)
+        let entity = SimpleEntity(key: key, thing: image)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
@@ -307,10 +307,10 @@ class UIImageView_HanekeTests: XCTestCase {
     }
     
     func testSetImageFromEntity_Failure() {
-        class MockEntity : Entity {
+        class MockEntity : Fetcher {
             let key = "test"
             
-            func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+            func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
                 let error = Haneke.errorWithCode(0, description: "test")
                 doFailure(error)
             }
@@ -338,7 +338,7 @@ class UIImageView_HanekeTests: XCTestCase {
     
     func testSetImageFromURL_MemoryMiss() {
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL)
         
@@ -349,7 +349,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromURL_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setImage(image, entity.key, formatName: format.name)
@@ -363,7 +363,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromURL_ImageSet_MemoryMiss() {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         sut.image = previousImage
         
         sut.hnk_setImageFromURL(URL)
@@ -375,7 +375,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromURL_UsingPlaceholder_MemoryMiss() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL, placeholder: placeholder)
         
@@ -387,7 +387,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setImage(image, entity.key, formatName: format.name)
@@ -407,7 +407,7 @@ class UIImageView_HanekeTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
@@ -429,7 +429,7 @@ class UIImageView_HanekeTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity(URL: URL)
+        let entity = NetworkEntity<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
