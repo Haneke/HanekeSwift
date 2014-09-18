@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Haneke
+import UIKit
 
 public class DiskCache {
     

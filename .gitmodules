@@ -1,0 +1,3 @@
+[submodule "HanekeTests/Submodules"]
+	path = HanekeTests/Submodules
+	url = https://github.com/AliSoftware/OHHTTPStubs.git
