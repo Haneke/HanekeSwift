@@ -84,32 +84,28 @@ class FormatTests: XCTestCase {
     
     func testApplyFormatWithPreResizeTransform() {
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 2, height: 2), false)
-        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, preResizeTransform: {(image) in
+        let sut: Format = Format(self.name, preResizeTransform: {(_) in
                 return UIImage.imageWithColor(UIColor.blueColor(), CGSize(width: 2, height: 2), false)
             })
         
-        let data: UIImage = sut.apply(originalImage)
-        let notExpectedData: UIImage = sut.resizedImageFromImage(originalImage)
-            
-        XCTAssertEqual(data.size, notExpectedData.size)
-        XCTAssertFalse(data.isEqualPixelByPixel(notExpectedData))
+        let data = sut.apply(originalImage)
+        let notExpectedData = sut.resizedImageFromImage(originalImage)
         
+        XCTAssertFalse(data.isEqualPixelByPixel(notExpectedData))
         XCTAssertTrue(data.getPixelColor(CGPoint(x: 1, y: 1)).isEqual(UIColor.blueColor()))
         XCTAssertEqual(notExpectedData.getPixelColor(CGPoint(x: 1, y: 1)), UIColor.redColor())
     }
     
-    func testApplyFormatWithResizesClosure() {
+    func testApplyFormatWithPostResizeTransform() {
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 2, height: 2), false)
-        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, postResizeTransform: {(image) in
+        let sut: Format = Format(self.name, postResizeTransform: {(_) in
             return UIImage.imageWithColor(UIColor.blueColor(), CGSize(width: 2, height: 2), false)
         })
         
-        let data: UIImage = sut.apply(originalImage)
-        let notExpectedData: UIImage = sut.resizedImageFromImage(originalImage)
+        let data = sut.apply(originalImage)
+        let notExpectedData = sut.resizedImageFromImage(originalImage)
         
-        XCTAssertNotEqual(data.size, notExpectedData.size)
         XCTAssertFalse(data.isEqualPixelByPixel(notExpectedData))
-        
         XCTAssertTrue(data.getPixelColor(CGPoint(x: 1, y: 1)).isEqual(UIColor.blueColor()))
         XCTAssertEqual(notExpectedData.getPixelColor(CGPoint(x: 1, y: 1)), UIColor.redColor())
     }
