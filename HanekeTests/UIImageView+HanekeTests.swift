@@ -119,7 +119,8 @@ class UIImageView_HanekeTests: XCTestCase {
         let format2 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         
         let (_,memoryCache,_) = cache.formats[format2.name]!
-        let resultImage = memoryCache.objectForKey(self.name)! as UIImage
+        let wrapper = memoryCache.objectForKey(self.name)! as ObjectWrapper
+        let resultImage = wrapper.value as UIImage
         XCTAssertEqual(resultImage, image)
     }
     
@@ -171,6 +172,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key)
         
         XCTAssertEqual(sut.image!, previousImage)
+        let entity = sut.hnk_entity
         XCTAssertEqual(sut.hnk_entity.key, key)
     }
     

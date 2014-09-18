@@ -287,8 +287,8 @@ class CacheTests: DiskTestCase {
     }
     
     func testRemoveImage_Existing() {
-        let key = "key"
-        sut.setImage(UIImage(), key)
+        let key = self.name
+        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key)
         let expectation = self.expectationWithDescription("fetch image")
 
         sut.removeImage(key)
@@ -307,7 +307,7 @@ class CacheTests: DiskTestCase {
         let key = "key"
         let format = Format<UIImage>(self.name)
         sut.addFormat(format)
-        sut.setImage(UIImage(), key, formatName: format.name)
+        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key, formatName: format.name)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeImage(key, formatName: format.name)
@@ -326,7 +326,7 @@ class CacheTests: DiskTestCase {
         let key = "key"
         let format = Format<UIImage>(self.name)
         sut.addFormat(format)
-        sut.setImage(UIImage(), key)
+        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeImage(key, formatName: format.name)
@@ -342,8 +342,9 @@ class CacheTests: DiskTestCase {
     
     func testRemoveImageExistingUsingInexistingFormat() {
         let sut = self.sut!
-        let key = "key"
-        sut.setImage(UIImage(), key)
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        sut.setImage(image, key)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeImage(key, formatName: self.name)
@@ -362,8 +363,8 @@ class CacheTests: DiskTestCase {
     }
     
     func testRemoveAllImages_One() {
-        let key = "key"
-        sut.setImage(UIImage(), key)
+        let key = self.name
+        sut.setImage(UIImage.imageWithColor(UIColor.greenColor()), key)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeAllImages()
@@ -382,18 +383,20 @@ class CacheTests: DiskTestCase {
     }
     
     func testOnMemoryWarning() {
-        let key = "key"
-        sut.setImage(UIImage(), key)
+        let key = self.name
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        sut.setImage(image, key)
         let expectation = self.expectationWithDescription("fetch image")
 
         sut.onMemoryWarning()
         
-        sut.fetchImageForKey(key,  success : { _ in
-            XCTFail("expected failure")
+        let sync = sut.fetchImageForKey(key,  success : { _ in
             expectation.fulfill()
         }, failure : { _ in
+            XCTFail("expected success")
             expectation.fulfill()
         })
+        XCTAssertFalse(sync)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     

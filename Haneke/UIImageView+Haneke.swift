@@ -19,15 +19,64 @@ public extension Haneke {
     }
 }
 
-class ObjectWrapper : NSObject {
-    let value: Any
+var _associations : [COpaquePointer: Fetcher<UIImage>] = [:]
+
+@objc protocol HasAssociatedSwift : class {
     
-    init(value: Any) {
-        self.value = value
+    func clearSwiftAssociations()
+}
+
+class DeallocWitness : NSObject {
+    
+    weak var object : HasAssociatedSwift!
+    
+    init (object: HasAssociatedSwift) {
+        self.object = object
+    }
+    
+    deinit {
+        object.clearSwiftAssociations()
     }
 }
 
-var AssociatedFetcherKey = 0
+var _DeallocWitnessKey: UInt8 = 0
+
+func _setDeallocWitnessIfNeeded(object : NSObject) {
+    var witness = objc_getAssociatedObject(object, &_DeallocWitnessKey) as DeallocWitness?
+    if (witness == nil) {
+        witness = DeallocWitness(object: object)
+        objc_setAssociatedObject(object, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+    }
+    
+}
+
+extension NSObject : HasAssociatedSwift {
+    
+    var associatedThing : Fetcher<UIImage>! {
+        get {
+            let key = getKey()
+            return _associations[key]
+        }
+        set(thing) {
+            let witness = DeallocWitness(object: self)
+            objc_setAssociatedObject(self, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            
+            let key = getKey()
+            _associations[key] = thing
+        }
+    }
+    
+    func getKey() -> COpaquePointer {
+        let ptr: COpaquePointer =
+        Unmanaged<AnyObject>.passUnretained(self).toOpaque()
+        return ptr
+    }
+    
+    func clearSwiftAssociations() {
+        let key = getKey()
+        _associations[key] = nil
+    }
+}
 
 public extension UIImageView {
     
@@ -72,12 +121,10 @@ public extension UIImageView {
     
     var hnk_entity : Fetcher<UIImage>! {
         get {
-            let wrapper : AnyObject? = objc_getAssociatedObject(self, &AssociatedFetcherKey)
-            return wrapper?.value as? Fetcher<UIImage>
+            return self.associatedThing
         }
-        set(value) {
-            let wrapper = ObjectWrapper(value: value)
-            objc_setAssociatedObject(self, &AssociatedFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        set (entity) {
+            self.associatedThing = entity
         }
     }
     

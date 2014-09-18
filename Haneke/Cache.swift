@@ -9,6 +9,14 @@
 import Foundation
 import UIKit
 
+class ObjectWrapper : NSObject {
+    let value: Any
+    
+    init(value: Any) {
+        self.value = value
+    }
+}
+
 extension Haneke {
         // It'd be better to define this in the NetworkEntity class but Swift doesn't allow to declare an enum in a generic type
         public enum CacheError : Int {
