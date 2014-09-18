@@ -99,6 +99,8 @@ public extension UIImageView {
     
     public func hnk_setImageFromEntity(entity : Fetcher<UIImage>, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
 
+        self.hnk_cancelSetImage()
+        
         self.hnk_entity = entity
         
         let didSetImage = self.hnk_fetchImageForEntity(entity, success: doSuccess, failure: doFailure)
