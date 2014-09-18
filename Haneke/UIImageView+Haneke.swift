@@ -39,7 +39,8 @@ public extension UIImageView {
     }
     
     public func hnk_setImageFromEntity(entity : Entity, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
-
+        self.hnk_cancelSetImage()
+        
         self.hnk_entity = entity
         
         let didSetImage = self.hnk_fetchImageForEntity(entity, success: doSuccess, failure: doFailure)
@@ -100,6 +101,7 @@ public extension UIImageView {
     }
     
     func hnk_fetchImageForEntity(entity : Entity, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
+        
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false
