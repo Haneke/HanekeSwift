@@ -166,7 +166,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testSetImage_ImageSet_MemoryMiss() {
@@ -203,7 +203,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key, placeholder: placeholder)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testSetImage_Success() {
@@ -246,7 +246,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromEntity(entity)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testSetImageFromEntity_ImageSet_MemoryMiss() {
@@ -286,7 +286,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testSetImageFromEntity_Success() {
@@ -357,7 +357,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromURL(URL)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testSetImageFromURL_ImageSet_MemoryMiss() {
@@ -395,7 +395,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromURL(URL, placeholder: placeholder)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testSetImageFromURL_Success() {
@@ -447,7 +447,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testCancelSetImage() {
         sut.hnk_cancelSetImage()
         
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
     }
     
     func testCancelSetImage_AfterSetImage() {
@@ -460,7 +460,7 @@ class UIImageView_HanekeTests: XCTestCase {
         
         sut.hnk_cancelSetImage()
         
-        XCTAssertNil(sut.hnk_entity)
+        XCTAssertTrue(sut.hnk_entity == nil)
         self.waitFor(0.1)
     }
 

@@ -19,6 +19,65 @@ public extension Haneke {
     }
 }
 
+var _associations : [COpaquePointer: Entity] = [:]
+
+@objc protocol HasAssociatedSwift : class {
+    
+    func clearSwiftAssociations()
+}
+
+class DeallocWitness : NSObject {
+    
+    weak var object : HasAssociatedSwift!
+    
+    init (object: HasAssociatedSwift) {
+        self.object = object
+    }
+    
+    deinit {
+        object.clearSwiftAssociations()
+    }
+}
+
+var _DeallocWitnessKey: UInt8 = 0
+
+func _setDeallocWitnessIfNeeded(object : NSObject) {
+    var witness = objc_getAssociatedObject(object, &_DeallocWitnessKey) as DeallocWitness?
+    if (witness == nil) {
+        witness = DeallocWitness(object: object)
+        objc_setAssociatedObject(object, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+    }
+    
+}
+
+extension NSObject : HasAssociatedSwift {
+    
+    var associatedThing : Entity! {
+        get {
+            let key = getKey()
+            return _associations[key]
+        }
+        set(thing) {
+            let witness = DeallocWitness(object: self)
+            objc_setAssociatedObject(self, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            
+            let key = getKey()
+            _associations[key] = thing
+        }
+    }
+    
+    func getKey() -> COpaquePointer {
+        let ptr: COpaquePointer =
+        Unmanaged<AnyObject>.passUnretained(self).toOpaque()
+        return ptr
+    }
+    
+    func clearSwiftAssociations() {
+        let key = getKey()
+        _associations[key] = nil
+    }
+}
+
 public extension UIImageView {
     
     public var hnk_format : Format {
@@ -62,10 +121,10 @@ public extension UIImageView {
     
     var hnk_entity : Entity! {
         get {
-            return objc_getAssociatedObject(self, &Haneke.UIKit.entityKey) as? Entity
+            return self.associatedThing
         }
         set (entity) {
-            objc_setAssociatedObject(self, &Haneke.UIKit.entityKey, entity, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            self.associatedThing = entity
         }
     }
     
