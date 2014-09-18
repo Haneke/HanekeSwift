@@ -12,64 +12,87 @@ public enum ScaleMode : String {
     case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
 }
 
-public struct Format {
+public struct Format<T> {
     
     public let name : String
+    
+    public let diskCapacity : UInt64
+    
+    public var transform : ((T) -> (T))?
+    
+    public init(_ name : String, diskCapacity : UInt64 = 0, transform : ((T) -> (T))? = nil) {
+        self.name = name
+        self.diskCapacity = diskCapacity
+        self.transform = transform
+    }
+    
+    public func apply(thing : T) -> T {
+        // TODO: Pre-apply closure
+        var transformed = thing
+        if let transform = self.transform {
+            transformed = transform(thing)
+        }
+        // TODO: Post-apply closure
+        return transformed
+    }
 
+}
+
+public protocol Transformer {
+    typealias T
+    func tranform(thing: T) -> T
+}
+
+public struct ImageResizer {
+    
+    public typealias T = UIImage
+    
     public let allowUpscaling : Bool
     
-    public let compressionQuality : Float = 1.0
-
     public let size : CGSize
     
     public let scaleMode: ScaleMode
     
-    public let diskCapacity : UInt64
+    public let compressionQuality : Float
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0) {
-        self.name = name
-        self.diskCapacity = diskCapacity
+    public init(size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0) {
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
         self.compressionQuality = compressionQuality
     }
     
-    // With Format<T> this could be func apply(object : T) -> T
-    public func apply(image : UIImage) -> UIImage {
-        // TODO: Pre-apply closure
-        let resizedImage = self.resizedImageFromImage(image)
-        // TODO: Post-apply closure
-        return resizedImage
+    public func tranform(thing: T) -> T {
+        return thing
     }
     
-    public func resizedImageFromImage(originalImage: UIImage) -> UIImage {
+    public func resizeImage(image: UIImage) -> UIImage {
         var resizeToSize: CGSize
         switch self.scaleMode {
         case .Fill:
             resizeToSize = self.size
         case .AspectFit:
-            resizeToSize = originalImage.size.hnk_aspectFitSize(self.size)
+            resizeToSize = image.size.hnk_aspectFitSize(self.size)
         case .AspectFill:
-            resizeToSize = originalImage.size.hnk_aspectFillSize(self.size)
+            resizeToSize = image.size.hnk_aspectFillSize(self.size)
         case .None:
-            return originalImage
+            return image
         }
         assert(self.size.width > 0 && self.size.height > 0, "Expected non-zero size. Use ScaleMode.None to avoid resizing.")
-
+        
         // If does not allow to scale up the image
         if (!self.allowUpscaling) {
-            if (resizeToSize.width > originalImage.size.width || resizeToSize.height > originalImage.size.height) {
-                return originalImage
+            if (resizeToSize.width > image.size.width || resizeToSize.height > image.size.height) {
+                return image
             }
         }
         
         // Avoid unnecessary computations
-        if (resizeToSize.width == originalImage.size.width && resizeToSize.height == originalImage.size.height) {
-            return originalImage
+        if (resizeToSize.width == image.size.width && resizeToSize.height == image.size.height) {
+            return image
         }
         
-        let resizedImage = originalImage.hnk_imageByScalingToSize(resizeToSize)
+        let resizedImage = image.hnk_imageByScalingToSize(resizeToSize)
         return resizedImage
     }
 }

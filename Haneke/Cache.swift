@@ -35,7 +35,7 @@ public class Cache {
             }
         )
         
-        var originalFormat = Format(OriginalFormatName, diskCapacity : UINT64_MAX)
+        var originalFormat = Format<UIImage>(OriginalFormatName, diskCapacity : UINT64_MAX)
         self.addFormat(originalFormat)
     }
     
@@ -48,7 +48,8 @@ public class Cache {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.setObject(image, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(image.hnk_data(compressionQuality: format.compressionQuality), key: key)
+            // TODO: diskCache.setData(image.hnk_data(compressionQuality: format.compressionQuality), key: key)
+            diskCache.setData(image.hnk_data(), key: key)
         } else {
             assertionFailure("Can't set image before adding format")
         }
@@ -113,9 +114,9 @@ public class Cache {
     
     // MARK: Formats
 
-    var formats : [String : (Format, NSCache, DiskCache)] = [:]
+    var formats : [String : (Format<UIImage>, NSCache, DiskCache)] = [:]
     
-    public func addFormat(format : Format) {
+    public func addFormat(format : Format<UIImage>) {
         let name = self.name
         let memoryCache = NSCache()
         let diskCache = DiskCache(name, capacity : format.diskCapacity)
@@ -148,7 +149,7 @@ public class Cache {
         })
     }
     
-    private func fetchImageFromEntity(entity : Fetcher, format : Format, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+    private func fetchImageFromEntity(entity : Fetcher, format : Format<UIImage>, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
         entity.fetchWithSuccess(success: { result in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 let image = result as UIImage

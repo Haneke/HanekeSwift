@@ -37,7 +37,7 @@ class CacheTests: DiskTestCase {
     }
     
     func testAddFormat() {
-        let format = Format(self.name)
+        let format = Format<UIImage>(self.name)
         
         sut.addFormat(format)
     }
@@ -60,7 +60,7 @@ class CacheTests: DiskTestCase {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let format = Format(self.name)
+        let format = Format<UIImage>(self.name)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -87,7 +87,7 @@ class CacheTests: DiskTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format(self.name)
+        let format = Format<UIImage>(self.name)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
@@ -107,7 +107,7 @@ class CacheTests: DiskTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        var format = Format(self.name, diskCapacity: UINT64_MAX)
+        var format = Format<UIImage>(self.name, diskCapacity: UINT64_MAX)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
@@ -246,9 +246,13 @@ class CacheTests: DiskTestCase {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
         let entity = SimpleEntity(key: key, thing: image)
-        let format = Format(self.name, size : CGSizeMake(10, 20), scaleMode : .Fill)
+        
+        let resizer = ImageResizer(size : CGSizeMake(10, 20), scaleMode : .Fill)
+        let format = Format<UIImage>(self.name, transform: {
+            return resizer.resizeImage($0)
+        })
         sut.addFormat(format)
-        let formattedImage = format.apply(image)
+        let formattedImage = resizer.resizeImage(image)
         let expectation = self.expectationWithDescription(self.name)
         
         let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
@@ -257,27 +261,6 @@ class CacheTests: DiskTestCase {
         }, failure : { _ in
             XCTFail("expected sucesss")
             expectation.fulfill()
-        })
-        
-        XCTAssertFalse(didSuccess)
-        self.waitForExpectationsWithTimeout(1, nil)
-    }
-    
-    func testFetchImageForEntity_ApplyFormat_ScaleModeFit () {
-        let key = self.name
-        let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
-        let entity = SimpleEntity(key: key, thing: image)
-        let format = Format(self.name, size : CGSizeMake(10, 20), scaleMode : .AspectFit)
-        sut.addFormat(format)
-        let formattedImage = format.apply(image)
-        let expectation = self.expectationWithDescription(self.name)
-        
-        let didSuccess = sut.fetchImageForEntity(entity, formatName : format.name, success : {
-            XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
-            expectation.fulfill()
-            }, failure : { _ in
-                XCTFail("expected sucesss")
-                expectation.fulfill()
         })
         
         XCTAssertFalse(didSuccess)
@@ -322,7 +305,7 @@ class CacheTests: DiskTestCase {
     func testRemoveImage_ExistingInFormat() {
         let sut = self.sut!
         let key = "key"
-        let format = Format(self.name)
+        let format = Format<UIImage>(self.name)
         sut.addFormat(format)
         sut.setImage(UIImage(), key, formatName: format.name)
         let expectation = self.expectationWithDescription("fetch image")
@@ -341,7 +324,7 @@ class CacheTests: DiskTestCase {
     func testRemoveImageExistingUsingAnotherFormat() {
         let sut = self.sut!
         let key = "key"
-        let format = Format(self.name)
+        let format = Format<UIImage>(self.name)
         sut.addFormat(format)
         sut.setImage(UIImage(), key)
         let expectation = self.expectationWithDescription("fetch image")

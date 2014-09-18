@@ -89,7 +89,7 @@ extension NSObject : HasAssociatedSwift {
 
 public extension UIImageView {
     
-    public var hnk_format : Format {
+    public var hnk_format : Format<UIImage> {
         let viewSize = self.bounds.size
             assert(viewSize.width > 0 && viewSize.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
@@ -150,18 +150,20 @@ public extension UIImageView {
             }
     }
     
-    class func hnk_formatWithSize(size : CGSize, scaleMode : ScaleMode) -> Format {
+    class func hnk_formatWithSize(size : CGSize, scaleMode : ScaleMode) -> Format<UIImage> {
         let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
         let cache = Haneke.sharedCache
         if let (format,_,_) = cache.formats[name] {
             return format
         }
         
-        let format = Format(name,
-            diskCapacity: Haneke.UIKit.DefaultFormat.DiskCapacity,
-            size:size,
-            scaleMode:scaleMode,
-            compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        let format = Format<UIImage>(name,
+            diskCapacity: Haneke.UIKit.DefaultFormat.DiskCapacity) {
+                let resizer = ImageResizer(size:size,
+                scaleMode:scaleMode,
+                compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+                return resizer.resizeImage($0)
+        }
         
         cache.addFormat(format)
         return format
