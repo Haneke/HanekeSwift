@@ -19,7 +19,7 @@ extension Haneke {
 
 public let OriginalFormatName = "original"
 
-public class Cache<T : AnyObject where T : DataConvertible> {
+public class Cache<T : DataConvertible where T.Result == T> {
     
     let name : String
     
@@ -49,10 +49,11 @@ public class Cache<T : AnyObject where T : DataConvertible> {
     
     public func setImage (image: T, _ key: String, formatName : String = OriginalFormatName) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            memoryCache.setObject(image, forKey: key)
+            let wrapper = ObjectWrapper(value: image)
+            memoryCache.setObject(wrapper, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
             // TODO: diskCache.setData(image.hnk_data(compressionQuality: format.compressionQuality), key: key)
-            diskCache.setData(image.hnk_data(), key: key)
+            diskCache.setData(image.asData(), key: key)
         } else {
             assertionFailure("Can't set image before adding format")
         }
@@ -60,13 +61,16 @@ public class Cache<T : AnyObject where T : DataConvertible> {
     
     public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
-            if let image = memoryCache.objectForKey(key) as? T {
-                doSuccess(image)
-                return true
+            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
+                if let result = wrapper.value as? T {
+                    doSuccess(result)
+                    return true
+                }
                 // TODO: Update disk cache access date
-            } else {
-                self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache,  success: doSuccess, failure: doFailure)
             }
+
+            self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, success: doSuccess, failure: doFailure)
+
         } else if let block = doFailure {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
@@ -76,7 +80,7 @@ public class Cache<T : AnyObject where T : DataConvertible> {
         return false
     }
     
-    public func fetchImageForEntity(entity : Fetcher, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchImageForEntity(entity : Fetcher<T>, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         let key = entity.key
         let didSuccess = self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
@@ -131,13 +135,16 @@ public class Cache<T : AnyObject where T : DataConvertible> {
     private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
         diskCache.fetchData(key, success: { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                let image = T.convertFromData(data)
+                let result = T.convertFromData(data)
                 // TODO: Decompress image
                 // let decompressedImage = image.hnk_decompressedImage()
-                dispatch_async(dispatch_get_main_queue(), {
-                    doSuccess(image)
-                    memoryCache.setObject(image, forKey: key)
-                })
+                if let result = result {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        doSuccess(result)
+                        let wrapper = ObjectWrapper(value: result)
+                        memoryCache.setObject(wrapper, forKey: key)
+                    })
+                }
             })
         }, failure: { error in
             if let block = doFailure {
@@ -153,16 +160,16 @@ public class Cache<T : AnyObject where T : DataConvertible> {
         })
     }
     
-    private func fetchImageFromEntity(entity : Fetcher, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
+    private func fetchImageFromEntity(entity : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
         entity.fetchWithSuccess(success: { result in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                var formattedImage = format.apply(result)
-                if (formattedImage == result) {
+                var formatted = format.apply(result)
+                // if (formatted == result) {
                     // TODO: formattedImage = image.hnk_decompressedImage()
-                }
+                // }
                 dispatch_async(dispatch_get_main_queue(), {
-                    doSuccess(formattedImage)
-                    self.setImage(formattedImage, entity.key, formatName: format.name)
+                    doSuccess(formatted)
+                    self.setImage(formatted, entity.key, formatName: format.name)
                 })
             })
         }, failure: { error in

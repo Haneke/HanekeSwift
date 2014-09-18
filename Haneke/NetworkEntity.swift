@@ -19,12 +19,15 @@ extension Haneke {
     }
 }
 
-public class NetworkEntity<T : DataConvertible> : Fetcher {
+public class NetworkEntity<T : DataConvertible> : Fetcher<T> {
     
     let URL : NSURL
     
     public init(URL : NSURL) {
         self.URL = URL
+
+        let key =  URL.absoluteString!
+        super.init(key: key)
     }
     
     public var session : NSURLSession { return NSURLSession.sharedSession() }
@@ -35,9 +38,7 @@ public class NetworkEntity<T : DataConvertible> : Fetcher {
     
     // MARK: Entity
     
-    public var key : String { return URL.absoluteString! }
-    
-    public func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
+    public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
         self.cancelled = false
         self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data : NSData!, response : NSURLResponse!, error : NSError!) -> Void in
             if let strongSelf = self {
@@ -47,14 +48,14 @@ public class NetworkEntity<T : DataConvertible> : Fetcher {
         self.task?.resume()
     }
     
-    public func cancelFetch() {
+    public override func cancelFetch() {
         self.task?.cancel()
         self.cancelled = true
     }
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
+    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
 
         if cancelled { return }
         
@@ -88,7 +89,7 @@ public class NetworkEntity<T : DataConvertible> : Fetcher {
             return
         }
         
-        let thing : DataConvertible? = T.convertFromData(data)
+        let thing : T.Result? = T.convertFromData(data)
         if thing == nil {
             let localizedFormat = NSLocalizedString("Failed to load image from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)

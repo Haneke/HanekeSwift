@@ -9,36 +9,55 @@
 import UIKit
 
 public protocol DataConvertible {
+    typealias Result
     
-    class func convertFromData(data : NSData) -> Self?
+    class func convertFromData(data:NSData) -> Result?
     
+    func asData() -> NSData
 }
 
-public protocol Fetcher {
-
-    var key : String { get }
+extension UIImage : DataConvertible {
     
-    func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ()))
+    public typealias Result = UIImage
     
-    func cancelFetch()
-}
-
-class SimpleEntity<T : DataConvertible> : Fetcher {
-    
-    let key : String
-    
-    let getThing : () -> T
-    
-    init(key : String, thing getThing : @autoclosure () -> T) {
-        self.key = key
-        self.getThing = getThing
+    public class func convertFromData(data:NSData) -> Result? {
+        let image : UIImage? = UIImage(data: data)
+        return image
     }
     
-    func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
+    public func asData() -> NSData {
+        return self.hnk_data()
+    }
+    
+}
+
+public class Fetcher<T : DataConvertible> {
+
+    let key : String
+    
+    init(key : String) {
+        self.key = key
+    }
+    
+    func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {}
+    
+    func cancelFetch() {}
+}
+
+class SimpleEntity<T : DataConvertible> : Fetcher<T> {
+    
+    let getThing : () -> T.Result
+    
+    init(key : String, thing getThing : @autoclosure () -> T.Result) {
+        self.getThing = getThing
+        super.init(key: key)
+    }
+    
+    override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
         let thing = getThing()
         doSuccess(thing)
     }
     
-    func cancelFetch() {}
+    override func cancelFetch() {}
     
 }

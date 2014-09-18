@@ -9,15 +9,6 @@
 import UIKit
 import ObjectiveC
 
-extension UIImage : DataConvertible {
-    
-    public class func convertFromData(data : NSData) -> Self?  {
-        let image : UIImage? = UIImage(data : data) // Workaround for init that returns nil
-        return image as? Self
-    }
-    
-}
-
 public extension Haneke {
     public struct UIKit {
         public struct DefaultFormat {
@@ -28,64 +19,15 @@ public extension Haneke {
     }
 }
 
-var _associations : [COpaquePointer: Fetcher] = [:]
-
-@objc protocol HasAssociatedSwift : class {
+class ObjectWrapper : NSObject {
+    let value: Any
     
-    func clearSwiftAssociations()
-}
-
-class DeallocWitness : NSObject {
-    
-    weak var object : HasAssociatedSwift!
-    
-    init (object: HasAssociatedSwift) {
-        self.object = object
-    }
-    
-    deinit {
-        object.clearSwiftAssociations()
+    init(value: Any) {
+        self.value = value
     }
 }
 
-var _DeallocWitnessKey: UInt8 = 0
-
-func _setDeallocWitnessIfNeeded(object : NSObject) {
-    var witness = objc_getAssociatedObject(object, &_DeallocWitnessKey) as DeallocWitness?
-    if (witness == nil) {
-        witness = DeallocWitness(object: object)
-        objc_setAssociatedObject(object, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
-    }
-    
-}
-
-extension NSObject : HasAssociatedSwift {
-    
-    var associatedThing : Fetcher! {
-        get {
-            let key = getKey()
-            return _associations[key]
-        }
-        set(thing) {
-            let witness = DeallocWitness(object: self)
-            objc_setAssociatedObject(self, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
-            
-            let key = getKey()
-            _associations[key] = thing
-        }
-    }
-    
-    func getKey() -> COpaquePointer {
-        let ptr: COpaquePointer =
-        Unmanaged<AnyObject>.passUnretained(self).toOpaque()
-        return ptr
-    }
-    
-    func clearSwiftAssociations() {
-        let key = getKey()
-        _associations[key] = nil
-    }
-}
+var AssociatedFetcherKey = 0
 
 public extension UIImageView {
     
@@ -106,7 +48,7 @@ public extension UIImageView {
         self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess)
     }
     
-    public func hnk_setImageFromEntity(entity : Fetcher, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
+    public func hnk_setImageFromEntity(entity : Fetcher<UIImage>, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
 
         self.hnk_entity = entity
         
@@ -128,12 +70,14 @@ public extension UIImageView {
     
     // MARK: Internal
     
-    var hnk_entity : Fetcher! {
+    var hnk_entity : Fetcher<UIImage>! {
         get {
-            return self.associatedThing
+            let wrapper : AnyObject? = objc_getAssociatedObject(self, &AssociatedFetcherKey)
+            return wrapper?.value as? Fetcher<UIImage>
         }
-        set (entity) {
-            self.associatedThing = entity
+        set(value) {
+            let wrapper = ObjectWrapper(value: value)
+            objc_setAssociatedObject(self, &AssociatedFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     
@@ -169,7 +113,7 @@ public extension UIImageView {
         return format
     }
     
-    func hnk_fetchImageForEntity(entity : Fetcher, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
+    func hnk_fetchImageForEntity(entity : Fetcher<UIImage>, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false

@@ -15,7 +15,7 @@ class EntityTests: XCTestCase {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
 
         XCTAssertEqual(entity.key, key)
         XCTAssertEqual(entity.getThing(), image)
@@ -24,7 +24,7 @@ class EntityTests: XCTestCase {
     func testSimpleEntityFetch() {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
         entity.fetchWithSuccess(success: {_ in

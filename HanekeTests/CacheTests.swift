@@ -12,11 +12,11 @@ import XCTest
 
 class CacheTests: DiskTestCase {
     
-    var sut : Cache!
+    var sut : Cache<UIImage>!
     
     override func setUp() {
         super.setUp()
-        sut = Cache(self.name)
+        sut = Cache<UIImage>(self.name)
     }
     
     override func tearDown() {
@@ -26,14 +26,14 @@ class CacheTests: DiskTestCase {
     
     func testInit() {
         let name = "name"
-        let sut = Cache(name)
+        let sut = Cache<UIImage>(name)
         
         XCTAssertNotNil(sut.memoryWarningObserver)
         XCTAssertEqual(name, sut.name)
     }
     
     func testDeinit() {
-        weak var sut = Cache("test")
+        weak var sut = Cache<UIImage>("test")
     }
     
     func testAddFormat() {
@@ -164,7 +164,7 @@ class CacheTests: DiskTestCase {
             expectation.fulfill()
         }, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Cache.ErrorCode.ObjectNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheError.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
@@ -182,7 +182,7 @@ class CacheTests: DiskTestCase {
             expectation.fulfill()
         }, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Cache.ErrorCode.FormatNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
@@ -194,7 +194,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setImage(image, key)
         
@@ -210,7 +210,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setImage(image, key)
         self.clearMemoryCache()
@@ -227,7 +227,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_MemoryMiss_DiskMiss () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
         let didSuccess = sut.fetchImageForEntity(entity, success : {
@@ -245,7 +245,7 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_ApplyFormat_ScaleModeFill () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         
         let resizer = ImageResizer(size : CGSizeMake(10, 20), scaleMode : .Fill)
         let format = Format<UIImage>(self.name, transform: {
@@ -270,14 +270,14 @@ class CacheTests: DiskTestCase {
     func testFetchImageForEntity_InexistingFormat () {
         let expectation = self.expectationWithDescription(self.name)
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let entity = SimpleEntity(key: self.name, thing: image)
+        let entity = SimpleEntity<UIImage>(key: self.name, thing: image)
 
         let didSuccess = sut.fetchImageForEntity(entity, formatName: self.name, success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Cache.ErrorCode.FormatNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         })
@@ -400,9 +400,13 @@ class CacheTests: DiskTestCase {
     func testUIApplicationDidReceiveMemoryWarningNotification() {
         let expectation = expectationWithDescription("onMemoryWarning")
         
-        class CacheMock : Cache {
+        class CacheMock<T : DataConvertible where T.Result == T> : Cache<T> {
             
             var expectation : XCTestExpectation?
+            
+            override init(_ name: String) {
+                super.init(name)
+            }
             
             override func onMemoryWarning() {
                 super.onMemoryWarning()
@@ -410,7 +414,7 @@ class CacheTests: DiskTestCase {
             }
         }
         
-        let sut = CacheMock("test")
+        let sut = CacheMock<UIImage>("test")
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)

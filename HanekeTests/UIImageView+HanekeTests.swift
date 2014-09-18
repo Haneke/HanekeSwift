@@ -220,7 +220,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromEntity_MemoryMiss() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         
         sut.hnk_setImageFromEntity(entity)
 
@@ -231,7 +231,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromEntity_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setImage(image, key, formatName: format.name)
@@ -246,7 +246,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         sut.image = previousImage
         
         sut.hnk_setImageFromEntity(entity)
@@ -259,7 +259,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         
         sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
         
@@ -271,7 +271,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setImage(image, key, formatName: format.name)
@@ -285,7 +285,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromEntity_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity(key: key, thing: image)
+        let entity = SimpleEntity<UIImage>(key: key, thing: image)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
@@ -300,21 +300,24 @@ class UIImageView_HanekeTests: XCTestCase {
     }
     
     func testSetImageFromEntity_Failure() {
-        class MockEntity : Fetcher {
-            let key = "test"
+        class MockFetcher<T : DataConvertible> : Fetcher<T> {
             
-            func fetchWithSuccess(success doSuccess : (DataConvertible) -> (), failure doFailure : ((NSError?) -> ())) {
+            override init(key: String) {
+                super.init(key: key)
+            }
+            
+            override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
                 let error = Haneke.errorWithCode(0, description: "test")
                 doFailure(error)
             }
             
-            func cancelFetch() {}
+            override func cancelFetch() {}
             
         }
         
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = MockEntity()
+        let entity = MockFetcher<UIImage>(key:key)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromEntity(entity, failure:{error in
