@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-public enum ScaleMode {
-    case Fill, AspectFit, AspectFill, None
+public enum ScaleMode : String {
+    case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
 }
 
 public struct Format {
@@ -26,12 +26,13 @@ public struct Format {
     
     public let diskCapacity : UInt64
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true) {
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0) {
         self.name = name
         self.diskCapacity = diskCapacity
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
+        self.compressionQuality = compressionQuality
     }
     
     // With Format<T> this could be func apply(object : T) -> T

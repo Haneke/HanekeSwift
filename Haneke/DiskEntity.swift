@@ -50,4 +50,8 @@ public class DiskEntity : Entity {
             })
         })
     }
+    
+    public func cancelFetch() {
+        
+    }
 }

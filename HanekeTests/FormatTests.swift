@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
+import UIKit
 import XCTest
-import Haneke
 
 class FormatTests: XCTestCase {
 
@@ -23,7 +23,7 @@ class FormatTests: XCTestCase {
     }
     
     func testResizeImageScaleNone() {
-
+        
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
         let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(30, 5), scaleMode: .None)
         let resizedImage = sut.resizedImageFromImage(originalImage)
