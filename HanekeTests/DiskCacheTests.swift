@@ -319,6 +319,52 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
+    func testUpdateAccessDateFileInDisk() {
+        let data = NSData.dataWithLength(10)
+        let key = self.name
+        sut.setData(data, key : key)
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        dispatch_sync(sut.cacheQueue, {
+            let _ = fileManager.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path, error: nil)
+        })
+        
+        // Preconditions
+        dispatch_sync(sut.cacheQueue, {
+            let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
+            let accessDate = attributes[NSFileModificationDate] as NSDate
+            XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
+        })
+        
+        sut.updateAccessDate(UIImage(data: data), key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
+            let accessDate = attributes[NSFileModificationDate] as NSDate
+            let now = NSDate()
+            let interval = accessDate.timeIntervalSinceDate(now)
+            XCTAssertEqualWithAccuracy(interval, 0, 1)
+        })
+    }
+    
+    func testUpdateAccessDateFileNotInDisk() {
+        let image = UIImage.imageWithColor(UIColor.redColor())
+        let key = self.name;
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        
+        // Preconditions
+        dispatch_sync(sut.cacheQueue, {
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        })
+        
+        sut.updateAccessDate(image, key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+        })
+    }
+    
     func testRemoveDataTwoKeys() {
         let keys = ["1", "2"]
         let datas = [NSData.dataWithLength(5), NSData.dataWithLength(7)]
