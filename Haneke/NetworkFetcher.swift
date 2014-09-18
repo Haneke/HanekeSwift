@@ -1,5 +1,5 @@
 //
-//  NetworkEntity.swift
+//  NetworkFetcher.swift
 //  Haneke
 //
 //  Created by Hermes Pique on 9/12/14.
@@ -9,8 +9,8 @@
 import UIKit
 
 extension Haneke {
-    public struct NetworkEntity {
-        // It'd be better to define this in the NetworkEntity class but Swift doesn't allow to declare an enum in a generic type
+    public struct NetworkFetcher {
+        // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
         public enum ErrorCode : Int {
             case InvalidData = -400
             case MissingData = -401
@@ -19,7 +19,7 @@ extension Haneke {
     }
 }
 
-public class NetworkEntity<T : DataConvertible> : Fetcher<T> {
+public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     let URL : NSURL
     
@@ -36,7 +36,7 @@ public class NetworkEntity<T : DataConvertible> : Fetcher<T> {
     
     var cancelled = false
     
-    // MARK: Entity
+    // MARK: Fetcher
     
     public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
         self.cancelled = false
@@ -101,7 +101,7 @@ public class NetworkEntity<T : DataConvertible> : Fetcher<T> {
 
     }
     
-    private func failWithCode(code : Haneke.NetworkEntity.ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
+    private func failWithCode(code : Haneke.NetworkFetcher.ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
         let error = Haneke.errorWithCode(code.toRaw(), description: localizedDescription)
         dispatch_async(dispatch_get_main_queue(), { doFailure(error) })

@@ -15,7 +15,7 @@ public extension Haneke {
             public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
             public static let CompressionQuality : Float = 0.75
         }
-        static var entityKey = 0
+        static var fetcherKey = 0
     }
 }
 
@@ -88,22 +88,22 @@ public extension UIImageView {
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
-        let entity = NetworkEntity<UIImage>(URL: URL)
-        self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess, failure: doFailure)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, success: doSuccess, failure: doFailure)
     }
     
     public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil) {
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
-        self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, success: doSuccess)
     }
     
-    public func hnk_setImageFromEntity(entity : Fetcher<UIImage>, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
+    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
 
         self.hnk_cancelSetImage()
         
-        self.hnk_entity = entity
+        self.hnk_fetcher = fetcher
         
-        let didSetImage = self.hnk_fetchImageForEntity(entity, success: doSuccess, failure: doFailure)
+        let didSetImage = self.hnk_fetchImageForFetcher(fetcher, success: doSuccess, failure: doFailure)
         
         if didSetImage { return }
      
@@ -113,20 +113,20 @@ public extension UIImageView {
     }
     
     public func hnk_cancelSetImage() {
-        if let entity = self.hnk_entity {
-            entity.cancelFetch()
-            self.hnk_entity = nil
+        if let fetcher = self.hnk_fetcher {
+            fetcher.cancelFetch()
+            self.hnk_fetcher = nil
         }
     }
     
     // MARK: Internal
     
-    var hnk_entity : Fetcher<UIImage>! {
+    var hnk_fetcher : Fetcher<UIImage>! {
         get {
             return self.associatedThing
         }
-        set (entity) {
-            self.associatedThing = entity
+        set (fetcher) {
+            self.associatedThing = fetcher
         }
     }
     
@@ -164,21 +164,21 @@ public extension UIImageView {
         return format
     }
     
-    func hnk_fetchImageForEntity(entity : Fetcher<UIImage>, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
+    func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false
-        let didSetImage = cache.fetchValueForEntity(entity, formatName: format.name, success: {[weak self] (image) -> () in
+        let didSetImage = cache.fetchValueForFetcher(fetcher, formatName: format.name, success: {[weak self] (image) -> () in
             if let strongSelf = self {
-                if strongSelf.hnk_shouldCancelForKey(entity.key) { return }
+                if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 
                 strongSelf.hnk_setImage(image, animated:animated, success:doSuccess)
             }
         }, failure: {[weak self] (error) -> () in
             if let strongSelf = self {
-                if strongSelf.hnk_shouldCancelForKey(entity.key) { return }
+                if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 
-                strongSelf.hnk_entity = nil
+                strongSelf.hnk_fetcher = nil
                 
                 doFailure?(error)
             }
@@ -188,7 +188,7 @@ public extension UIImageView {
     }
     
     func hnk_setImage(image : UIImage, animated : Bool, success doSuccess : ((UIImage) -> ())?) {
-        self.hnk_entity = nil
+        self.hnk_fetcher = nil
         
         if let doSuccess = doSuccess {
             doSuccess(image)
@@ -201,7 +201,7 @@ public extension UIImageView {
     }
     
     func hnk_shouldCancelForKey(key:String) -> Bool {
-        if self.hnk_entity?.key == key { return false }
+        if self.hnk_fetcher?.key == key { return false }
         
         NSLog("Cancelled set image for \(key.lastPathComponent)")
         return true

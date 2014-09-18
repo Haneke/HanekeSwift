@@ -147,7 +147,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key)
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, key)
+        XCTAssertEqual(sut.hnk_fetcher.key, key)
     }
     
     func testSetImage_MemoryHit() {
@@ -160,7 +160,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
     func testSetImage_ImageSet_MemoryMiss() {
@@ -172,8 +172,8 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key)
         
         XCTAssertEqual(sut.image!, previousImage)
-        let entity = sut.hnk_entity
-        XCTAssertEqual(sut.hnk_entity.key, key)
+        let fetcher = sut.hnk_fetcher
+        XCTAssertEqual(sut.hnk_fetcher.key, key)
     }
     
     func testSetImage_UsingPlaceholder_MemoryMiss() {
@@ -184,7 +184,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key, placeholder: placeholder)
         
         XCTAssertEqual(sut.image!, placeholder)
-        XCTAssertEqual(sut.hnk_entity.key, key)
+        XCTAssertEqual(sut.hnk_fetcher.key, key)
     }
     
     func testSetImage_UsingPlaceholder_MemoryHit() {
@@ -198,7 +198,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key, placeholder: placeholder)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
     func testSetImage_Success() {
@@ -213,95 +213,95 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, key)
+        XCTAssertEqual(sut.hnk_fetcher.key, key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
-    // MARK: setImageFromEntity
+    // MARK: setImageFromFetcher
 
-    func testSetImageFromEntity_MemoryMiss() {
+    func testSetImageFromFetcher_MemoryMiss() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         
-        sut.hnk_setImageFromEntity(entity)
+        sut.hnk_setImageFromFetcher(fetcher)
 
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
     }
     
-    func testSetImageFromEntity_MemoryHit() {
+    func testSetImageFromFetcher_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setValue(image, key, formatName: format.name)
         
-        sut.hnk_setImageFromEntity(entity)
+        sut.hnk_setImageFromFetcher(fetcher)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
-    func testSetImageFromEntity_ImageSet_MemoryMiss() {
+    func testSetImageFromFetcher_ImageSet_MemoryMiss() {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         sut.image = previousImage
         
-        sut.hnk_setImageFromEntity(entity)
+        sut.hnk_setImageFromFetcher(fetcher)
         
         XCTAssertEqual(sut.image!, previousImage)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
     }
 
-    func testSetImageFromEntity_UsingPlaceholder_MemoryMiss() {
+    func testSetImageFromFetcher_UsingPlaceholder_MemoryMiss() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         
-        sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
+        sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
         
         XCTAssertEqual(sut.image!, placeholder)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
     }
     
-    func testSetImageFromEntity_UsingPlaceholder_MemoryHit() {
+    func testSetImageFromFetcher_UsingPlaceholder_MemoryHit() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
         cache.setValue(image, key, formatName: format.name)
         
-        sut.hnk_setImageFromEntity(entity, placeholder:placeholder)
+        sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
-    func testSetImageFromEntity_Success() {
+    func testSetImageFromFetcher_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.hnk_setImageFromEntity(entity, success:{resultImage in
+        sut.hnk_setImageFromFetcher(fetcher, success:{resultImage in
             XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
-    func testSetImageFromEntity_Failure() {
+    func testSetImageFromFetcher_Failure() {
         class MockFetcher<T : DataConvertible> : Fetcher<T> {
             
             override init(key: String) {
@@ -319,16 +319,16 @@ class UIImageView_HanekeTests: XCTestCase {
         
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let entity = MockFetcher<UIImage>(key:key)
+        let fetcher = MockFetcher<UIImage>(key:key)
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.hnk_setImageFromEntity(entity, failure:{error in
+        sut.hnk_setImageFromFetcher(fetcher, failure:{error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             expectation.fulfill()
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -336,64 +336,64 @@ class UIImageView_HanekeTests: XCTestCase {
     
     func testSetImageFromURL_MemoryMiss() {
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL)
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
     }
     
     func testSetImageFromURL_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
-        cache.setValue(image, entity.key, formatName: format.name)
+        cache.setValue(image, fetcher.key, formatName: format.name)
         
         sut.hnk_setImageFromURL(URL)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
     func testSetImageFromURL_ImageSet_MemoryMiss() {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         sut.image = previousImage
         
         sut.hnk_setImageFromURL(URL)
         
         XCTAssertEqual(sut.image!, previousImage)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
     }
     
     func testSetImageFromURL_UsingPlaceholder_MemoryMiss() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL, placeholder: placeholder)
         
         XCTAssertEqual(sut.image!, placeholder)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
     }
     
     func testSetImageFromURL_UsingPlaceholder_MemoryHit() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let cache = Haneke.sharedCache
         let format = sut.hnk_format
-        cache.setValue(image, entity.key, formatName: format.name)
+        cache.setValue(image, fetcher.key, formatName: format.name)
         
         sut.hnk_setImageFromURL(URL, placeholder: placeholder)
         
         XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
     func testSetImageFromURL_Success() {
@@ -405,7 +405,7 @@ class UIImageView_HanekeTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
@@ -415,7 +415,7 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -435,7 +435,7 @@ class UIImageView_HanekeTests: XCTestCase {
             XCTFail("unexpected failure")
         })
         let URL2 = NSURL(string: "http://haneke.io/2.png")
-        let entity2 = NetworkEntity<UIImage>(URL: URL2)
+        let fetcher2 = NetworkFetcher<UIImage>(URL: URL2)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL2, success:{resultImage in
@@ -444,7 +444,7 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity2.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher2.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -456,7 +456,7 @@ class UIImageView_HanekeTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")
-        let entity = NetworkEntity<UIImage>(URL: URL)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
@@ -465,7 +465,7 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_entity.key, entity.key)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -474,7 +474,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testCancelSetImage() {
         sut.hnk_cancelSetImage()
         
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
     func testCancelSetImage_AfterSetImage() {
@@ -487,7 +487,7 @@ class UIImageView_HanekeTests: XCTestCase {
         
         sut.hnk_cancelSetImage()
         
-        XCTAssertTrue(sut.hnk_entity == nil)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
         self.waitFor(0.1)
     }
 

@@ -1,5 +1,5 @@
 //
-//  NetworkEntityTests.swift
+//  NetworkFetcherTests.swift
 //  Haneke
 //
 //  Created by Hermes Pique on 9/15/14.
@@ -9,14 +9,14 @@
 import UIKit
 import XCTest
 
-class NetworkEntityTests: XCTestCase {
+class NetworkFetcherTests: XCTestCase {
 
     let URL = NSURL(string: "http://haneke.io/image.jpg")
-    var sut : NetworkEntity<UIImage>!
+    var sut : NetworkFetcher<UIImage>!
     
     override func setUp() {
         super.setUp()
-        sut = NetworkEntity(URL: URL)
+        sut = NetworkFetcher(URL: URL)
     }
     
     override func tearDown() {
@@ -107,7 +107,7 @@ class NetworkEntityTests: XCTestCase {
             expectation.fulfill()
         }) {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkEntity.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }
@@ -129,7 +129,7 @@ class NetworkEntityTests: XCTestCase {
             expectation.fulfill()
         }) {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkEntity.ErrorCode.MissingData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.MissingData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }
@@ -180,7 +180,7 @@ class NetworkEntityTests: XCTestCase {
             expectation.fulfill()
         }) {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkEntity.ErrorCode.InvalidStatusCode.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidStatusCode.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }

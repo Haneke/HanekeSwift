@@ -1,5 +1,5 @@
 //
-//  EntityTests.swift
+//  FetcherTests.swift
 //  Haneke
 //
 //  Created by Hermes Pique on 9/10/14.
@@ -9,25 +9,25 @@
 import UIKit
 import XCTest
 
-class EntityTests: XCTestCase {
+class FetcherTests: XCTestCase {
     
-    func testSimpleEntityInit() {
+    func testSimpleFetcherInit() {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
 
-        XCTAssertEqual(entity.key, key)
-        XCTAssertEqual(entity.getThing(), image)
+        XCTAssertEqual(fetcher.key, key)
+        XCTAssertEqual(fetcher.getThing(), image)
     }
     
-    func testSimpleEntityFetch() {
+    func testSimpleFetcherFetch() {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        entity.fetchWithSuccess(success: {
+        fetcher.fetchWithSuccess(success: {
             XCTAssertEqual($0, image)
             expectation.fulfill()
         }, failure: { _ in

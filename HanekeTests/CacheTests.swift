@@ -191,14 +191,14 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForEntity_MemoryHit () {
+    func testFetchValueForFetcher_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setValue(image, key)
         
-        let didSuccess = sut.fetchValueForEntity(entity, success: {
+        let didSuccess = sut.fetchValueForFetcher(fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -207,15 +207,15 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForEntity_MemoryMiss_DiskHit () {
+    func testFetchValueForFetcher_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let didSuccess = sut.fetchValueForEntity(entity, success: {
+        let didSuccess = sut.fetchValueForFetcher(fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -224,13 +224,13 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForEntity_MemoryMiss_DiskMiss () {
+    func testFetchValueForFetcher_MemoryMiss_DiskMiss () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchValueForEntity(entity, success : {
+        let didSuccess = sut.fetchValueForFetcher(fetcher, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         }, failure : { _ in
@@ -242,10 +242,10 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForEntity_ApplyFormat_ScaleModeFill () {
+    func testFetchValueForFetcher_ApplyFormat_ScaleModeFill () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
-        let entity = SimpleEntity<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         
         let resizer = ImageResizer(size : CGSizeMake(10, 20), scaleMode : .Fill)
         let format = Format<UIImage>(self.name, transform: {
@@ -255,7 +255,7 @@ class CacheTests: DiskTestCase {
         let formattedImage = resizer.resizeImage(image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchValueForEntity(entity, formatName : format.name, success : {
+        let didSuccess = sut.fetchValueForFetcher(fetcher, formatName : format.name, success : {
             XCTAssertTrue($0.isEqualPixelByPixel(formattedImage))
             expectation.fulfill()
         }, failure : { _ in
@@ -267,12 +267,12 @@ class CacheTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForEntity_InexistingFormat () {
+    func testFetchValueForFetcher_InexistingFormat () {
         let expectation = self.expectationWithDescription(self.name)
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let entity = SimpleEntity<UIImage>(key: self.name, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: self.name, thing: image)
 
-        let didSuccess = sut.fetchValueForEntity(entity, formatName: self.name, success : { data in
+        let didSuccess = sut.fetchValueForFetcher(fetcher, formatName: self.name, success : { data in
             XCTFail("expected failure")
             expectation.fulfill()
         }, failure : { error in

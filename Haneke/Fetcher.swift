@@ -1,5 +1,5 @@
 //
-//  Entity.swift
+//  Fetcher.swift
 //  Haneke
 //
 //  Created by Hermes Pique on 9/9/14.
@@ -44,7 +44,7 @@ public class Fetcher<T : DataConvertible> {
     func cancelFetch() {}
 }
 
-class SimpleEntity<T : DataConvertible> : Fetcher<T> {
+class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
     
     let getThing : () -> T.Result
     

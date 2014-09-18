@@ -18,7 +18,7 @@ class ObjectWrapper : NSObject {
 }
 
 extension Haneke {
-        // It'd be better to define this in the NetworkEntity class but Swift doesn't allow to declare an enum in a generic type
+        // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
         public enum CacheError : Int {
             case ObjectNotFound = -100
             case FormatNotFound = -101
@@ -94,8 +94,8 @@ public class Cache<T : DataConvertible where T.Result == T> {
         return false
     }
     
-    public func fetchValueForEntity(entity : Fetcher<T>, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
-        let key = entity.key
+    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+        let key = fetcher.key
         let didSuccess = self.fetchValueForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
                 doFailure?(error)
@@ -103,7 +103,7 @@ public class Cache<T : DataConvertible where T.Result == T> {
             }
             
             if let (format, _, _) = self.formats[formatName] {
-                self.fetchValueFromEntity(entity, format: format, success: doSuccess, failure: doFailure)
+                self.fetchValueFromFetcher(fetcher, format: format, success: doSuccess, failure: doFailure)
             }
             
             // Unreachable code. Formats can't be removed from Cache.
@@ -174,8 +174,8 @@ public class Cache<T : DataConvertible where T.Result == T> {
         })
     }
     
-    private func fetchValueFromEntity(entity : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
-        entity.fetchWithSuccess(success: { value in
+    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
+        fetcher.fetchWithSuccess(success: { value in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 var formatted = format.apply(value)
                 // if (formatted == result) {
@@ -183,7 +183,7 @@ public class Cache<T : DataConvertible where T.Result == T> {
                 // }
                 dispatch_async(dispatch_get_main_queue(), {
                     doSuccess(formatted)
-                    self.setValue(formatted, entity.key, formatName: format.name)
+                    self.setValue(formatted, fetcher.key, formatName: format.name)
                 })
             })
         }, failure: { error in
