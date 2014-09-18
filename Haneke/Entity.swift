@@ -10,7 +10,7 @@ import UIKit
 
 public protocol DataConvertible {
     
-    class func convertFromData(data : NSData) -> DataConvertible?
+    class func convertFromData(data : NSData) -> Self?
     
 }
 

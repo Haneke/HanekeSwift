@@ -11,9 +11,9 @@ import ObjectiveC
 
 extension UIImage : DataConvertible {
     
-    public class func convertFromData(data : NSData) -> DataConvertible?  {
+    public class func convertFromData(data : NSData) -> Self?  {
         let image : UIImage? = UIImage(data : data) // Workaround for init that returns nil
-        return image
+        return image as? Self
     }
     
 }

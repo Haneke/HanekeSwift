@@ -9,14 +9,17 @@
 import Foundation
 import UIKit
 
+extension Haneke {
+        // It'd be better to define this in the NetworkEntity class but Swift doesn't allow to declare an enum in a generic type
+        public enum CacheError : Int {
+            case ObjectNotFound = -100
+            case FormatNotFound = -101
+        }
+}
+
 public let OriginalFormatName = "original"
 
-public class Cache {
-    
-    public enum ErrorCode : Int {
-        case ObjectNotFound = -100
-        case FormatNotFound = -101
-    }
+public class Cache<T : AnyObject where T : DataConvertible> {
     
     let name : String
     
@@ -35,7 +38,7 @@ public class Cache {
             }
         )
         
-        var originalFormat = Format<UIImage>(OriginalFormatName, diskCapacity : UINT64_MAX)
+        var originalFormat = Format<T>(OriginalFormatName, diskCapacity : UINT64_MAX)
         self.addFormat(originalFormat)
     }
     
@@ -44,7 +47,7 @@ public class Cache {
         notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
-    public func setImage (image: UIImage, _ key: String, formatName : String = OriginalFormatName) {
+    public func setImage (image: T, _ key: String, formatName : String = OriginalFormatName) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.setObject(image, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
@@ -55,9 +58,9 @@ public class Cache {
         }
     }
     
-    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
-            if let image = memoryCache.objectForKey(key) as? UIImage {
+            if let image = memoryCache.objectForKey(key) as? T {
                 doSuccess(image)
                 return true
                 // TODO: Update disk cache access date
@@ -67,16 +70,16 @@ public class Cache {
         } else if let block = doFailure {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
-            let error = Haneke.errorWithCode(ErrorCode.FormatNotFound.toRaw(), description: description)
+            let error = Haneke.errorWithCode(Haneke.CacheError.FormatNotFound.toRaw(), description: description)
             block(error)
         }
         return false
     }
     
-    public func fetchImageForEntity(entity : Fetcher, formatName : String = OriginalFormatName, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchImageForEntity(entity : Fetcher, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
         let key = entity.key
         let didSuccess = self.fetchImageForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
-            if error?.code == ErrorCode.FormatNotFound.toRaw() {
+            if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
                 doFailure?(error)
                 return
             }
@@ -114,9 +117,9 @@ public class Cache {
     
     // MARK: Formats
 
-    var formats : [String : (Format<UIImage>, NSCache, DiskCache)] = [:]
+    var formats : [String : (Format<T>, NSCache, DiskCache)] = [:]
     
-    public func addFormat(format : Format<UIImage>) {
+    public func addFormat(format : Format<T>) {
         let name = self.name
         let memoryCache = NSCache()
         let diskCache = DiskCache(name, capacity : format.diskCapacity)
@@ -125,14 +128,15 @@ public class Cache {
     
     // MARK: Private
     
-    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
         diskCache.fetchData(key, success: { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                let image = UIImage(data : data)
-                let decompressedImage = image.hnk_decompressedImage()
+                let image = T.convertFromData(data)
+                // TODO: Decompress image
+                // let decompressedImage = image.hnk_decompressedImage()
                 dispatch_async(dispatch_get_main_queue(), {
                     doSuccess(image)
-                    memoryCache.setObject(decompressedImage, forKey: key)
+                    memoryCache.setObject(image, forKey: key)
                 })
             })
         }, failure: { error in
@@ -140,7 +144,7 @@ public class Cache {
                 if (error?.code == NSFileReadNoSuchFileError) {
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
-                    let error = Haneke.errorWithCode(ErrorCode.ObjectNotFound.toRaw(), description: description)
+                    let error = Haneke.errorWithCode(Haneke.CacheError.ObjectNotFound.toRaw(), description: description)
                     block(error)
                 } else {
                     block(error)
@@ -149,12 +153,11 @@ public class Cache {
         })
     }
     
-    private func fetchImageFromEntity(entity : Fetcher, format : Format<UIImage>, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())?) {
+    private func fetchImageFromEntity(entity : Fetcher, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
         entity.fetchWithSuccess(success: { result in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                let image = result as UIImage
-                var formattedImage = format.apply(image)
-                if (formattedImage == image) {
+                var formattedImage = format.apply(result)
+                if (formattedImage == result) {
                     // TODO: formattedImage = image.hnk_decompressedImage()
                 }
                 dispatch_async(dispatch_get_main_queue(), {
