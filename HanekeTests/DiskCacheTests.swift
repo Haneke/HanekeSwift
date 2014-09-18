@@ -19,8 +19,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        let fileManager = NSFileManager.defaultManager()
-        fileManager.removeItemAtPath(sut.cachePath, error:nil)
+        sut.removeAllData()
         super.tearDown()
     }
     
@@ -397,6 +396,32 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataInexisting() {
+        let key = self.name
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        
+        // Preconditions
+        XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        
+        sut.removeData(self.name)
+    }
+    
+    func testRemoveAllData_Filled() {
+        let key = self.name
+        let data = NSData.dataWithLength(12)
+        let path = sut.pathForKey(key)
+        sut.setData(data, key: key)
+        
+        sut.removeAllData()
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+            XCTAssertEqual(self.sut.size, 0)
+        })
+    }
+    
+    func testRemoveAllData_Empty() {
         let key = self.name
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()

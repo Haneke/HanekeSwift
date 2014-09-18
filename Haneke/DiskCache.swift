@@ -97,6 +97,19 @@ public class DiskCache {
         })
     }
     
+    public func removeAllData() {
+        let fileManager = NSFileManager.defaultManager()
+        let path = self.cachePath
+        dispatch_async(cacheQueue, {
+            var error: NSError? = nil
+            if fileManager.removeItemAtPath(path, error: &error) {
+                self.size = 0
+            } else {
+                NSLog("Failed to remove all data with error \(error!)")
+            }
+        })
+    }
+
     public func updateAccessDate(image : UIImage, key : String) {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
@@ -112,6 +125,8 @@ public class DiskCache {
         let path = self.cachePath.stringByAppendingPathComponent(filename)
         return path
     }
+    
+    // MARK: Private
     
     private func calculateSize() {
         let fileManager = NSFileManager.defaultManager()
