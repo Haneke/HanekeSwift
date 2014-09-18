@@ -39,7 +39,8 @@ public extension UIImageView {
     }
     
     public func hnk_setImageFromEntity(entity : Entity, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
-
+        self.hnk_cancelSetImage()
+        
         self.hnk_entity = entity
         
         let didSetImage = self.hnk_fetchImageForEntity(entity, success: doSuccess, failure: doFailure)
@@ -48,6 +49,13 @@ public extension UIImageView {
      
         if let placeholder = placeholder {
             self.image = placeholder
+        }
+    }
+    
+    public func hnk_cancelSetImage() {
+        if let entity = self.hnk_entity {
+            entity.cancelFetch()
+            self.hnk_entity = nil
         }
     }
     
@@ -93,6 +101,7 @@ public extension UIImageView {
     }
     
     func hnk_fetchImageForEntity(entity : Entity, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
+        
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false
@@ -129,7 +138,7 @@ public extension UIImageView {
     }
     
     func hnk_shouldCancelForKey(key:String) -> Bool {
-        if self.hnk_entity.key == key { return false }
+        if self.hnk_entity?.key == key { return false }
         
         NSLog("Cancelled set image for \(key.lastPathComponent)")
         return true

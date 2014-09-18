@@ -421,6 +421,35 @@ class UIImageView_HanekeTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testSetImageFromURL_WhenPreviousSetImageFromURL() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                let data = UIImagePNGRepresentation(image)
+                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil).responseTime(0.1)
+        })
+        let URL1 = NSURL(string: "http://haneke.io/1.png")
+        sut.contentMode = .Center // No resizing
+        sut.hnk_setImageFromURL(URL1, success:{_ in
+            XCTFail("unexpected success")
+            }, failure:{_ in
+            XCTFail("unexpected failure")
+        })
+        let URL2 = NSURL(string: "http://haneke.io/2.png")
+        let entity2 = NetworkEntity(URL: URL2)
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromURL(URL2, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_entity.key, entity2.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
     func testSetImageFromURL_Failure() {
         OHHTTPStubs.stubRequestsPassingTest({ _ in
             return true
@@ -440,6 +469,28 @@ class UIImageView_HanekeTests: XCTestCase {
         XCTAssertNil(sut.image)
         XCTAssertEqual(sut.hnk_entity.key, entity.key)
         self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    // MARK: cancelSetImage
+    
+    func testCancelSetImage() {
+        sut.hnk_cancelSetImage()
+        
+        XCTAssertNil(sut.hnk_entity)
+    }
+    
+    func testCancelSetImage_AfterSetImage() {
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        sut.hnk_setImageFromURL(URL, success: { _ in
+            XCTFail("unexpected success")
+        }, failure: { _ in
+            XCTFail("unexpected failure")
+        })
+        
+        sut.hnk_cancelSetImage()
+        
+        XCTAssertNil(sut.hnk_entity)
+        self.waitFor(0.1)
     }
 
 }
