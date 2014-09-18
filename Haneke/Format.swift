@@ -12,9 +12,9 @@ public enum ScaleMode {
     case Fill, AspectFit, AspectFill, None
 }
 
-public typealias ResizeClosure = (UIImage) -> (UIImage)
-
 public struct Format {
+
+    public typealias ResizeTransform = (UIImage) -> (UIImage)
     
     public let name : String
 
@@ -28,11 +28,11 @@ public struct Format {
     
     public let diskCapacity : UInt64
     
-    public let preResizeClosure : ResizeClosure?
+    public let preResizeTransform : ResizeTransform?
 
-    public let postResizeClosure : ResizeClosure?
+    public let postResizeTransform : ResizeTransform?
     
-    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0, preResizeClosure : ResizeClosure? = nil, postResizeClosure : ResizeClosure? = nil) {
+    public init(_ name : String, diskCapacity : UInt64 = 0, size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0, preResizeTransform : ResizeTransform? = nil, postResizeTransform : ResizeTransform? = nil) {
         
         self.name = name
         self.diskCapacity = diskCapacity
@@ -41,18 +41,18 @@ public struct Format {
         self.allowUpscaling = allowUpscaling
         self.compressionQuality = compressionQuality
         
-        self.preResizeClosure = preResizeClosure
-        self.postResizeClosure = postResizeClosure
+        self.preResizeTransform = preResizeTransform
+        self.postResizeTransform = postResizeTransform
     }
     
     // With Format<T> this could be func apply(object : T) -> T
     public func apply(OriginalImage : UIImage) -> UIImage {
         var image = OriginalImage
-        if let preResizeClosure = self.preResizeClosure {
+        if let preResizeClosure = self.preResizeTransform {
             image = preResizeClosure(image)
         }
         image = self.resizedImageFromImage(image)
-        if let postResizeClosure = self.postResizeClosure {
+        if let postResizeClosure = self.postResizeTransform {
             image = postResizeClosure(image)
         }
         

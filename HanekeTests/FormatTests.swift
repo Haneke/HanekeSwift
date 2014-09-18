@@ -82,9 +82,9 @@ class FormatTests: XCTestCase {
         XCTAssertEqual(resizedImage.size.height, 1)
     }
     
-    func testApplyFormatWithPreResizeClosure() {
+    func testApplyFormatWithPreResizeTransform() {
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 2, height: 2), false)
-        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, preResizeClosure: {(image) in
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, preResizeTransform: {(image) in
                 return UIImage.imageWithColor(UIColor.blueColor(), CGSize(width: 2, height: 2), false)
             })
         
@@ -100,7 +100,7 @@ class FormatTests: XCTestCase {
     
     func testApplyFormatWithResizesClosure() {
         let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 2, height: 2), false)
-        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, postResizeClosure: {(image) in
+        let sut: Format = Format(self.name, diskCapacity: 0, size: CGSizeMake(5, 5), scaleMode: .AspectFill, postResizeTransform: {(image) in
             return UIImage.imageWithColor(UIColor.blueColor(), CGSize(width: 2, height: 2), false)
         })
         
