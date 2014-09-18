@@ -320,10 +320,6 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
-    func a() -> Bool {
-        return true
-    }
-    
     func testUpdateAccessDateFileInDisk() {
         let data = NSData.dataWithLength(10)
         let key = self.name

@@ -147,7 +147,7 @@ public class DiskCache {
         }
     }
     
-    public func setDataSync(getData : @autoclosure () -> NSData?, key : String) {
+    private func setDataSync(getData : @autoclosure () -> NSData?, key : String) {
         let path = self.pathForKey(key)
         var error: NSError? = nil
         if let data = getData() {
