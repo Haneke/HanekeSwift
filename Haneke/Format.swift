@@ -20,6 +20,8 @@ public struct Format<T> {
     
     public var transform : ((T) -> (T))?
     
+    public var convertToData : (T -> NSData)?
+
     public init(_ name : String, diskCapacity : UInt64 = 0, transform : ((T) -> (T))? = nil) {
         self.name = name
         self.diskCapacity = diskCapacity
@@ -36,11 +38,6 @@ public struct Format<T> {
         return transformed
     }
 
-}
-
-public protocol Transformer {
-    typealias T
-    func tranform(thing: T) -> T
 }
 
 public struct ImageResizer {

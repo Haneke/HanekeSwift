@@ -148,14 +148,16 @@ public extension UIImageView {
             return format
         }
         
-        let format = Format<UIImage>(name,
+        var format = Format<UIImage>(name,
             diskCapacity: Haneke.UIKit.DefaultFormat.DiskCapacity) {
                 let resizer = ImageResizer(size:size,
                 scaleMode:scaleMode,
                 compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
                 return resizer.resizeImage($0)
         }
-        
+        format.convertToData = {(image : UIImage) -> NSData in
+            image.hnk_data(compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        }
         cache.addFormat(format)
         return format
     }
