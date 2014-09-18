@@ -60,24 +60,27 @@ public class Cache<T : DataConvertible where T.Result == T> {
             let wrapper = ObjectWrapper(value: image)
             memoryCache.setObject(wrapper, forKey: key)
             // Image data is sent as @autoclosure to be executed in the disk cache queue.
-            var data = format.convertToData?(image)
-            if data == nil {
-                data = image.asData()
-            }
-            diskCache.setData(data, key: key)
+            diskCache.setData(dataFromObject(image, format: format), key: key)
         } else {
             assertionFailure("Can't set image before adding format")
         }
     }
     
+    func dataFromObject(object : T, format : Format<T>) -> NSData {
+        if let data = format.convertToData?(object) {
+            return data
+        }
+        return object.asData()
+    }
+    
     public func fetchImageForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
-        if let (_, memoryCache, diskCache) = self.formats[formatName] {
+        if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
                 if let result = wrapper.value as? T {
                     doSuccess(result)
+                    diskCache.updateAccessDate(dataFromObject(result, format: format), key: key)
                     return true
                 }
-                // TODO: Update disk cache access date
             }
 
             self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, success: doSuccess, failure: doFailure)
