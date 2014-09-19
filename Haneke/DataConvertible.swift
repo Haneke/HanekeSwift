@@ -12,11 +12,14 @@ public protocol DataConvertible {
     typealias Result
     
     class func convertFromData(data:NSData) -> Result?
+}
+
+public protocol DataRepresentable {
     
     func asData() -> NSData
 }
 
-extension UIImage : DataConvertible {
+extension UIImage : DataConvertible, DataRepresentable {
     
     public typealias Result = UIImage
     

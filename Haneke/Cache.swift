@@ -27,7 +27,7 @@ extension Haneke {
 
 public let OriginalFormatName = "original"
 
-public class Cache<T : DataConvertible where T.Result == T> {
+public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentable> {
     
     let name : String
     

@@ -403,7 +403,7 @@ class CacheTests: DiskTestCase {
     func testUIApplicationDidReceiveMemoryWarningNotification() {
         let expectation = expectationWithDescription("onMemoryWarning")
         
-        class CacheMock<T : DataConvertible where T.Result == T> : Cache<T> {
+        class CacheMock<T : DataConvertible where T.Result == T, T : DataRepresentable> : Cache<T> {
             
             var expectation : XCTestExpectation?
             
