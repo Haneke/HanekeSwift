@@ -52,8 +52,8 @@
 		A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
 		A0D7D6861997B57A000CAF46 /* DiskCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */; };
 		A0D7D6891997C4C4000CAF46 /* UIImage+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */; };
-		A0E8BFDC19CCAE1D00A4E2B0 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E8BFDB19CCAE1D00A4E2B0 /* DataConvertible.swift */; };
-		A0E8BFDD19CCAE1D00A4E2B0 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E8BFDB19CCAE1D00A4E2B0 /* DataConvertible.swift */; };
+		A0E8BFDC19CCAE1D00A4E2B0 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */; };
+		A0E8BFDD19CCAE1D00A4E2B0 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */; };
 		A0EE773219BFDFA500B315A0 /* FetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0EE773119BFDFA500B315A0 /* FetcherTests.swift */; };
 		A0EE773319BFDFF500B315A0 /* Fetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E8119BF94AA0002511F /* Fetcher.swift */; };
 		A0FDBF9219AD444500326016 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0FDBF9119AD444500326016 /* Format.swift */; };
@@ -146,7 +146,7 @@
 		A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Haneke.swift"; sourceTree = "<group>"; };
 		A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCacheTests.swift; sourceTree = "<group>"; };
 		A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+HanekeTests.swift"; sourceTree = "<group>"; };
-		A0E8BFDB19CCAE1D00A4E2B0 /* DataConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
+		A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		A0EE773119BFDFA500B315A0 /* FetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetcherTests.swift; sourceTree = "<group>"; };
 		A0FDBF9119AD444500326016 /* Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
 		D18894C819C340C5008E9E4C /* CGSize+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+HanekeTests.swift"; sourceTree = "<group>"; };
@@ -263,7 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				A095C972198041D100CD0F4C /* Cache.swift */,
-				A0E8BFDB19CCAE1D00A4E2B0 /* DataConvertible.swift */,
+				A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */,
 				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
 				A0D7D6821997B2D8000CAF46 /* Extensions */,
 				A03F7E8119BF94AA0002511F /* Fetcher.swift */,
@@ -529,7 +529,7 @@
 				A0C6BA3A19AC0D1E007111E9 /* NSFileManager+Haneke.swift in Sources */,
 				A00D360219C355C30007586E /* NetworkFetcher.swift in Sources */,
 				A03F7E7E19BF59880002511F /* Haneke.swift in Sources */,
-				A0E8BFDC19CCAE1D00A4E2B0 /* DataConvertible.swift in Sources */,
+				A0E8BFDC19CCAE1D00A4E2B0 /* Data.swift in Sources */,
 				36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */,
 				A03F7E8219BF94AA0002511F /* Fetcher.swift in Sources */,
 				A095C973198041D100CD0F4C /* Cache.swift in Sources */,
@@ -559,7 +559,7 @@
 				A095C975198045D200CD0F4C /* CacheTests.swift in Sources */,
 				36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */,
 				A00D365119C6E1100007586E /* NSHTTPURLResponse+Haneke.swift in Sources */,
-				A0E8BFDD19CCAE1D00A4E2B0 /* DataConvertible.swift in Sources */,
+				A0E8BFDD19CCAE1D00A4E2B0 /* Data.swift in Sources */,
 				A00D365519C6E9BE0007586E /* XCTestCase+Test.swift in Sources */,
 				A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */,
 				A06EE27519AE1A6A00572D17 /* FormatTests.swift in Sources */,
