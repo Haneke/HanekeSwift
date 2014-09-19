@@ -66,7 +66,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
-    func dataFromValue(value : T, format : Format<T>) -> NSData {
+    func dataFromValue(value : T, format : Format<T>) -> NSData? {
         if let data = format.convertToData?(value) {
             return data
         }

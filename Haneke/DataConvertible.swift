@@ -16,7 +16,7 @@ public protocol DataConvertible {
 
 public protocol DataRepresentable {
     
-    func asData() -> NSData
+    func asData() -> NSData?
 }
 
 extension UIImage : DataConvertible, DataRepresentable {
@@ -28,8 +28,9 @@ extension UIImage : DataConvertible, DataRepresentable {
         return image
     }
     
-    public func asData() -> NSData {
+    public func asData() -> NSData? {
         return self.hnk_data()
     }
     
 }
+
