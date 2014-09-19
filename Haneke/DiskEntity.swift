@@ -15,43 +15,61 @@ public class DiskEntity : Entity {
     }
     
     let path : NSString
+    var cancelled = false
     
     public init(path : NSString) {
         self.path = path
     }
     
+    // MARK: Entity
+    
     public var key : String { return path }
     
     public func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+        self.cancelled = false
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             
-            var error: NSError? = nil
-            let data = NSData.dataWithContentsOfFile(self.path, options: NSDataReadingOptions.allZeros, error: &error)
-            if (data == nil) {
+            if let strongSelf = self {
+                if strongSelf.cancelled {
+                    return
+                }
+                
+                var error: NSError? = nil
+                let data = NSData.dataWithContentsOfFile(strongSelf.path, options: NSDataReadingOptions.allZeros, error: &error)
+                if (data == nil) {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        doFailure(error)
+                    })
+                    return
+                }
+                
+                if strongSelf.cancelled {
+                    return
+                }
+                
+                let image : UIImage? = UIImage(data : data)
+                
+                if (image == nil) {
+                    let localizedFormat = NSLocalizedString("Failed to load image from data at path \(strongSelf.path)", comment: "Error description")
+                    let error = Haneke.errorWithCode(DiskEntity.ErrorCode.InvalidData.toRaw(), description: localizedFormat)
+                    dispatch_async(dispatch_get_main_queue(), {
+                        doFailure(error)
+                    })
+                    return
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), {
-                    doFailure(error)
+                    if strongSelf.cancelled {
+                        return
+                    }
+                    doSuccess(image!)
                 })
-                return;
             }
-            
-            let image : UIImage? = UIImage(data : data)
-            
-            if (image == nil) {
-                let localizedFormat = NSLocalizedString("Failed to load image from data at path \(self.path)", comment: "Error description")
-                let error = Haneke.errorWithCode(DiskEntity.ErrorCode.InvalidData.toRaw(), description: localizedFormat)
-                dispatch_async(dispatch_get_main_queue(), {
-                    doFailure(error)
-                })
-                return;
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), {
-                doSuccess(image!)
-            })
+        
         })
     }
     
     public func cancelFetch() {
-        
+        self.cancelled = true
     }
 }
