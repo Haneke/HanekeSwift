@@ -24,4 +24,12 @@ class HanekeTests: XCTestCase {
         let cache = Haneke.sharedImageCache
     }
     
+    func testSharedDataCache() {
+        let cache = Haneke.sharedDataCache
+    }
+    
+    func testSharedStringCache() {
+        let cache = Haneke.sharedStringCache
+    }
+    
 }
