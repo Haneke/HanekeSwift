@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public struct Haneke {
     
@@ -17,10 +17,10 @@ public struct Haneke {
         return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
     }
     
-    public static var sharedCache : Cache {
+    public static var sharedCache : Cache<UIImage> {
         struct Static {
             static let name = "shared"
-            static let cache = Cache(name)
+            static let cache = Cache<UIImage>(name)
         }
         return Static.cache
     }

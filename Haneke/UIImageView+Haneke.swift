@@ -15,13 +15,72 @@ public extension Haneke {
             public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
             public static let CompressionQuality : Float = 0.75
         }
-        static var entityKey = 0
+        static var fetcherKey = 0
+    }
+}
+
+var _associations : [COpaquePointer: Fetcher<UIImage>] = [:]
+
+@objc protocol HasAssociatedSwift : class {
+    
+    func clearSwiftAssociations()
+}
+
+class DeallocWitness : NSObject {
+    
+    weak var object : HasAssociatedSwift!
+    
+    init (object: HasAssociatedSwift) {
+        self.object = object
+    }
+    
+    deinit {
+        object.clearSwiftAssociations()
+    }
+}
+
+var _DeallocWitnessKey: UInt8 = 0
+
+func _setDeallocWitnessIfNeeded(object : NSObject) {
+    var witness = objc_getAssociatedObject(object, &_DeallocWitnessKey) as DeallocWitness?
+    if (witness == nil) {
+        witness = DeallocWitness(object: object)
+        objc_setAssociatedObject(object, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+    }
+    
+}
+
+extension NSObject : HasAssociatedSwift {
+    
+    var associatedThing : Fetcher<UIImage>! {
+        get {
+            let key = getKey()
+            return _associations[key]
+        }
+        set(thing) {
+            let witness = DeallocWitness(object: self)
+            objc_setAssociatedObject(self, &_DeallocWitnessKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            
+            let key = getKey()
+            _associations[key] = thing
+        }
+    }
+    
+    func getKey() -> COpaquePointer {
+        let ptr: COpaquePointer =
+        Unmanaged<AnyObject>.passUnretained(self).toOpaque()
+        return ptr
+    }
+    
+    func clearSwiftAssociations() {
+        let key = getKey()
+        _associations[key] = nil
     }
 }
 
 public extension UIImageView {
     
-    public var hnk_format : Format {
+    public var hnk_format : Format<UIImage> {
         let viewSize = self.bounds.size
             assert(viewSize.width > 0 && viewSize.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
@@ -29,21 +88,22 @@ public extension UIImageView {
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
-        let entity = NetworkEntity(URL: URL)
-        self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess, failure: doFailure)
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, success: doSuccess, failure: doFailure)
     }
     
     public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil) {
-        let entity = SimpleEntity(key: key, image: image)
-        self.hnk_setImageFromEntity(entity, placeholder: placeholder, success: doSuccess)
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, success: doSuccess)
     }
     
-    public func hnk_setImageFromEntity(entity : Entity, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
+    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>, placeholder : UIImage? = nil, success doSuccess : ((UIImage) -> ())? = nil, failure doFailure : ((NSError?) -> ())? = nil) {
+
         self.hnk_cancelSetImage()
         
-        self.hnk_entity = entity
+        self.hnk_fetcher = fetcher
         
-        let didSetImage = self.hnk_fetchImageForEntity(entity, success: doSuccess, failure: doFailure)
+        let didSetImage = self.hnk_fetchImageForFetcher(fetcher, success: doSuccess, failure: doFailure)
         
         if didSetImage { return }
      
@@ -53,20 +113,20 @@ public extension UIImageView {
     }
     
     public func hnk_cancelSetImage() {
-        if let entity = self.hnk_entity {
-            entity.cancelFetch()
-            self.hnk_entity = nil
+        if let fetcher = self.hnk_fetcher {
+            fetcher.cancelFetch()
+            self.hnk_fetcher = nil
         }
     }
     
     // MARK: Internal
     
-    var hnk_entity : Entity! {
+    var hnk_fetcher : Fetcher<UIImage>! {
         get {
-            return objc_getAssociatedObject(self, &Haneke.UIKit.entityKey) as? Entity
+            return self.associatedThing
         }
-        set (entity) {
-            objc_setAssociatedObject(self, &Haneke.UIKit.entityKey, entity, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        set (fetcher) {
+            self.associatedThing = fetcher
         }
     }
     
@@ -83,39 +143,42 @@ public extension UIImageView {
             }
     }
     
-    class func hnk_formatWithSize(size : CGSize, scaleMode : ScaleMode) -> Format {
+    class func hnk_formatWithSize(size : CGSize, scaleMode : ScaleMode) -> Format<UIImage> {
         let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
         let cache = Haneke.sharedCache
         if let (format,_,_) = cache.formats[name] {
             return format
         }
         
-        let format = Format(name,
-            diskCapacity: Haneke.UIKit.DefaultFormat.DiskCapacity,
-            size:size,
-            scaleMode:scaleMode,
-            compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
-        
+        var format = Format<UIImage>(name,
+            diskCapacity: Haneke.UIKit.DefaultFormat.DiskCapacity) {
+                let resizer = ImageResizer(size:size,
+                scaleMode:scaleMode,
+                compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+                return resizer.resizeImage($0)
+        }
+        format.convertToData = {(image : UIImage) -> NSData in
+            image.hnk_data(compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        }
         cache.addFormat(format)
         return format
     }
     
-    func hnk_fetchImageForEntity(entity : Entity, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
-        
+    func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
         let format = self.hnk_format
         let cache = Haneke.sharedCache
         var animated = false
-        let didSetImage = cache.fetchImageForEntity(entity, formatName: format.name, success: {[weak self] (image) -> () in
+        let didSetImage = cache.fetchValueForFetcher(fetcher, formatName: format.name, success: {[weak self] (image) -> () in
             if let strongSelf = self {
-                if strongSelf.hnk_shouldCancelForKey(entity.key) { return }
+                if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 
                 strongSelf.hnk_setImage(image, animated:animated, success:doSuccess)
             }
         }, failure: {[weak self] (error) -> () in
             if let strongSelf = self {
-                if strongSelf.hnk_shouldCancelForKey(entity.key) { return }
+                if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 
-                strongSelf.hnk_entity = nil
+                strongSelf.hnk_fetcher = nil
                 
                 doFailure?(error)
             }
@@ -125,7 +188,7 @@ public extension UIImageView {
     }
     
     func hnk_setImage(image : UIImage, animated : Bool, success doSuccess : ((UIImage) -> ())?) {
-        self.hnk_entity = nil
+        self.hnk_fetcher = nil
         
         if let doSuccess = doSuccess {
             doSuccess(image)
@@ -138,7 +201,7 @@ public extension UIImageView {
     }
     
     func hnk_shouldCancelForKey(key:String) -> Bool {
-        if self.hnk_entity?.key == key { return false }
+        if self.hnk_fetcher?.key == key { return false }
         
         NSLog("Cancelled set image for \(key.lastPathComponent)")
         return true

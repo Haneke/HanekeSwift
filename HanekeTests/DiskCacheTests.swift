@@ -335,7 +335,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
         })
         
-        sut.updateAccessDate(UIImage(data: data), key: key)
+        sut.updateAccessDate(data, key: key)
         
         dispatch_sync(sut.cacheQueue, {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
@@ -357,7 +357,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
         })
         
-        sut.updateAccessDate(image, key: key)
+        sut.updateAccessDate(image.hnk_data(), key: key)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))

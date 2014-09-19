@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 public class DiskCache {
     
@@ -110,12 +109,13 @@ public class DiskCache {
         })
     }
 
-    public func updateAccessDate(image : UIImage, key : String) {
+    public func updateAccessDate(getData : @autoclosure () -> NSData, key : String) {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
             let fileManager = NSFileManager.defaultManager()
             if (!self.updateDiskAccessDateAtPath(path) && !fileManager.fileExistsAtPath(path)){
-                self.setDataSync(image.hnk_data(), key: key)
+                let data = getData()
+                self.setDataSync(data, key: key)
             }
         })
     }
