@@ -145,7 +145,7 @@ public extension UIImageView {
     
     class func hnk_formatWithSize(size : CGSize, scaleMode : ScaleMode) -> Format<UIImage> {
         let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         if let (format,_,_) = cache.formats[name] {
             return format
         }
@@ -166,7 +166,7 @@ public extension UIImageView {
     
     func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, success doSuccess : ((UIImage) -> ())?, failure doFailure : ((NSError?) -> ())?) -> Bool {
         let format = self.hnk_format
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         var animated = false
         let didSetImage = cache.fetchValueForFetcher(fetcher, formatName: format.name, success: {[weak self] (image) -> () in
             if let strongSelf = self {

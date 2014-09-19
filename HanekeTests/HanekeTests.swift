@@ -20,8 +20,8 @@ class HanekeTests: XCTestCase {
         XCTAssertEqual(error.localizedDescription, description)
     }
     
-    func testSharedCache() {
-        let cache = Haneke.sharedCache
+    func testSharedImageCache() {
+        let cache = Haneke.sharedImageCache
     }
     
 }

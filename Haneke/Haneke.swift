@@ -17,9 +17,9 @@ public struct Haneke {
         return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
     }
     
-    public static var sharedCache : Cache<UIImage> {
+    public static var sharedImageCache : Cache<UIImage> {
         struct Static {
-            static let name = "shared"
+            static let name = "shared-images"
             static let cache = Cache<UIImage>(name)
         }
         return Static.cache

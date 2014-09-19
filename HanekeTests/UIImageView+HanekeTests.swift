@@ -22,7 +22,7 @@ class UIImageView_HanekeTests: XCTestCase {
         OHHTTPStubs.removeAllStubs()
         
         let format = sut.hnk_format
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         cache.removeAllValues()
         super.tearDown()
     }
@@ -95,7 +95,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testFormatWithSize() {
         let size = CGSizeMake(10, 20)
         let scaleMode = ScaleMode.Fill
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let image = UIImage.imageWithColor(UIColor.redColor())
         let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
         
@@ -111,7 +111,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testFormatWithSize_Twice() {
         let size = CGSizeMake(10, 20)
         let scaleMode = ScaleMode.Fill
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format1 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         let image = UIImage.imageWithColor(UIColor.greenColor())
         cache.setValue(image, self.name, formatName: format1.name)
@@ -125,7 +125,7 @@ class UIImageView_HanekeTests: XCTestCase {
     }
     
     func testFormat_Default() {
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let resizer = ImageResizer(size: sut.bounds.size, scaleMode: sut.hnk_scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
@@ -153,7 +153,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImage_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
         cache.setValue(image, key, formatName: format.name)
         
@@ -191,7 +191,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
         cache.setValue(image, key, formatName: format.name)
         
@@ -234,7 +234,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
         cache.setValue(image, key, formatName: format.name)
         
@@ -274,7 +274,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
         cache.setValue(image, key, formatName: format.name)
         
@@ -348,7 +348,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
         cache.setValue(image, fetcher.key, formatName: format.name)
         
@@ -386,7 +386,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
-        let cache = Haneke.sharedCache
+        let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
         cache.setValue(image, fetcher.key, formatName: format.name)
         
