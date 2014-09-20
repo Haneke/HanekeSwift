@@ -227,7 +227,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromFetcher(fetcher)
 
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+        XCTAssertTrue(sut.hnk_fetcher === fetcher)
     }
     
     func testSetImageFromFetcher_MemoryHit() {
@@ -254,7 +254,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromFetcher(fetcher)
         
         XCTAssertEqual(sut.image!, previousImage)
-        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+        XCTAssertTrue(sut.hnk_fetcher === fetcher)
     }
 
     func testSetImageFromFetcher_UsingPlaceholder_MemoryMiss() {
@@ -266,7 +266,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
         
         XCTAssertEqual(sut.image!, placeholder)
-        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+        XCTAssertTrue(sut.hnk_fetcher === fetcher)
     }
     
     func testSetImageFromFetcher_UsingPlaceholder_MemoryHit() {
@@ -297,7 +297,7 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+        XCTAssertTrue(sut.hnk_fetcher === fetcher)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -328,7 +328,7 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         XCTAssertNil(sut.image)
-        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+        XCTAssertTrue(sut.hnk_fetcher === fetcher)
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
