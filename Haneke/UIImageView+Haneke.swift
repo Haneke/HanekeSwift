@@ -63,6 +63,7 @@ public extension UIImageView {
     
     // MARK: Internal
     
+    // See: http://stackoverflow.com/questions/25907421/associating-swift-things-with-nsobject-instances
     var hnk_fetcher : Fetcher<UIImage>! {
         get {
             return Haneke.UIKit.associatedFetchers[self.hnk_pointer]

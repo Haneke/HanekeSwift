@@ -8,6 +8,7 @@
 
 import UIKit
 
+// See: http://stackoverflow.com/questions/25922152/not-identical-to-self
 public protocol DataConvertible {
     typealias Result
     
