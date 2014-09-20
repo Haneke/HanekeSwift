@@ -13,11 +13,11 @@
 
 extension Haneke {
     struct NSObject {
-        static var denitiObserverKey : UInt8 = 0
+        static var deinitObserverKey : UInt8 = 0
     }
 }
 
-class DeallocWitness : NSObject {
+class DeinitObserver : NSObject {
     
     weak var object : HasAssociatedSwift!
     
@@ -37,10 +37,10 @@ extension NSObject {
     }
     
     class func hnk_setDeinitObserverIfNeeded(object : HasAssociatedSwift) {
-        var witness = objc_getAssociatedObject(object, &Haneke.NSObject.denitiObserverKey) as DeallocWitness?
-        if (witness == nil) {
-            witness = DeallocWitness(object: object)
-            objc_setAssociatedObject(object, &Haneke.NSObject.denitiObserverKey, witness, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        var observer = objc_getAssociatedObject(object, &Haneke.NSObject.deinitObserverKey) as DeinitObserver?
+        if (observer == nil) {
+            observer = DeinitObserver(object: object)
+            objc_setAssociatedObject(object, &Haneke.NSObject.deinitObserverKey, observer, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     
