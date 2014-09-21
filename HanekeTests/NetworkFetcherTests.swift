@@ -1,5 +1,5 @@
 //
-//  NetworkEntityTests.swift
+//  NetworkFetcherTests.swift
 //  Haneke
 //
 //  Created by Hermes Pique on 9/15/14.
@@ -9,14 +9,14 @@
 import UIKit
 import XCTest
 
-class NetworkEntityTests: XCTestCase {
+class NetworkFetcherTests: XCTestCase {
 
     let URL = NSURL(string: "http://haneke.io/image.jpg")
-    var sut : NetworkEntity!
+    var sut : NetworkFetcher<UIImage>!
     
     override func setUp() {
         super.setUp()
-        sut = NetworkEntity(URL: URL)
+        sut = NetworkFetcher(URL: URL)
     }
     
     override func tearDown() {
@@ -42,8 +42,9 @@ class NetworkEntityTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageWithSuccess(success: {
-            XCTAssertTrue($0.isEqualPixelByPixel(image))
+        sut.fetchWithSuccess(success: {
+            let result = $0 as UIImage
+            XCTAssertTrue(result.isEqualPixelByPixel(image))
             expectation.fulfill()
         }) { _ in
             XCTFail("expected success")
@@ -64,8 +65,9 @@ class NetworkEntityTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         sut.cancelFetch()
         
-        sut.fetchImageWithSuccess(success: {
-            XCTAssertTrue($0.isEqualPixelByPixel(image))
+        sut.fetchWithSuccess(success: {
+            let result = $0 as UIImage
+            XCTAssertTrue(result.isEqualPixelByPixel(image))
             expectation.fulfill()
         }) { _ in
             XCTFail("expected success")
@@ -100,17 +102,17 @@ class NetworkEntityTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageWithSuccess(success: {_ in
+        sut.fetchWithSuccess(success: {_ in
             XCTFail("expected failure")
             expectation.fulfill()
         }) {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, NetworkEntity.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(100000, handler: nil)
     }
     
     func testFetchImage_Failure_MissingData() {
@@ -122,12 +124,12 @@ class NetworkEntityTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageWithSuccess(success: {_ in
+        sut.fetchWithSuccess(success: {_ in
             XCTFail("expected failure")
             expectation.fulfill()
         }) {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, NetworkEntity.ErrorCode.MissingData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.MissingData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }
@@ -143,7 +145,7 @@ class NetworkEntityTests: XCTestCase {
             let data = UIImagePNGRepresentation(image)
             return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        sut.fetchImageWithSuccess(success: {_ in
+        sut.fetchWithSuccess(success: {_ in
             XCTFail("unexpected success")
         }) {_ in
             XCTFail("unexpected failure")
@@ -173,12 +175,12 @@ class NetworkEntityTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchImageWithSuccess(success: {_ in
+        sut.fetchWithSuccess(success: {_ in
             XCTFail("expected failure")
             expectation.fulfill()
         }) {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, NetworkEntity.ErrorCode.InvalidStatusCode.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidStatusCode.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }

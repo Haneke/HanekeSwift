@@ -1,5 +1,5 @@
 //
-//  NetworkEntity.swift
+//  NetworkFetcher.swift
 //  Haneke
 //
 //  Created by Hermes Pique on 9/12/14.
@@ -8,18 +8,26 @@
 
 import UIKit
 
-public class NetworkEntity : Entity {
-    
-    public enum ErrorCode : Int {
-        case InvalidData = -400
-        case MissingData = -401
-        case InvalidStatusCode = -402
+extension Haneke {
+    public struct NetworkFetcher {
+        // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
+        public enum ErrorCode : Int {
+            case InvalidData = -400
+            case MissingData = -401
+            case InvalidStatusCode = -402
+        }
     }
+}
+
+public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     let URL : NSURL
     
     public init(URL : NSURL) {
         self.URL = URL
+
+        let key =  URL.absoluteString!
+        super.init(key: key)
     }
     
     public var session : NSURLSession { return NSURLSession.sharedSession() }
@@ -28,11 +36,9 @@ public class NetworkEntity : Entity {
     
     var cancelled = false
     
-    // MARK: Entity
+    // MARK: Fetcher
     
-    public var key : String { return URL.absoluteString! }
-    
-    public func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+    public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
         self.cancelled = false
         self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data : NSData!, response : NSURLResponse!, error : NSError!) -> Void in
             if let strongSelf = self {
@@ -42,14 +48,14 @@ public class NetworkEntity : Entity {
         self.task?.resume()
     }
     
-    public func cancelFetch() {
+    public override func cancelFetch() {
         self.task?.cancel()
         self.cancelled = true
     }
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
 
         if cancelled { return }
         
@@ -83,19 +89,19 @@ public class NetworkEntity : Entity {
             return
         }
         
-        let image : UIImage! = UIImage(data:data)
-        if image == nil {
+        let thing : T.Result? = T.convertFromData(data)
+        if thing == nil {
             let localizedFormat = NSLocalizedString("Failed to load image from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: doFailure)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue(), { doSuccess(image) })
+        dispatch_async(dispatch_get_main_queue(), { doSuccess(thing!) })
 
     }
     
-    private func failWithCode(code : ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
+    private func failWithCode(code : Haneke.NetworkFetcher.ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
         let error = Haneke.errorWithCode(code.toRaw(), description: localizedDescription)
         dispatch_async(dispatch_get_main_queue(), { doFailure(error) })

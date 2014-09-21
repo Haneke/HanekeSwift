@@ -19,8 +19,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        let fileManager = NSFileManager.defaultManager()
-        fileManager.removeItemAtPath(sut.cachePath, error:nil)
+        sut.removeAllData()
         super.tearDown()
     }
     
@@ -336,7 +335,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
         })
         
-        sut.updateAccessDate(UIImage(data: data), key: key)
+        sut.updateAccessDate(data, key: key)
         
         dispatch_sync(sut.cacheQueue, {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
@@ -358,7 +357,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
         })
         
-        sut.updateAccessDate(image, key: key)
+        sut.updateAccessDate(image.hnk_data(), key: key)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
@@ -397,6 +396,32 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataInexisting() {
+        let key = self.name
+        let path = sut.pathForKey(key)
+        let fileManager = NSFileManager.defaultManager()
+        
+        // Preconditions
+        XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        
+        sut.removeData(self.name)
+    }
+    
+    func testRemoveAllData_Filled() {
+        let key = self.name
+        let data = NSData.dataWithLength(12)
+        let path = sut.pathForKey(key)
+        sut.setData(data, key: key)
+        
+        sut.removeAllData()
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+            XCTAssertEqual(self.sut.size, 0)
+        })
+    }
+    
+    func testRemoveAllData_Empty() {
         let key = self.name
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()

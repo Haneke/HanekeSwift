@@ -1,5 +1,5 @@
 //
-//  DiskEntity.swift
+//  DiskFetcher.swift
 //  Haneke
 //
 //  Created by Joan Romano on 9/16/14.
@@ -8,24 +8,29 @@
 
 import Foundation
 
-public class DiskEntity : Entity {
-    
-    public enum ErrorCode : Int {
-        case InvalidData = -500
+extension Haneke {
+    public struct DiskFetcher {
+        // It'd be better to define this in the DiskFetcher class but Swift doesn't allow to declare an enum in a generic type
+        public enum ErrorCode : Int {
+            case InvalidData = -500
+        }
     }
+}
+
+public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     let path : NSString
     var cancelled = false
     
     public init(path : NSString) {
         self.path = path
+        let key = path
+        super.init(key: key)
     }
     
     // MARK: Entity
     
-    public var key : String { return path }
-    
-    public func fetchImageWithSuccess(success doSuccess : (UIImage) -> (), failure doFailure : ((NSError?) -> ())) {
+    public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             
@@ -47,11 +52,11 @@ public class DiskEntity : Entity {
                     return
                 }
                 
-                let image : UIImage? = UIImage(data : data)
+                let thing : T.Result? = T.convertFromData(data)
                 
-                if (image == nil) {
+                if (thing == nil) {
                     let localizedFormat = NSLocalizedString("Failed to load image from data at path \(strongSelf.path)", comment: "Error description")
-                    let error = Haneke.errorWithCode(DiskEntity.ErrorCode.InvalidData.toRaw(), description: localizedFormat)
+                    let error = Haneke.errorWithCode(Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw(), description: localizedFormat)
                     dispatch_async(dispatch_get_main_queue(), {
                         doFailure(error)
                     })
@@ -62,14 +67,14 @@ public class DiskEntity : Entity {
                     if strongSelf.cancelled {
                         return
                     }
-                    doSuccess(image!)
+                    doSuccess(thing!)
                 })
             }
         
         })
     }
     
-    public func cancelFetch() {
+    public override func cancelFetch() {
         self.cancelled = true
     }
 }
