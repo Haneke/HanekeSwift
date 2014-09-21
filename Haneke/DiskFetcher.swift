@@ -70,7 +70,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
                     doSuccess(thing!)
                 })
             }
-        
+            
         })
     }
     

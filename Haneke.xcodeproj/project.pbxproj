@@ -10,7 +10,9 @@
 		36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C9E04E198C03F80083574B /* UIImage+Test.swift */; };
-		8CB2F24519C7A3EE005BF7E9 /* DiskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB2F24419C7A3EE005BF7E9 /* DiskEntity.swift */; };
+		8C0D39C119CF4BE000452BC4 /* DiskFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */; };
+		8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
+		8C0D39C719CF4D2D00452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
 		A0026E5619C91C05004DE0C6 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D68019978F9A000CAF46 /* DiskCache.swift */; };
 		A0026E9F19C9BFBC004DE0C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */; };
 		A0026EA119C9BFBC004DE0C6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026EA019C9BFBC004DE0C6 /* ViewController.swift */; };
@@ -112,7 +114,8 @@
 /* Begin PBXFileReference section */
 		36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Swift.swift"; sourceTree = "<group>"; };
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
-		8CB2F24419C7A3EE005BF7E9 /* DiskEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskEntity.swift; sourceTree = "<group>"; };
+		8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcherTests.swift; sourceTree = "<group>"; };
+		8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcher.swift; sourceTree = "<group>"; };
 		A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HanekeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0026E9D19C9BFBC004DE0C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -272,6 +275,7 @@
 				A095C972198041D100CD0F4C /* Cache.swift */,
 				A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */,
 				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
+				8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */,
 				A0D7D6821997B2D8000CAF46 /* Extensions */,
 				A03F7E8119BF94AA0002511F /* Fetcher.swift */,
 				A0FDBF9119AD444500326016 /* Format.swift */,
@@ -279,7 +283,6 @@
 				A03F7E7D19BF59880002511F /* Haneke.swift */,
 				A00D360119C355C30007586E /* NetworkFetcher.swift */,
 				A095C9591980418C00CD0F4C /* Supporting Files */,
-				8CB2F24419C7A3EE005BF7E9 /* DiskEntity.swift */,
 				A04210F719C9025C005000B8 /* UIKit */,
 			);
 			path = Haneke;
@@ -300,6 +303,7 @@
 				D18894C819C340C5008E9E4C /* CGSize+HanekeTests.swift */,
 				A05F58F919CCB1DA0009EBDE /* DataTests.swift */,
 				A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */,
+				8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */,
 				A00D364E19C6E0CB0007586E /* Extensions */,
 				A0EE773119BFDFA500B315A0 /* FetcherTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
@@ -545,8 +549,8 @@
 				A03F7E8219BF94AA0002511F /* Fetcher.swift in Sources */,
 				A095C973198041D100CD0F4C /* Cache.swift in Sources */,
 				A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */,
+				8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */,
 				A0D7D68119978F9A000CAF46 /* DiskCache.swift in Sources */,
-				8CB2F24519C7A3EE005BF7E9 /* DiskEntity.swift in Sources */,
 				A04210FC19C90292005000B8 /* UIImageView+Haneke.swift in Sources */,
 				A00D360419C36E680007586E /* NSHTTPURLResponse+Haneke.swift in Sources */,
 			);
@@ -564,6 +568,7 @@
 				A042110319C91157005000B8 /* Format.swift in Sources */,
 				A09B13B719C91B1E009CC339 /* UIImageView+Haneke.swift in Sources */,
 				A0C6BA3C19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift in Sources */,
+				8C0D39C719CF4D2D00452BC4 /* DiskFetcher.swift in Sources */,
 				A0D7D64D1994E1EF000CAF46 /* Cache.swift in Sources */,
 				A03F7E8019BF60040002511F /* HanekeTests.swift in Sources */,
 				A06EE28419B195B300572D17 /* UIImage+Haneke.swift in Sources */,
@@ -572,6 +577,7 @@
 				A095C975198045D200CD0F4C /* CacheTests.swift in Sources */,
 				36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */,
 				A00D365119C6E1100007586E /* NSHTTPURLResponse+Haneke.swift in Sources */,
+				8C0D39C119CF4BE000452BC4 /* DiskFetcherTests.swift in Sources */,
 				A0E8BFDD19CCAE1D00A4E2B0 /* Data.swift in Sources */,
 				A00D365519C6E9BE0007586E /* XCTestCase+Test.swift in Sources */,
 				A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */,
