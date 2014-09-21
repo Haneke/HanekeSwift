@@ -25,4 +25,20 @@ public struct Haneke {
         return Static.cache
     }
     
+    public static var sharedDataCache : Cache<NSData> {
+        struct Static {
+            static let name = "shared-data"
+            static let cache = Cache<NSData>(name)
+        }
+        return Static.cache
+    }
+    
+    public static var sharedStringCache : Cache<String> {
+        struct Static {
+            static let name = "shared-strings"
+            static let cache = Cache<String>(name)
+        }
+        return Static.cache
+    }
+    
 }

@@ -8,29 +8,7 @@
 
 import UIKit
 
-public protocol DataConvertible {
-    typealias Result
-    
-    class func convertFromData(data:NSData) -> Result?
-    
-    func asData() -> NSData
-}
-
-extension UIImage : DataConvertible {
-    
-    public typealias Result = UIImage
-    
-    public class func convertFromData(data:NSData) -> Result? {
-        let image : UIImage? = UIImage(data: data)
-        return image
-    }
-    
-    public func asData() -> NSData {
-        return self.hnk_data()
-    }
-    
-}
-
+// See: http://stackoverflow.com/questions/25915306/generic-closure-in-protocol
 public class Fetcher<T : DataConvertible> {
 
     let key : String

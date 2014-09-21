@@ -109,7 +109,7 @@ public class DiskCache {
         })
     }
 
-    public func updateAccessDate(getData : @autoclosure () -> NSData, key : String) {
+    public func updateAccessDate(getData : @autoclosure () -> NSData?, key : String) {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
             let fileManager = NSFileManager.defaultManager()

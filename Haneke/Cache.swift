@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Haneke. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
+// Used to add T to NSCache
 class ObjectWrapper : NSObject {
     let value: Any
     
@@ -27,7 +27,7 @@ extension Haneke {
 
 public let OriginalFormatName = "original"
 
-public class Cache<T : DataConvertible where T.Result == T> {
+public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentable> {
     
     let name : String
     
@@ -66,7 +66,7 @@ public class Cache<T : DataConvertible where T.Result == T> {
         }
     }
     
-    func dataFromValue(value : T, format : Format<T>) -> NSData {
+    func dataFromValue(value : T, format : Format<T>) -> NSData? {
         if let data = format.convertToData?(value) {
             return data
         }
@@ -149,13 +149,12 @@ public class Cache<T : DataConvertible where T.Result == T> {
     private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
         diskCache.fetchData(key, success: { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                let result = T.convertFromData(data)
-                // TODO: Decompress image
-                // let decompressedImage = image.hnk_decompressedImage()
-                if let result = result {
+                var value = T.convertFromData(data)
+                if let value = value {
+                    let descompressedValue = self.decompressedImageIfNeeded(value)
                     dispatch_async(dispatch_get_main_queue(), {
-                        doSuccess(result)
-                        let wrapper = ObjectWrapper(value: result)
+                        doSuccess(descompressedValue)
+                        let wrapper = ObjectWrapper(value: descompressedValue)
                         memoryCache.setObject(wrapper, forKey: key)
                     })
                 }
@@ -178,9 +177,14 @@ public class Cache<T : DataConvertible where T.Result == T> {
         fetcher.fetchWithSuccess(success: { value in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 var formatted = format.apply(value)
-                // if (formatted == result) {
-                    // TODO: formattedImage = image.hnk_decompressedImage()
-                // }
+                
+                if let formattedImage = formatted as? UIImage {
+                    let originalImage = value as? UIImage
+                    if formattedImage === originalImage {
+                        formatted = self.decompressedImageIfNeeded(formatted)
+                    }
+                }
+
                 dispatch_async(dispatch_get_main_queue(), {
                     doSuccess(formatted)
                     self.setValue(formatted, fetcher.key, formatName: format.name)
@@ -189,6 +193,15 @@ public class Cache<T : DataConvertible where T.Result == T> {
         }, failure: { error in
             let _ = doFailure?(error)
         })
+    }
+    
+    // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
+    private func decompressedImageIfNeeded(value : T) -> T {
+        if let image = value as? UIImage {
+            let decompressedImage = image.hnk_decompressedImage() as? T
+            return decompressedImage!
+        }
+        return value
     }
     
 }
