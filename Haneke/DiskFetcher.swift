@@ -19,62 +19,69 @@ extension Haneke {
 
 public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
-    let path : NSString
+    let path : String
     var cancelled = false
     
-    public init(path : NSString) {
+    public init(path : String) {
         self.path = path
         let key = path
         super.init(key: key)
     }
     
-    // MARK: Entity
+    // MARK: Fetcher
     
     public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
-            
             if let strongSelf = self {
-                if strongSelf.cancelled {
-                    return
-                }
-                
-                var error: NSError? = nil
-                let data = NSData.dataWithContentsOfFile(strongSelf.path, options: NSDataReadingOptions.allZeros, error: &error)
-                if (data == nil) {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        doFailure(error)
-                    })
-                    return
-                }
-                
-                if strongSelf.cancelled {
-                    return
-                }
-                
-                let thing : T.Result? = T.convertFromData(data)
-                
-                if (thing == nil) {
-                    let localizedFormat = NSLocalizedString("Failed to load image from data at path \(strongSelf.path)", comment: "Error description")
-                    let error = Haneke.errorWithCode(Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw(), description: localizedFormat)
-                    dispatch_async(dispatch_get_main_queue(), {
-                        doFailure(error)
-                    })
-                    return
-                }
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    if strongSelf.cancelled {
-                        return
-                    }
-                    doSuccess(thing!)
-                })
+                strongSelf.privateFetchWithSuccess(doSuccess, doFailure)
             }
-            
         })
     }
     
     public override func cancelFetch() {
         self.cancelled = true
+    }
+    
+    // MARK: Private
+    
+    private func privateFetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
+        if self.cancelled {
+            return
+        }
+        
+        var error: NSError?
+        let data = NSData.dataWithContentsOfFile(self.path, options: NSDataReadingOptions.allZeros, error: &error)
+        if data == nil {
+            dispatch_async(dispatch_get_main_queue()) {
+                doFailure(error)
+            }
+            return
+        }
+        
+        if self.cancelled {
+            return
+        }
+        
+        let thing : T.Result? = T.convertFromData(data)
+        
+        if thing == nil {
+            let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
+            let description = String(format:localizedFormat, self.path)
+            let error = Haneke.errorWithCode(Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw(), description: description)
+            dispatch_async(dispatch_get_main_queue()) {
+                doFailure(error)
+            }
+            return
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            if self.cancelled {
+                return
+            }
+            doSuccess(thing!)
+        })
+        
+        
     }
 }

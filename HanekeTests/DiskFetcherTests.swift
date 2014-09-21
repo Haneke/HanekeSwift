@@ -9,40 +9,28 @@
 import UIKit
 import XCTest
 
-class DiskFetcherTests: XCTestCase {
+class DiskFetcherTests: DiskTestCase {
     
     var sut : DiskFetcher<UIImage>!
-    var directory : NSString!
 
     override func setUp() {
         super.setUp()
-        directory = NSHomeDirectory()
-        directory = directory.stringByAppendingPathComponent("io.haneke")
-        directory = directory.stringByAppendingPathComponent(NSStringFromClass(self.dynamicType))
-        NSFileManager.defaultManager().createDirectoryAtPath(directory, withIntermediateDirectories: true, attributes: nil, error: nil)
-        directory = directory.stringByAppendingPathComponent(self.name)
-        sut = DiskFetcher(path: directory)
-    }
-    
-    override func tearDown() {
-        var directory = NSHomeDirectory()
-        directory = directory.stringByAppendingPathComponent("io.haneke")
-        NSFileManager.defaultManager().removeItemAtPath(directory, error: nil)
-        super.tearDown()
+        directoryPath = directoryPath.stringByAppendingPathComponent(self.name)
+        sut = DiskFetcher(path: directoryPath)
     }
     
     func testInit() {
-        XCTAssertEqual(sut.path, directory)
+        XCTAssertEqual(sut.path, directoryPath)
     }
     
     func testKey() {
-        XCTAssertEqual(sut.key, directory)
+        XCTAssertEqual(sut.key, directoryPath)
     }
     
     func testFetchImage_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
         let data = UIImagePNGRepresentation(image)
-        data.writeToFile(directory, atomically: true)
+        data.writeToFile(directoryPath, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
         
@@ -75,7 +63,7 @@ class DiskFetcherTests: XCTestCase {
     
     func testFetchImage_Failure_HNKDiskEntityInvalidDataError() {
         let data = NSData.data()
-        data.writeToFile(directory, atomically: true)
+        data.writeToFile(directoryPath, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
         
@@ -95,7 +83,7 @@ class DiskFetcherTests: XCTestCase {
     func testCancelFetch() {
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
         let data = UIImagePNGRepresentation(image)
-        data.writeToFile(directory, atomically: true)
+        data.writeToFile(directoryPath, atomically: true)
         
         sut.fetchWithSuccess(success: { _ in
             XCTFail("Unexpected success")
