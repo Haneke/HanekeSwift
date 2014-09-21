@@ -91,19 +91,19 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         
         let thing : T.Result? = T.convertFromData(data)
         if thing == nil {
-            let localizedFormat = NSLocalizedString("Failed to load image from data at URL %@", comment: "Error description")
+            let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: doFailure)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue(), { doSuccess(thing!) })
+        dispatch_async(dispatch_get_main_queue()) { doSuccess(thing!) }
 
     }
     
     private func failWithCode(code : Haneke.NetworkFetcher.ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
         let error = Haneke.errorWithCode(code.toRaw(), description: localizedDescription)
-        dispatch_async(dispatch_get_main_queue(), { doFailure(error) })
+        dispatch_async(dispatch_get_main_queue()) { doFailure(error) }
     }
 }
