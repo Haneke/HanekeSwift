@@ -15,7 +15,6 @@ public extension Haneke {
             public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
             public static let CompressionQuality : Float = 0.75
         }
-        static var fetcherKey = 0
         static var associatedFetchers = [COpaquePointer: Fetcher<UIImage>]()
     }
 }
