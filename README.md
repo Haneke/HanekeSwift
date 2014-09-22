@@ -104,10 +104,16 @@ let format = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
 }
 cache.addFormat(format)
 
-cache.setValue(image, key: "thumbnail001.jpg", formatName: "icons")
+let URL = NSURL(string: "http://example.com/article.md")
+let fetcher = NetworkFetcher<String>(URL: URL)
+cache.fetchValueForFetcher(fetcher, formatName: "icons", success: { image in
+    // image will be a nice rounded icon
+}, failure: { error in
+    // Handle error
+})
 ```
 
-In the line above the cache will execute the format transformation in background and cache the resulting value.
+Because we told the cache to use the "icons" format Haneke will execute the format transformation in background and return the resulting value.
 
 ##Fetchers
 
@@ -126,7 +132,7 @@ cache.fetchValueForFetcher(fetcher, success: { article in
 })
 ```
 
-Here the fetcher will be executed only if there is no value associated with `"http://example.com/article.md"` in the memory or disk cache. If that happens, the fetcher will be responsible from fetching the original value, which then will be cached to avoid further network activity.
+Here the fetcher will be executed only if there is no value associated with `"http://example.com/article.md"` in the memory or disk cache. If that happens, the fetcher will be responsible from fetching the original value, which will then be cached to avoid further network activity.
 
 Haneke provides two specialized fetchers: `NetworkFetcher<T>` and `DiskFetcher<T>`. You can also implement your own fetchers by subclassing `Fetcher<T>`.
 
