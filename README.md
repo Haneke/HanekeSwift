@@ -1,6 +1,6 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
-Haneke is a lightweight generic cache for iOS written in Swift. It provides a memory and LRU disk cache for `NSData`, `String`, `UIImage` or any other type that can be read or written as data. Here's how you would initalize a data cache:
+Haneke is a lightweight generic cache for iOS written in Swift. It provides a memory and LRU disk cache for `UIImage`, `NSData`, `JSON`, `String` or any other type that can be read or written as data. Here's how you would initalize a data cache:
 
 ```swift
 let cache = Cache<NSData>("my-files")
@@ -16,13 +16,15 @@ _Really._
 
 ##Features
 
-* Generic cache with out-of-the-box support for `UIImage`, `NSData` and `String`
+* Generic cache with out-of-the-box support for `UIImage`, `NSData`, `JSON` and `String`
 * First-level memory cache using `NSCache`
 * Second-level LRU disk cache using the file system
-* Asynchronous fetching of original values from network or disk
+* Asynchronous [fetching](#fetchers) of original values from network or disk
 * All disk access is performed in background
 * Thread-safe
 * Automatic cache eviction on memory warnings or disk capacity reached
+* Comprehensive unit tests
+* Extensible by defining [custom formats](#formats), supporting [additional types](#supporting-additional-types) or implementing [custom fetchers](#custom-fetchers)
 
 For images:
 
@@ -31,23 +33,43 @@ For images:
 
 ##Using the cache
 
-Haneke is generic cache with out-of-the-box support for `UIImage`, `NSData` and `String`. You can use the provided shared caches, or create your own. Here's how you could cache a file from an url:
+Haneke is generic cache with out-of-the-box support for `UIImage`, `NSData`, `JSON` and `String`. You can use the provided shared caches, or create your own. 
+
+The cache is a key-value store. For example, here's how you would cache and then fetch some data.
 
 ```Swift
 let cache = Haneke.sharedDataCache
-let fetcher = NetworkFetcher<NSData>(URL: url)
-cache.fetchValueForFetcher(fetcher, success: { data in
+        
+cache.setValue(data, key: "some-data")
+        
+// Eventually...
+
+cache.fetchValueForKey("some-data", success: {data in
     // Do something with data
 }, failure: { error in
     // Handle error
 })
 ```
 
-The above lines would first attempt to fetch the required data from (in order) memory, disk or `NSURLCache`. If not availble, Haneke will fetch the data from the source, return it and then cache it.
+For cases in which the value is not readily available and must be fetched from network or disk, Haneke provides specialized [fetchers](#fetchers). Here's how you could cache a JSON response from an url:
 
-Further customization can be achieved by using formats or [supporting additional types](#supporting-additional-types).
+```Swift
+let cache = Haneke.sharedJSONCache
 
-##Extra love for images
+let fetcher = NetworkFetcher<JSON>(URL: url)
+
+cache.fetchValueForFetcher(fetcher, success: { JSON in
+    // Do something with JSON
+}, failure: { error in
+    // Handle error
+})
+```
+
+The above lines would first attempt to fetch the required JSON from (in order) memory, disk or `NSURLCache`. If not available, Haneke will fetch the JSON from the source, return it and then cache it. In this case, the URL itself is used as the key.
+
+Further customization can be achieved by using [formats](#formats), [supporting additional types](#supporting-additional-types) or implementing [custom fetchers](#custom-fetchers).
+
+##Extra ♡ for images
 
 Haneke provides convenience methods for `UIImageView` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
 
@@ -68,6 +90,57 @@ The above lines take care of:
 5. Caching the resulting image.
 6. If needed, evicting the least recently used images in the cache.
 
+##Formats
+
+Formats allow to specify the disk cache size and any transformations to the values before being cached. For example, the `UIImageView` extension uses a format that resizes images to fit or fill the image view as needed.
+
+You can also use custom formats. Say you want to limit the disk capacity for icons to 10MB and apply rounded corners to the images. This is how it could like:
+
+```swift
+let cache = Haneke.sharedImageCache
+
+let format = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
+    return imageByRoundingCornersOfImage(image)
+}
+cache.addFormat(format)
+
+cache.setValue(image, key: "thumbnail001.jpg", formatName: "icons")
+```
+
+In the line above the cache will execute the format transformation in background and cache the resulting value.
+
+##Fetchers
+
+Fetching an original value from network or disk is an expensive operation. Fetchers act as a proxy for the value, and allow Haneke to perform the fetch operation only if absolutely necessary. To illustrate:
+
+```Swift
+let cache = Haneke.sharedStringCache
+
+let URL = NSURL(string: "http://example.com/article.md")
+let fetcher = NetworkFetcher<String>(URL: URL)
+
+cache.fetchValueForFetcher(fetcher, success: { article in
+    // Do something with article
+}, failure: { error in
+    // Handle error
+})
+```
+
+Here the fetcher will be executed only if there is no value associated with `"http://example.com/article.md"` in the memory or disk cache. If that happens, the fetcher will be responsible from fetching the original value, which then will be cached to avoid further network activity.
+
+Haneke provides two specialized fetchers: `NetworkFetcher<T>` and `DiskFetcher<T>`. You can also implement your own fetchers by subclassing `Fetcher<T>`.
+
+###Custom fetchers
+
+Custom fetchers must subclass `Fetcher<T>` and are responsible for:
+
+* Providing the key (e.g., `NSURL.absoluteString` in the case of `NetworkFetcher`) associated with the to be fetched value
+* Fetching the value in background and calling the success or failure closure accordingly, both in the main queue
+* Cancelling the fetch on demand, if possible
+
+Fetchers are generic, and the only restriction on their type is that it must implement `DataConvertible`.
+ 
+
 ##Supporting additional types
 
 Haneke can cache any type that can be read and saved as data. This is indicated to Haneke by implementing the protocols `DataConvertible` and `DataRepresentable`.
@@ -85,8 +158,7 @@ public protocol DataRepresentable {
 }
 ```
 
-
-For example, this is how one could add support for `NSDictionary`:
+This is how one could add support for `NSDictionary`:
 
 ```Swift
 extension NSDictionary : DataConvertible, DataRepresentable {
@@ -104,7 +176,7 @@ extension NSDictionary : DataConvertible, DataRepresentable {
 }
 ```
 
-Then creating a NSDictionary cache would be as simple as:
+Then creating a `NSDictionary` cache would be as simple as:
 
 ```swift
 let cache = Cache<NSDictionary>("my-dictionaries")
