@@ -1,12 +1,12 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
-Haneke is a lightweight generic cache for iOS written in Swift. For example, here's how you would initalize a data cache:
+Haneke is a lightweight generic cache for iOS written in Swift. It provides a memory and LRU disk cache for `NSData`, `String`, `UIImage` or any other type that can read or written as data. Here's how you would initalize a data cache:
 
 ```swift
 let cache = Cache<NSData>("my-files")
 ```
 
-Haneke also includes a zero-config image cache with automatic resizing. It resizes images and caches the result on memory and disk. Everything is done in background, allowing for fast, responsive scrolling. Asking Haneke to load, resize, cache and display an *appropriately sized image* is as simple as:
+Haneke excels at working with images. It includes a zero-config image cache with automatic resizing. Everything is done in background, allowing for fast, responsive scrolling. Asking Haneke to load, resize, cache and display an *appropriately sized image* is as simple as:
 
 ```swift
 imageView.hnk_setImageFromURL(url)
