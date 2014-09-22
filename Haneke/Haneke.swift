@@ -41,4 +41,12 @@ public struct Haneke {
         return Static.cache
     }
     
+    public static var sharedJSONCache : Cache<JSON> {
+    struct Static {
+        static let name = "shared-json"
+        static let cache = Cache<JSON>(name)
+        }
+        return Static.cache
+    }
+    
 }
