@@ -1,6 +1,6 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
-Haneke is a lightweight generic cache for iOS written in Swift. It provides a memory and LRU disk cache for `NSData`, `String`, `UIImage` or any other type that can read or written as data. Here's how you would initalize a data cache:
+Haneke is a lightweight generic cache for iOS written in Swift. It provides a memory and LRU disk cache for `NSData`, `String`, `UIImage` or any other type that can be read or written as data. Here's how you would initalize a data cache:
 
 ```swift
 let cache = Cache<NSData>("my-files")
