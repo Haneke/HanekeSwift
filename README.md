@@ -45,7 +45,7 @@ cache.fetchValueForFetcher(fetcher, success: { data in
 
 The above lines would first attempt to fetch the required data from (in order) memory, disk or `NSURLCache`. If not availble, Haneke will fetch the data from the source, return it and then cache it.
 
-Further customization can be achieved by using formats or supporting custom types.
+Further customization can be achieved by using formats or [supporting additional types](#supporting-additional-types).
 
 ##Extra love for images
 
