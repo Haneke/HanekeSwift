@@ -1,8 +1,12 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
-Haneke is lightweight generic cache for iOS written in Swift. It also includes a zero-config image cache with automatic resizing.
+Haneke is a lightweight generic cache for iOS written in Swift. For example, here's how you would initalize a data cache:
 
-Haneke resizes images and caches the result on memory and disk. Everything is done in background, allowing for fast, responsive scrolling. Asking Haneke to load, resize, cache and display an *appropriately sized image* is as simple as:
+```swift
+let cache = Cache<NSData>("my-files")
+```
+
+Haneke also includes a zero-config image cache with automatic resizing. It resizes images and caches the result on memory and disk. Everything is done in background, allowing for fast, responsive scrolling. Asking Haneke to load, resize, cache and display an *appropriately sized image* is as simple as:
 
 ```swift
 imageView.hnk_setImageFromURL(url)
@@ -12,20 +16,38 @@ _Really._
 
 ##Features
 
-* First-level memory cache using `NSCache`.
-* Second-level LRU disk cache using the file system.
-* Asynchronous fetching.
-* All disk access is performed in background.
-* Thread-safe.
-* Automatic cache eviction on memory warnings or disk capacity reached.
+* Generic cache with out-of-the-box support for `UIImage`, `NSData` and `String`
+* First-level memory cache using `NSCache`
+* Second-level LRU disk cache using the file system
+* Asynchronous fetching of original values from network or disk
+* All disk access is performed in background
+* Thread-safe
+* Automatic cache eviction on memory warnings or disk capacity reached
 
 For images:
 
-* Zero-config `UIImageView` category to use the cache, optimized for `UITableView` and `UICollectionView` cell reuse.
-* Background image resizing.
+* Zero-config `UIImageView` category to use the cache, optimized for `UITableView` and `UICollectionView` cell reuse
+* Background image resizing and decompression
 
+##Using the cache
 
-##UIImageView category
+Haneke is generic cache with out-of-the-box support for `UIImage`, `NSData` and `String`. You can use the provided shared caches, or create your own. Here's how you could cache a file from an url:
+
+```Swift
+let cache = Haneke.sharedDataCache
+let fetcher = NetworkFetcher<NSData>(URL: url)
+cache.fetchValueForFetcher(fetcher, success: { data in
+    // Do something with data
+}, failure: { error in
+    // Handle error
+})
+```
+
+The above lines would first attempt to fetch the required data from (in order) memory, disk or `NSURLCache`. If not availble, Haneke will fetch the data from the source, return it and then cache it.
+
+Further customization can be achieved by using formats or [supporting additional types](#supporting-additional-types).
+
+##Extra love for images
 
 Haneke provides convenience methods for `UIImageView` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
 
@@ -46,6 +68,48 @@ The above lines take care of:
 5. Caching the resulting image.
 6. If needed, evicting the least recently used images in the cache.
 
+##Supporting additional types
+
+Haneke can cache any type that can be read and saved as data. This is indicated to Haneke by implementing the protocols `DataConvertible` and `DataRepresentable`.
+
+```Swift
+public protocol DataConvertible {
+    typealias Result
+    
+    class func convertFromData(data:NSData) -> Result?
+}
+
+public protocol DataRepresentable {
+    
+    func asData() -> NSData!
+}
+```
+
+
+For example, this is how one could add support for `NSDictionary`:
+
+```Swift
+extension NSDictionary : DataConvertible, DataRepresentable {
+    
+    public typealias Result = NSDictionary
+    
+    public class func convertFromData(data:NSData) -> Result? {
+        return NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary
+    }
+    
+    public func asData() -> NSData! {
+        return NSKeyedArchiver.archivedDataWithRootObject(self)
+    }
+    
+}
+```
+
+Then creating a NSDictionary cache would be as simple as:
+
+```swift
+let cache = Cache<NSDictionary>("my-dictionaries")
+```
+
 ##Roadmap
 
 Haneke Swift is in initial development and its public API should not be considered stable.
@@ -54,7 +118,7 @@ Haneke Swift is in initial development and its public API should not be consider
 
  Copyright 2014 Hermes Pique ([@hpique](https://twitter.com/hpique))    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2014 Joan Romano ([@joanromano](https://twitter.com/joanromano))   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2014 Luis Lascorbe ([@lascorbe](https://twitter.com/Lascorbe))   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2014 Luis Ascorbe ([@lascorbe](https://twitter.com/Lascorbe))   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2014 Oriol Blanc ([@oriolblanc](https://twitter.com/oriolblanc))   
  
  Licensed under the Apache License, Version 2.0 (the "License");
