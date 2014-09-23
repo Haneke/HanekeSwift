@@ -62,7 +62,7 @@ public class DiskCache {
         })
     }
     
-    public func fetchData(key : String, success doSuccess : (NSData) -> (), failure doFailure : ((NSError?) -> ())? = nil) {
+    public func fetchData(key : String, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (NSData) -> ()) {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
             var error: NSError? = nil

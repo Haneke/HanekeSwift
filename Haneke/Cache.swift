@@ -147,7 +147,18 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     // MARK: Private
     
     private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
-        diskCache.fetchData(key, success: { data in
+        diskCache.fetchData(key, failure: { error in
+            if let block = doFailure {
+                if (error?.code == NSFileReadNoSuchFileError) {
+                    let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
+                    let description = String(format:localizedFormat, key)
+                    let error = Haneke.errorWithCode(Haneke.CacheError.ObjectNotFound.toRaw(), description: description)
+                    block(error)
+                } else {
+                    block(error)
+                }
+            }
+        }) { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 var value = T.convertFromData(data)
                 if let value = value {
@@ -159,18 +170,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                     })
                 }
             })
-        }, failure: { error in
-            if let block = doFailure {
-                if (error?.code == NSFileReadNoSuchFileError) {
-                    let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
-                    let description = String(format:localizedFormat, key)
-                    let error = Haneke.errorWithCode(Haneke.CacheError.ObjectNotFound.toRaw(), description: description)
-                    block(error)
-                } else {
-                    block(error)
-                }
-            }
-        })
+        }
     }
     
     private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
