@@ -291,7 +291,7 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.hnk_setImageFromFetcher(fetcher, success:{resultImage in
+        sut.hnk_setImageFromFetcher(fetcher, success: { resultImage in
             XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -322,7 +322,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let fetcher = MockFetcher<UIImage>(key:key)
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.hnk_setImageFromFetcher(fetcher, failure:{error in
+        sut.hnk_setImageFromFetcher(fetcher, failure: {error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             expectation.fulfill()
         })
