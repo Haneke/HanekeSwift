@@ -111,13 +111,7 @@ public extension UIImageView {
         let format = self.hnk_format
         let cache = Haneke.sharedImageCache
         var animated = false
-        let didSetImage = cache.fetchValueForFetcher(fetcher, formatName: format.name, success: {[weak self] (image) -> () in
-            if let strongSelf = self {
-                if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
-                
-                strongSelf.hnk_setImage(image, animated:animated, success:doSuccess)
-            }
-        }, failure: {[weak self] (error) -> () in
+        let didSetImage = cache.fetchValueForFetcher(fetcher, formatName: format.name, failure: {[weak self] error in
             if let strongSelf = self {
                 if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 
@@ -125,7 +119,13 @@ public extension UIImageView {
                 
                 doFailure?(error)
             }
-        })
+        }) { [weak self] image in
+            if let strongSelf = self {
+                if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
+                
+                strongSelf.hnk_setImage(image, animated:animated, success:doSuccess)
+            }
+        }
         animated = true
         return didSetImage
     }
