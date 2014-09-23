@@ -27,12 +27,12 @@ class FetcherTests: XCTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        fetcher.fetchWithSuccess(success: {
+        fetcher.fetch(failure: { _ in
+            XCTFail("expected success")
+        }) {
             XCTAssertEqual($0, image)
             expectation.fulfill()
-        }, failure: { _ in
-            XCTFail("expected success")
-        })
+        }
         
         self.waitForExpectationsWithTimeout(0, handler: nil)
     }

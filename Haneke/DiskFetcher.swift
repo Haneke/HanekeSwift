@@ -30,11 +30,11 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
+    public override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             if let strongSelf = self {
-                strongSelf.privateFetchWithSuccess(doSuccess, doFailure)
+                strongSelf.privateFetch(doFailure, doSuccess)
             }
         })
     }
@@ -45,7 +45,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func privateFetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
+    private func privateFetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
         if self.cancelled {
             return
         }

@@ -42,12 +42,12 @@ class NetworkFetcherTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: {
+        sut.fetch(failure: { _ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }) {
             let result = $0 as UIImage
             XCTAssertTrue(result.isEqualPixelByPixel(image))
-            expectation.fulfill()
-        }) { _ in
-            XCTFail("expected success")
             expectation.fulfill()
         }
         
@@ -65,12 +65,12 @@ class NetworkFetcherTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         sut.cancelFetch()
         
-        sut.fetchWithSuccess(success: {
+        sut.fetch(failure: { _ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }) {
             let result = $0 as UIImage
             XCTAssertTrue(result.isEqualPixelByPixel(image))
-            expectation.fulfill()
-        }) { _ in
-            XCTFail("expected success")
             expectation.fulfill()
         }
         
@@ -102,13 +102,13 @@ class NetworkFetcherTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: {_ in
-            XCTFail("expected failure")
-            expectation.fulfill()
-        }) {
+        sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
             XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("expected failure")
             expectation.fulfill()
         }
         
@@ -124,13 +124,13 @@ class NetworkFetcherTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: {_ in
-            XCTFail("expected failure")
-            expectation.fulfill()
-        }) {
+        sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
             XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.MissingData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("expected failure")
             expectation.fulfill()
         }
         
@@ -145,10 +145,10 @@ class NetworkFetcherTests: XCTestCase {
             let data = UIImagePNGRepresentation(image)
             return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        sut.fetchWithSuccess(success: {_ in
-            XCTFail("unexpected success")
-        }) {_ in
+        sut.fetch(failure: {_ in
             XCTFail("unexpected failure")
+        }) { _ in
+            XCTFail("unexpected success")
         }
         
         sut.cancelFetch()
@@ -175,13 +175,13 @@ class NetworkFetcherTests: XCTestCase {
         })
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: {_ in
-            XCTFail("expected failure")
-            expectation.fulfill()
-        }) {
+        sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
             XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidStatusCode.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("expected failure")
             expectation.fulfill()
         }
         

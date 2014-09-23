@@ -174,7 +174,9 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     }
     
     private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
-        fetcher.fetchWithSuccess(success: { value in
+        fetcher.fetch(failure: { error in
+            let _ = doFailure?(error)
+        }) { value in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 var formatted = format.apply(value)
                 
@@ -190,9 +192,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                     self.setValue(formatted, fetcher.key, formatName: format.name)
                 })
             })
-        }, failure: { error in
-            let _ = doFailure?(error)
-        })
+        }
     }
     
     // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
