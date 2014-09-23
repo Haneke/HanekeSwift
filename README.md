@@ -44,11 +44,11 @@ cache.setValue(data, key: "some-data")
         
 // Eventually...
 
-cache.fetchValueForKey("some-data", success: {data in
-    // Do something with data
-}, failure: { error in
+cache.fetchValueForKey("some-data", failure: { error in
     // Handle error
-})
+}) { data in
+    // Do something with data
+}
 ```
 
 For cases in which the value is not readily available and must be fetched from network or disk, Haneke provides specialized [fetchers](#fetchers). Here's how you could cache a JSON response from an url:
@@ -58,11 +58,11 @@ let cache = Haneke.sharedJSONCache
 
 let fetcher = NetworkFetcher<JSON>(URL: url)
 
-cache.fetchValueForFetcher(fetcher, success: { JSON in
-    // Do something with JSON
-}, failure: { error in
+cache.fetchValueForFetcher(fetcher, failure: { error in
     // Handle error
-})
+}) { JSON in
+    // Do something with JSON
+}
 ```
 
 The above lines would first attempt to fetch the required JSON from (in order) memory, disk or `NSURLCache`. If not available, Haneke will fetch the JSON from the source, return it and then cache it. In this case, the URL itself is used as the key.
@@ -106,11 +106,11 @@ cache.addFormat(format)
 
 let URL = NSURL(string: "http://example.com/article.md")
 let fetcher = NetworkFetcher<String>(URL: URL)
-cache.fetchValueForFetcher(fetcher, formatName: "icons", success: { image in
-    // image will be a nice rounded icon
-}, failure: { error in
+cache.fetchValueForFetcher(fetcher, formatName: "icons", failure: { error in
     // Handle error
-})
+}) { image in
+    // image will be a nice rounded icon
+}
 ```
 
 Because we told the cache to use the "icons" format Haneke will execute the format transformation in background and return the resulting value.
@@ -125,11 +125,11 @@ let cache = Haneke.sharedStringCache
 let URL = NSURL(string: "http://example.com/article.md")
 let fetcher = NetworkFetcher<String>(URL: URL)
 
-cache.fetchValueForFetcher(fetcher, success: { article in
-    // Do something with article
-}, failure: { error in
+cache.fetchValueForFetcher(fetcher,  failure: { error in
     // Handle error
-})
+}) { article in
+    // Do something with article
+}
 ```
 
 Here the fetcher will be executed only if there is no value associated with `"http://example.com/article.md"` in the memory or disk cache. If that happens, the fetcher will be responsible from fetching the original value, which will then be cached to avoid further network activity.
