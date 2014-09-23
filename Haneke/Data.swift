@@ -63,3 +63,37 @@ extension NSData : DataConvertible, DataRepresentable {
     }
     
 }
+
+public enum JSON : DataConvertible, DataRepresentable {
+    public typealias Result = JSON
+    
+    case Dictionary([String:AnyObject])
+    case Array([AnyObject])
+    
+    public static func convertFromData(data:NSData) -> Result? {
+        var error : NSError?
+        if let object : AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: &error) {
+            switch (object) {
+            case let dictionary as [String:AnyObject]:
+                return JSON.Dictionary(dictionary)
+            case let array as [AnyObject]:
+                return JSON.Array(array)
+            default:
+                return nil
+            }
+        } else {
+            NSLog("Invalid JSON data with error \(error?.localizedDescription)")
+            return nil
+        }
+    }
+    
+    public func asData() -> NSData! {
+        switch (self) {
+        case .Dictionary(let dictionary):
+            return NSJSONSerialization.dataWithJSONObject(dictionary, options: NSJSONWritingOptions.allZeros, error: nil)
+        case .Array(let array):
+            return NSJSONSerialization.dataWithJSONObject(array, options: NSJSONWritingOptions.allZeros, error: nil)
+        }
+    }
+    
+}

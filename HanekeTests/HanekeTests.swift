@@ -32,4 +32,8 @@ class HanekeTests: XCTestCase {
         let cache = Haneke.sharedStringCache
     }
     
+    func testSharedJSONCache() {
+        let cache = Haneke.sharedJSONCache
+    }
+    
 }
