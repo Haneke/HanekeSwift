@@ -246,42 +246,41 @@ class DiskCacheTests: XCTestCase {
         
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchData(key, {
+        sut.fetchData(key, success: {
             expectation.fulfill()
             XCTAssertEqual($0, data)
         })
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             self.waitForExpectationsWithTimeout(0, nil)
-        })
+        }
     }
     
     func testFetchData_Inexisting() {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchData(key,  success : { data in
+        sut.fetchData(key, failure : { error in
+            XCTAssertEqual(error!.code, NSFileReadNoSuchFileError)
             expectation.fulfill()
+        }) { data in
             XCTFail("Expected failure")
-        }, failure : { errorOpt in
             expectation.fulfill()
-            let error = errorOpt!
-            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
-        })
+        }
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             self.waitForExpectationsWithTimeout(0, nil)
-        })
+        }
     }
     
     func testFetchData_Inexisting_NilFailureBlock() {
         let key = self.name
         
-        sut.fetchData(key, { data in
+        sut.fetchData(key, success: { _ in
             XCTFail("Expected failure")
         })
         
-        dispatch_sync(sut.cacheQueue, {})
+        dispatch_sync(sut.cacheQueue) {}
     }
     
     func testFetchData_UpdateAccessDate() {
@@ -296,18 +295,18 @@ class DiskCacheTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         // Preconditions
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
             let accessDate = attributes[NSFileModificationDate] as NSDate
             XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
-        })
+        }
         
-        sut.fetchData(key, {
+        sut.fetchData(key, success: {
             expectation.fulfill()
             XCTAssertEqual($0, data)
         })
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             self.waitForExpectationsWithTimeout(0, nil)
             
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
@@ -315,7 +314,7 @@ class DiskCacheTests: XCTestCase {
             let now = NSDate()
             let interval = accessDate.timeIntervalSinceDate(now)
             XCTAssertEqualWithAccuracy(interval, 0, 1)
-        })
+        }
     }
     
     func testUpdateAccessDateFileInDisk() {
@@ -324,26 +323,26 @@ class DiskCacheTests: XCTestCase {
         sut.setData(data, key : key)
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let _ = fileManager.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path, error: nil)
-        })
+        }
         
         // Preconditions
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
             let accessDate = attributes[NSFileModificationDate] as NSDate
             XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
-        })
+        }
         
         sut.updateAccessDate(data, key: key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
             let accessDate = attributes[NSFileModificationDate] as NSDate
             let now = NSDate()
             let interval = accessDate.timeIntervalSinceDate(now)
             XCTAssertEqualWithAccuracy(interval, 0, 1)
-        })
+        }
     }
     
     func testUpdateAccessDateFileNotInDisk() {
@@ -353,15 +352,15 @@ class DiskCacheTests: XCTestCase {
         let fileManager = NSFileManager.defaultManager()
         
         // Preconditions
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-        })
+        }
         
         sut.updateAccessDate(image.hnk_data(), key: key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
-        })
+        }
     }
     
     func testRemoveDataTwoKeys() {
@@ -372,12 +371,12 @@ class DiskCacheTests: XCTestCase {
 
         sut.removeData(keys[1])
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             let path = self.sut.pathForKey(keys[1])
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
             XCTAssertEqual(self.sut.size, UInt64(datas[0].length))
-        })
+        }
     }
     
     func testRemoveDataExisting() {
@@ -388,11 +387,11 @@ class DiskCacheTests: XCTestCase {
         
         sut.removeData(key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
             XCTAssertEqual(self.sut.size, 0)
-        })
+        }
     }
     
     func testRemoveDataInexisting() {
@@ -414,11 +413,11 @@ class DiskCacheTests: XCTestCase {
         
         sut.removeAllData()
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
             XCTAssertEqual(self.sut.size, 0)
-        })
+        }
     }
     
     func testRemoveAllData_Empty() {

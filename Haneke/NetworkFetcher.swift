@@ -38,11 +38,11 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetchWithSuccess(success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
+    public override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
         self.cancelled = false
         self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data : NSData!, response : NSURLResponse!, error : NSError!) -> Void in
             if let strongSelf = self {
-                strongSelf.onReceiveData(data, response: response, error: error, success: doSuccess, failure: doFailure)
+                strongSelf.onReceiveData(data, response: response, error: error, failure: doFailure, success: doSuccess)
             }
         }
         self.task?.resume()
@@ -55,7 +55,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, success doSuccess : (T.Result) -> (), failure doFailure : ((NSError?) -> ())) {
+    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
 
         if cancelled { return }
         

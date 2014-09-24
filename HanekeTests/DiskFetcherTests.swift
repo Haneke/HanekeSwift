@@ -34,12 +34,12 @@ class DiskFetcherTests: DiskTestCase {
         
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: {
+        sut.fetch(failure: { _ in
+            XCTFail("Expected to succeed")
+            expectation.fulfill()
+        }) {
             let result = $0 as UIImage
             XCTAssertTrue(result.isEqualPixelByPixel(image))
-            expectation.fulfill()
-        }) { _ in
-            XCTFail("Expected to succeed")
             expectation.fulfill()
         }
         
@@ -49,12 +49,12 @@ class DiskFetcherTests: DiskTestCase {
     func testFetchImage_Failure_NSFileReadNoSuchFileError() {
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: { _ in
-            XCTFail("Expected to fail")
-            expectation.fulfill()
-        }) {
+        sut.fetch(failure: {
             XCTAssertEqual($0!.code, NSFileReadNoSuchFileError)
             XCTAssertNotNil($0!.localizedDescription)
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("Expected to fail")
             expectation.fulfill()
         }
         
@@ -67,13 +67,13 @@ class DiskFetcherTests: DiskTestCase {
         
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.fetchWithSuccess(success: { _ in
-            XCTFail("Expected to fail")
-            expectation.fulfill()
-        }) {
+        sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
             XCTAssertEqual($0!.code, Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("Expected to fail")
             expectation.fulfill()
         }
         
@@ -84,11 +84,10 @@ class DiskFetcherTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
         let data = UIImagePNGRepresentation(image)
         data.writeToFile(directoryPath, atomically: true)
-        
-        sut.fetchWithSuccess(success: { _ in
-            XCTFail("Unexpected success")
-        }) { _ in
+        sut.fetch(failure: { _ in
             XCTFail("Unexpected failure")
+        }) { _ in
+            XCTFail("Unexpected success")
         }
         
         sut.cancelFetch()

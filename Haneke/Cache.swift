@@ -73,7 +73,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return value.asData()
     }
     
-    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Bool {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
                 if let result = wrapper.value as? T {
@@ -83,7 +83,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                 }
             }
 
-            self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, success: doSuccess, failure: doFailure)
+            self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: doFailure, success: doSuccess)
 
         } else if let block = doFailure {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
@@ -94,20 +94,20 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return false
     }
     
-    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())? = nil) -> Bool {
+    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Bool {
         let key = fetcher.key
-        let didSuccess = self.fetchValueForKey(key, formatName: formatName,  success: doSuccess, failure: { error in
+        let didSuccess = self.fetchValueForKey(key, formatName: formatName, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
                 doFailure?(error)
                 return
             }
             
             if let (format, _, _) = self.formats[formatName] {
-                self.fetchValueFromFetcher(fetcher, format: format, success: doSuccess, failure: doFailure)
+                self.fetchValueFromFetcher(fetcher, format: format, failure: doFailure, success: doSuccess)
             }
             
             // Unreachable code. Formats can't be removed from Cache.
-        })
+        }, success: doSuccess)
         return didSuccess
     }
 
@@ -146,8 +146,19 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     
     // MARK: Private
     
-    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache,  success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
-        diskCache.fetchData(key, success: { data in
+    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, failure doFailure : ((NSError?) -> ())?, success doSuccess : (T) -> ()) {
+        diskCache.fetchData(key, failure: { error in
+            if let block = doFailure {
+                if (error?.code == NSFileReadNoSuchFileError) {
+                    let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
+                    let description = String(format:localizedFormat, key)
+                    let error = Haneke.errorWithCode(Haneke.CacheError.ObjectNotFound.toRaw(), description: description)
+                    block(error)
+                } else {
+                    block(error)
+                }
+            }
+        }) { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
                 var value = T.convertFromData(data)
                 if let value = value {
@@ -159,23 +170,14 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                     })
                 }
             })
-        }, failure: { error in
-            if let block = doFailure {
-                if (error?.code == NSFileReadNoSuchFileError) {
-                    let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
-                    let description = String(format:localizedFormat, key)
-                    let error = Haneke.errorWithCode(Haneke.CacheError.ObjectNotFound.toRaw(), description: description)
-                    block(error)
-                } else {
-                    block(error)
-                }
-            }
-        })
+        }
     }
     
-    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, success doSuccess : (T) -> (), failure doFailure : ((NSError?) -> ())?) {
-        fetcher.fetchWithSuccess(success: { value in
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, failure doFailure : ((NSError?) -> ())?, success doSuccess : (T) -> ()) {
+        fetcher.fetch(failure: { error in
+            let _ = doFailure?(error)
+        }) { value in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 var formatted = format.apply(value)
                 
                 if let formattedImage = formatted as? UIImage {
@@ -185,14 +187,12 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                     }
                 }
 
-                dispatch_async(dispatch_get_main_queue(), {
+                dispatch_async(dispatch_get_main_queue()) {
                     doSuccess(formatted)
                     self.setValue(formatted, fetcher.key, formatName: format.name)
-                })
-            })
-        }, failure: { error in
-            let _ = doFailure?(error)
-        })
+                }
+            }
+        }
     }
     
     // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
