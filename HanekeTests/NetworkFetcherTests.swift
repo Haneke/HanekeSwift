@@ -188,4 +188,69 @@ class NetworkFetcherTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    // MARK: Cache extension
+    
+    func testCacheFetch_Success() {
+        let data = NSData.dataWithLength(1)
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+        })
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+
+        cache.fetch(URL: URL, failure: {_ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }) {
+            XCTAssertEqual($0, data)
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testCacheFetch_Failure() {
+        let data = NSData.dataWithLength(1)
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
+        })
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        
+        cache.fetch(URL: URL, failure: {_ in
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testCacheFetch_WithFormat() {
+        let data = NSData.dataWithLength(1)
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
+        })
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        let format = Format<NSData>(self.name)
+        cache.addFormat(format)
+
+        cache.fetch(URL: URL, formatName: format.name, failure: {_ in
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
 }
