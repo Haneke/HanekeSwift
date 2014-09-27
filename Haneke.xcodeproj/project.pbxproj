@@ -38,8 +38,6 @@
 		A042110319C91157005000B8 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0FDBF9119AD444500326016 /* Format.swift */; };
 		A042110519C914CE005000B8 /* UIImageView+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A042110419C914CE005000B8 /* UIImageView+HanekeTests.swift */; };
 		A05F58FA19CCB1DA0009EBDE /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A05F58F919CCB1DA0009EBDE /* DataTests.swift */; };
-		A05F58FC19CCB4BB0009EBDE /* NSObject+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A05F58FB19CCB4BB0009EBDE /* NSObject+Haneke.swift */; };
-		A05F58FD19CCB4CB0009EBDE /* NSObject+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A05F58FB19CCB4BB0009EBDE /* NSObject+Haneke.swift */; };
 		A06EE27519AE1A6A00572D17 /* FormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE27419AE1A6A00572D17 /* FormatTests.swift */; };
 		A06EE28019B18C7800572D17 /* String+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE27F19B18C7800572D17 /* String+Haneke.swift */; };
 		A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE28119B18FE600572D17 /* String+HanekeTests.swift */; };
@@ -138,7 +136,6 @@
 		A04210FB19C90292005000B8 /* UIImageView+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Haneke.swift"; sourceTree = "<group>"; };
 		A042110419C914CE005000B8 /* UIImageView+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+HanekeTests.swift"; sourceTree = "<group>"; };
 		A05F58F919CCB1DA0009EBDE /* DataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
-		A05F58FB19CCB4BB0009EBDE /* NSObject+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Haneke.swift"; sourceTree = "<group>"; };
 		A06EE27419AE1A6A00572D17 /* FormatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatTests.swift; sourceTree = "<group>"; };
 		A06EE27F19B18C7800572D17 /* String+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Haneke.swift"; sourceTree = "<group>"; };
 		A06EE28119B18FE600572D17 /* String+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HanekeTests.swift"; sourceTree = "<group>"; };
@@ -334,7 +331,6 @@
 				A06EE27F19B18C7800572D17 /* String+Haneke.swift */,
 				A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */,
 				A00D360319C36E680007586E /* NSHTTPURLResponse+Haneke.swift */,
-				A05F58FB19CCB4BB0009EBDE /* NSObject+Haneke.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -539,7 +535,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A06EE28019B18C7800572D17 /* String+Haneke.swift in Sources */,
-				A05F58FC19CCB4BB0009EBDE /* NSObject+Haneke.swift in Sources */,
 				A0FDBF9219AD444500326016 /* Format.swift in Sources */,
 				A0C6BA3A19AC0D1E007111E9 /* NSFileManager+Haneke.swift in Sources */,
 				A00D360219C355C30007586E /* NetworkFetcher.swift in Sources */,
@@ -563,7 +558,6 @@
 				D18894C919C340C5008E9E4C /* CGSize+HanekeTests.swift in Sources */,
 				A06EE28319B1902C00572D17 /* String+Haneke.swift in Sources */,
 				A00D364919C6D8870007586E /* NetworkFetcherTests.swift in Sources */,
-				A05F58FD19CCB4CB0009EBDE /* NSObject+Haneke.swift in Sources */,
 				A0C6BA3D19ACA216007111E9 /* NSFileManager+Haneke.swift in Sources */,
 				A042110319C91157005000B8 /* Format.swift in Sources */,
 				A09B13B719C91B1E009CC339 /* UIImageView+Haneke.swift in Sources */,
