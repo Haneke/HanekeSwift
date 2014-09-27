@@ -185,7 +185,7 @@ class NetworkFetcherTests: XCTestCase {
             expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)        
     }
     
     // MARK: Cache extension
@@ -209,6 +209,8 @@ class NetworkFetcherTests: XCTestCase {
         }
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
     }
     
     func testCacheFetch_Failure() {
@@ -229,6 +231,8 @@ class NetworkFetcherTests: XCTestCase {
         }
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
     }
     
     func testCacheFetch_WithFormat() {
@@ -251,6 +255,8 @@ class NetworkFetcherTests: XCTestCase {
         }
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
     }
     
 }
