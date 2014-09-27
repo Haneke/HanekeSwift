@@ -124,6 +124,7 @@ Because we told the cache to use the "icons" format Haneke will execute the form
 
 The `fetch` functions for urls and path are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url:
 
+```swift
 let URL = NSURL(string: "http://haneke.io/icon.png")
 let fetcher = NetworkFetcher<UIImage>(URL: URL)
 cache.fetchValueForFetcher(fetcher, failure: { error in
@@ -131,6 +132,7 @@ cache.fetchValueForFetcher(fetcher, failure: { error in
 }) { image in
     // Do something with image
 }
+```
 
 Fetching an original value from network or disk is an expensive operation. Fetchers act as a proxy for the value, and allow Haneke to perform the fetch operation only if absolutely necessary.
 
