@@ -30,6 +30,10 @@ class DiskTestCase : XCTestCase {
     
     func writeDataWithLength(length : Int) -> String {
         let data = NSData.dataWithLength(length)
+        return self.writeData(data)
+    }
+    
+    func writeData(data : NSData) -> String {
         let path = self.directoryPath.stringByAppendingPathComponent("\(dataIndex)")
         data.writeToFile(path, atomically: true)
         dataIndex++
