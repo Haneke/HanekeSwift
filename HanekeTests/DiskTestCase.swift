@@ -11,8 +11,8 @@ import XCTest
 class DiskTestCase : XCTestCase {
  
     lazy var directoryPath : String = {
-        var directoryPath = NSHomeDirectory()
-        directoryPath = directoryPath.stringByAppendingPathComponent(_stdlib_getTypeName(self))
+        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let directoryPath = documentsPath.stringByAppendingPathComponent(self.name)
         return directoryPath
     }()
     
@@ -34,8 +34,13 @@ class DiskTestCase : XCTestCase {
     }
     
     func writeData(data : NSData) -> String {
-        let path = self.directoryPath.stringByAppendingPathComponent("\(dataIndex)")
+        let path = self.uniquePath()
         data.writeToFile(path, atomically: true)
+        return path
+    }
+    
+    func uniquePath() -> String {
+        let path = self.directoryPath.stringByAppendingPathComponent("\(dataIndex)")
         dataIndex++
         return path
     }
