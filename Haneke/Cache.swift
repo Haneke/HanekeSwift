@@ -93,11 +93,11 @@ public class Fetch<T> {
 }
 
 extension Haneke {
-        // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
-        public enum CacheError : Int {
-            case ObjectNotFound = -100
-            case FormatNotFound = -101
-        }
+    // It'd be better to define this in the Cache class but Swift doesn't allow to declare an enum in a generic type
+    public enum CacheError : Int {
+        case ObjectNotFound = -100
+        case FormatNotFound = -101
+    }
 }
 
 public let OriginalFormatName = "original"
