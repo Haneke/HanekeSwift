@@ -85,3 +85,12 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         
     }
 }
+
+public extension Cache {
+    
+    public func fetch(#path : String, formatName : String = OriginalFormatName,  failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Bool {
+        let fetcher = DiskFetcher<T>(path: path)
+        return self.fetchValueForFetcher(fetcher, formatName: formatName, failure: doFailure, success: doSuccess)
+    }
+    
+}

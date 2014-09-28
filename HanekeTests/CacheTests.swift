@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import XCTest
 
-class CacheTests: DiskTestCase {
+class CacheTests: XCTestCase {
     
     var sut : Cache<UIImage>!
     

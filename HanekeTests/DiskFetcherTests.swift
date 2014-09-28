@@ -12,25 +12,26 @@ import XCTest
 class DiskFetcherTests: DiskTestCase {
     
     var sut : DiskFetcher<UIImage>!
+    var path : String!
 
     override func setUp() {
         super.setUp()
-        directoryPath = directoryPath.stringByAppendingPathComponent(self.name)
-        sut = DiskFetcher(path: directoryPath)
+        path = self.uniquePath()
+        sut = DiskFetcher(path: path)
     }
     
     func testInit() {
-        XCTAssertEqual(sut.path, directoryPath)
+        XCTAssertEqual(sut.path, path)
     }
     
     func testKey() {
-        XCTAssertEqual(sut.key, directoryPath)
+        XCTAssertEqual(sut.key, path)
     }
     
     func testFetchImage_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
         let data = UIImagePNGRepresentation(image)
-        data.writeToFile(directoryPath, atomically: true)
+        data.writeToFile(sut.path, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
         
@@ -63,7 +64,7 @@ class DiskFetcherTests: DiskTestCase {
     
     func testFetchImage_Failure_HNKDiskEntityInvalidDataError() {
         let data = NSData.data()
-        data.writeToFile(directoryPath, atomically: true)
+        data.writeToFile(sut.path, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
         
@@ -97,5 +98,64 @@ class DiskFetcherTests: DiskTestCase {
     
     func testCancelFetch_NoFetch() {
         sut.cancelFetch()
+    }
+    
+    // MARK: Cache extension
+    
+    func testCacheFetch_Success() {
+        let data = NSData.dataWithLength(1)
+        let path = self.writeData(data)
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        
+        cache.fetch(path: path, failure: {_ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }) {
+            XCTAssertEqual($0, data)
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
+    }
+    
+    func testCacheFetch_Failure() {
+        let path = self.directoryPath.stringByAppendingPathComponent(self.name)
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        
+        cache.fetch(path: path, failure: {_ in
+            expectation.fulfill()
+        }) { _ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
+    }
+    
+    func testCacheFetch_WithFormat() {
+        let data = NSData.dataWithLength(1)
+        let path = self.writeData(data)
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        let format = Format<NSData>(self.name)
+        cache.addFormat(format)
+        
+        cache.fetch(path: path, formatName: format.name, failure: {_ in
+            XCTFail("expected success")
+            expectation.fulfill()
+        }) {
+            XCTAssertEqual($0, data)
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
     }
 }

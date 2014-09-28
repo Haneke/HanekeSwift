@@ -1,12 +1,20 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
-Haneke is a lightweight generic cache for iOS written in Swift. It provides a memory and LRU disk cache for `UIImage`, `NSData`, `JSON`, `String` or any other type that can be read or written as data. Here's how you would initalize a data cache:
+Haneke is a lightweight *generic* cache for iOS written in Swift. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch JSON objects from a url:
 
 ```swift
-let cache = Cache<NSData>("my-files")
+let cache = Cache<JSON>("movies")
+let URL = NSURL(string: "http://haneke.io/movies.json")
+cache.fetch(URL: URL, failure: { error in
+    // Handle error
+}) { JSON in
+    // Do something with JSON
+}
 ```
 
-Haneke excels at working with images. It includes a zero-config image cache with automatic resizing. Everything is done in background, allowing for fast, responsive scrolling. Asking Haneke to load, resize, cache and display an *appropriately sized image* is as simple as:
+Haneke provides a memory and LRU disk cache for `UIImage`, `NSData`, `JSON`, `String` or any other type that can be read or written as data.
+
+Particularly, Haneke excels at working with images. It includes a zero-config image cache with automatic resizing. Everything is done in background, allowing for fast, responsive scrolling. Asking Haneke to load, resize, cache and display an *appropriately sized image* is as simple as:
 
 ```swift
 imageView.hnk_setImageFromURL(url)
@@ -51,21 +59,19 @@ cache.fetchValueForKey("some-data", failure: { error in
 }
 ```
 
-For cases in which the value is not readily available and must be fetched from network or disk, Haneke provides specialized [fetchers](#fetchers). Here's how you could cache a JSON response from an url:
+For cases in which the value is not readily available and must be fetched from network or disk, Haneke provides convenience `fetch` functions. Let's go back to the first example, now using a shared cache: 
 
 ```Swift
 let cache = Haneke.sharedJSONCache
-
-let fetcher = NetworkFetcher<JSON>(URL: url)
-
-cache.fetchValueForFetcher(fetcher, failure: { error in
+let URL = NSURL(string: "http://haneke.io/movies.json")
+cache.fetch(URL: URL, failure: { error in
     // Handle error
 }) { JSON in
     // Do something with JSON
 }
 ```
 
-The above lines would first attempt to fetch the required JSON from (in order) memory, disk or `NSURLCache`. If not available, Haneke will fetch the JSON from the source, return it and then cache it. In this case, the URL itself is used as the key.
+The above call will first attempt to fetch the required JSON from (in order) memory, disk or `NSURLCache`. If not available, Haneke will fetch the JSON from the source, return it and then cache it. In this case, the URL itself is used as the key.
 
 Further customization can be achieved by using [formats](#formats), [supporting additional types](#supporting-additional-types) or implementing [custom fetchers](#custom-fetchers).
 
@@ -104,9 +110,8 @@ let format = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
 }
 cache.addFormat(format)
 
-let URL = NSURL(string: "http://example.com/article.md")
-let fetcher = NetworkFetcher<String>(URL: URL)
-cache.fetchValueForFetcher(fetcher, formatName: "icons", failure: { error in
+let URL = NSURL(string: "http://haneke.io/icon.png")
+cache.fetch(URL: URL, formatName: "icons", failure: { error in
     // Handle error
 }) { image in
     // image will be a nice rounded icon
@@ -117,22 +122,21 @@ Because we told the cache to use the "icons" format Haneke will execute the form
 
 ##Fetchers
 
-Fetching an original value from network or disk is an expensive operation. Fetchers act as a proxy for the value, and allow Haneke to perform the fetch operation only if absolutely necessary. To illustrate:
+The `fetch` functions for urls and path are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url:
 
-```Swift
-let cache = Haneke.sharedStringCache
-
-let URL = NSURL(string: "http://example.com/article.md")
-let fetcher = NetworkFetcher<String>(URL: URL)
-
-cache.fetchValueForFetcher(fetcher,  failure: { error in
+```swift
+let URL = NSURL(string: "http://haneke.io/icon.png")
+let fetcher = NetworkFetcher<UIImage>(URL: URL)
+cache.fetchValueForFetcher(fetcher, failure: { error in
     // Handle error
-}) { article in
-    // Do something with article
+}) { image in
+    // Do something with image
 }
 ```
 
-Here the fetcher will be executed only if there is no value associated with `"http://example.com/article.md"` in the memory or disk cache. If that happens, the fetcher will be responsible from fetching the original value, which will then be cached to avoid further network activity.
+Fetching an original value from network or disk is an expensive operation. Fetchers act as a proxy for the value, and allow Haneke to perform the fetch operation only if absolutely necessary.
+
+In the above example the fetcher will be executed only if there is no value associated with `"http://haneke.io/icon.png"` in the memory or disk cache. If that happens, the fetcher will be responsible from fetching the original value, which will then be cached to avoid further network activity.
 
 Haneke provides two specialized fetchers: `NetworkFetcher<T>` and `DiskFetcher<T>`. You can also implement your own fetchers by subclassing `Fetcher<T>`.
 
@@ -140,12 +144,11 @@ Haneke provides two specialized fetchers: `NetworkFetcher<T>` and `DiskFetcher<T
 
 Custom fetchers must subclass `Fetcher<T>` and are responsible for:
 
-* Providing the key (e.g., `NSURL.absoluteString` in the case of `NetworkFetcher`) associated with the to be fetched value
+* Providing the key (e.g., `NSURL.absoluteString` in the case of `NetworkFetcher`) associated with the value to be fetched
 * Fetching the value in background and calling the success or failure closure accordingly, both in the main queue
 * Cancelling the fetch on demand, if possible
 
-Fetchers are generic, and the only restriction on their type is that it must implement `DataConvertible`.
- 
+Fetchers are generic, and the only restriction on their type is that it must implement `DataConvertible`. 
 
 ##Supporting additional types
 

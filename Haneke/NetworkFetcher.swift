@@ -107,3 +107,12 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         dispatch_async(dispatch_get_main_queue()) { doFailure(error) }
     }
 }
+
+public extension Cache {
+    
+    public func fetch(#URL : NSURL, formatName : String = OriginalFormatName,  failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Bool {
+        let fetcher = NetworkFetcher<T>(URL: URL)
+        return self.fetchValueForFetcher(fetcher, formatName: formatName, failure: doFailure, success: doSuccess)
+    }
+    
+}

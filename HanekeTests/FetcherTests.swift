@@ -37,4 +37,36 @@ class FetcherTests: XCTestCase {
         self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
+    func testCacheFetch() {
+        let data = NSData.dataWithLength(1)
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        
+        cache.fetch(key: self.name, value: data) {
+            XCTAssertEqual($0, data)
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
+    }
+    
+    func testCacheFetch_WithFormat() {
+        let data = NSData.dataWithLength(1)
+        let expectation = self.expectationWithDescription(self.name)
+        let cache = Cache<NSData>(self.name)
+        let format = Format<NSData>(self.name)
+        cache.addFormat(format)
+        
+        cache.fetch(key: self.name, value: data, formatName: format.name) {
+            XCTAssertEqual($0, data)
+            expectation.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        
+        cache.removeAllValues()
+    }
+    
 }
