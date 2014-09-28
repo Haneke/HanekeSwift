@@ -42,12 +42,12 @@ class CacheTests: XCTestCase {
         sut.addFormat(format)
     }
     
-    func testSetValueInDefaultFormat () {
+    func testSet_WithDefaultFormat () {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         
         sut.fetch(key: key, formatName: OriginalFormatName, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
@@ -56,7 +56,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testSetValueInFormat () {
+    func testSet_WithFormat () {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
@@ -64,7 +64,7 @@ class CacheTests: XCTestCase {
         sut.addFormat(format)
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.setValue(image, key, formatName : format.name)
+        sut.set(value: image, key: key, formatName : format.name)
         
         sut.fetch(key: key, formatName: format.name, success: {
             expectation.fulfill()
@@ -73,17 +73,17 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testSetValueInInexistingFormat () {
+    func testSet_WithInexistingFormat () {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         
         // TODO: Swift doesn't support XCAssertThrows yet. 
         // See: http://stackoverflow.com/questions/25529625/testing-assertion-in-swift
-        // XCAssertThrows(sut.setValue(image, key, formatName : self.name))
+        // XCAssertThrows(sut.set(value: image, key: key, formatName : self.name))
     }
     
-    func testSetValue_FormatWithouDiskCapacity() {
+    func testSet_WithFormatWithouDiskCapacity() {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
@@ -91,7 +91,7 @@ class CacheTests: XCTestCase {
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.setValue(image, key, formatName: format.name)
+        sut.set(value: image, key: key, formatName: format.name)
 
         self.clearMemoryCache()
         sut.fetch(key: key, formatName: format.name, failure: {_ in
@@ -103,7 +103,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testSetValue_FormatWithDiskCapacity() {
+    func testSet_WithFormatWithDiskCapacity() {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
@@ -111,7 +111,7 @@ class CacheTests: XCTestCase {
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.setValue(image, key, formatName: format.name)
+        sut.set(value: image, key: key, formatName: format.name)
         
         self.clearMemoryCache()
         sut.fetch(key: key, formatName: format.name, failure : { _ in
@@ -127,7 +127,7 @@ class CacheTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         
         let fetch = sut.fetch(key: key).onSuccess {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
@@ -157,7 +157,7 @@ class CacheTests: XCTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         
         let fetch = sut.fetch(key: key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
@@ -172,7 +172,7 @@ class CacheTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         self.clearMemoryCache()
         
         let fetch = sut.fetch(key: key,  success: {
@@ -265,7 +265,7 @@ class CacheTests: XCTestCase {
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         
         let fetch = sut.fetch(fetcher: fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
@@ -281,7 +281,7 @@ class CacheTests: XCTestCase {
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         self.clearMemoryCache()
         
         let fetch = sut.fetch(fetcher: fetcher, success: {
@@ -357,7 +357,7 @@ class CacheTests: XCTestCase {
     
     func testRemoveValue_Existing() {
         let key = self.name
-        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key)
+        sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
 
         sut.removeValue(key)
@@ -376,7 +376,7 @@ class CacheTests: XCTestCase {
         let key = "key"
         let format = Format<UIImage>(self.name)
         sut.addFormat(format)
-        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key, formatName: format.name)
+        sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key, formatName: format.name)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeValue(key, formatName: format.name)
@@ -395,7 +395,7 @@ class CacheTests: XCTestCase {
         let key = "key"
         let format = Format<UIImage>(self.name)
         sut.addFormat(format)
-        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key)
+        sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeValue(key, formatName: format.name)
@@ -413,7 +413,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeValue(key, formatName: self.name)
@@ -433,7 +433,7 @@ class CacheTests: XCTestCase {
     
     func testRemoveAllValues_One() {
         let key = self.name
-        sut.setValue(UIImage.imageWithColor(UIColor.greenColor()), key)
+        sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
         
         sut.removeAllValues()
@@ -454,7 +454,7 @@ class CacheTests: XCTestCase {
     func testOnMemoryWarning() {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        sut.setValue(image, key)
+        sut.set(value: image, key: key)
         let expectation = self.expectationWithDescription("fetch image")
 
         sut.onMemoryWarning()

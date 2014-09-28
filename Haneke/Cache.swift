@@ -55,7 +55,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
-    public func setValue (value : T, _ key: String, formatName : String = OriginalFormatName) {
+    public func set(#value : T, key: String, formatName : String = OriginalFormatName) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             let wrapper = ObjectWrapper(value: value)
             memoryCache.setObject(wrapper, forKey: key)
@@ -64,13 +64,6 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         } else {
             assertionFailure("Can't set value before adding format")
         }
-    }
-    
-    func dataFromValue(value : T, format : Format<T>) -> NSData? {
-        if let data = format.convertToData?(value) {
-            return data
-        }
-        return value.asData()
     }
     
     public func fetch(#key : String, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
@@ -157,6 +150,13 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     
     // MARK: Private
     
+    func dataFromValue(value : T, format : Format<T>) -> NSData? {
+        if let data = format.convertToData?(value) {
+            return data
+        }
+        return value.asData()
+    }
+    
     private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, failure doFailure : ((NSError?) -> ())?, success doSuccess : (T) -> ()) {
         diskCache.fetchData(key, failure: { error in
             if let block = doFailure {
@@ -200,7 +200,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
 
                 dispatch_async(dispatch_get_main_queue()) {
                     doSuccess(formatted)
-                    self.setValue(formatted, fetcher.key, formatName: format.name)
+                    self.set(value: formatted, key: fetcher.key, formatName: format.name)
                 }
             }
         }
