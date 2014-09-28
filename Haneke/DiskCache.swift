@@ -62,16 +62,16 @@ public class DiskCache {
         })
     }
     
-    public func fetchData(key : String, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (NSData) -> ()) {
+    public func fetchData(key : String, failure fail : ((NSError?) -> ())? = nil, success succeed : (NSData) -> ()) {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
             var error: NSError? = nil
             if let data = NSData.dataWithContentsOfFile(path, options: NSDataReadingOptions.allZeros, error: &error) {
                 dispatch_async(dispatch_get_main_queue(), {
-                   doSuccess(data)
+                   succeed(data)
                 })
                 self.updateDiskAccessDateAtPath(path)
-            } else if let block = doFailure {
+            } else if let block = fail {
                 dispatch_async(dispatch_get_main_queue(), {
                     block(error)
                 })

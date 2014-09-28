@@ -30,11 +30,11 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             if let strongSelf = self {
-                strongSelf.privateFetch(doFailure, doSuccess)
+                strongSelf.privateFetch(fail, succeed)
             }
         })
     }
@@ -45,7 +45,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func privateFetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+    private func privateFetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
         if self.cancelled {
             return
         }
@@ -54,7 +54,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         let data = NSData.dataWithContentsOfFile(self.path, options: NSDataReadingOptions.allZeros, error: &error)
         if data == nil {
             dispatch_async(dispatch_get_main_queue()) {
-                doFailure(error)
+                fail(error)
             }
             return
         }
@@ -70,7 +70,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             let description = String(format:localizedFormat, self.path)
             let error = Haneke.errorWithCode(Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw(), description: description)
             dispatch_async(dispatch_get_main_queue()) {
-                doFailure(error)
+                fail(error)
             }
             return
         }
@@ -79,7 +79,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             if self.cancelled {
                 return
             }
-            doSuccess(thing!)
+            succeed(thing!)
         })
         
         
@@ -88,9 +88,9 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
 
 public extension Cache {
     
-    public func fetch(#path : String, formatName : String = OriginalFormatName,  failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#path : String, formatName : String = OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = DiskFetcher<T>(path: path)
-        return self.fetch(fetcher: fetcher, formatName: formatName, failure: doFailure, success: doSuccess)
+        return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }
     
 }

@@ -17,7 +17,7 @@ public class Fetcher<T : DataConvertible> {
         self.key = key
     }
     
-    func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {}
+    func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {}
     
     func cancelFetch() {}
 }
@@ -31,9 +31,9 @@ class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
         super.init(key: key)
     }
     
-    override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
         let thing = getThing()
-        doSuccess(thing)
+        succeed(thing)
     }
     
     override func cancelFetch() {}
@@ -42,9 +42,9 @@ class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
 
 public extension Cache {
     
-    public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = OriginalFormatName, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = SimpleFetcher<T>(key: key, thing: getValue)
-        return self.fetch(fetcher: fetcher, formatName: formatName, success: doSuccess)
+        return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }
     
 }

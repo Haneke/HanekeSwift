@@ -66,8 +66,8 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
-    public func fetch(#key : String, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetch = Cache.buildFetch(failure: doFailure, success: doSuccess)
+    public func fetch(#key : String, formatName : String = OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
                 if let result = wrapper.value as? T {
@@ -92,9 +92,9 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return fetch
     }
     
-    public func fetch(#fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
-        let fetch = Cache.buildFetch(failure: doFailure, success: doSuccess)
+        let fetch = Cache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
                 fetch.fail(error)
@@ -157,9 +157,9 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return value.asData()
     }
     
-    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, failure doFailure : ((NSError?) -> ())?, success doSuccess : (T) -> ()) {
+    private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
         diskCache.fetchData(key, failure: { error in
-            if let block = doFailure {
+            if let block = fail {
                 if (error?.code == NSFileReadNoSuchFileError) {
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
@@ -175,7 +175,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
                     dispatch_async(dispatch_get_main_queue(), {
-                        doSuccess(descompressedValue)
+                        succeed(descompressedValue)
                         let wrapper = ObjectWrapper(value: descompressedValue)
                         memoryCache.setObject(wrapper, forKey: key)
                     })
@@ -184,9 +184,9 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
-    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, failure doFailure : ((NSError?) -> ())?, success doSuccess : (T) -> ()) {
+    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
         fetcher.fetch(failure: { error in
-            let _ = doFailure?(error)
+            let _ = fail?(error)
         }) { value in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 var formatted = format.apply(value)
@@ -199,7 +199,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                 }
 
                 dispatch_async(dispatch_get_main_queue()) {
-                    doSuccess(formatted)
+                    succeed(formatted)
                     self.set(value: formatted, key: fetcher.key, formatName: format.name)
                 }
             }

@@ -308,9 +308,9 @@ class UIImageView_HanekeTests: XCTestCase {
                 super.init(key: key)
             }
             
-            override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+            override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
                 let error = Haneke.errorWithCode(0, description: "test")
-                doFailure(error)
+                fail(error)
             }
             
             override func cancelFetch() {}

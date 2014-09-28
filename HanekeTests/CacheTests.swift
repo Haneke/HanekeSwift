@@ -242,8 +242,8 @@ class CacheTests: XCTestCase {
                 super.init(key: key)
             }
             
-            override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
-                doFailure(error)
+            override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+                fail(error)
             }
             
         }
