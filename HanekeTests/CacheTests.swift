@@ -49,7 +49,7 @@ class CacheTests: XCTestCase {
         
         sut.setValue(image, key)
         
-        sut.fetchValueForKey(key, formatName: OriginalFormatName, success: {
+        sut.fetch(key: key, formatName: OriginalFormatName, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -66,7 +66,7 @@ class CacheTests: XCTestCase {
         
         sut.setValue(image, key, formatName : format.name)
         
-        sut.fetchValueForKey(key, formatName: format.name, success: {
+        sut.fetch(key: key, formatName: format.name, success: {
             expectation.fulfill()
             XCTAssertTrue($0.isEqualPixelByPixel(image))
         })
@@ -94,7 +94,7 @@ class CacheTests: XCTestCase {
         sut.setValue(image, key, formatName: format.name)
 
         self.clearMemoryCache()
-        sut.fetchValueForKey(key, formatName: format.name, failure: {_ in
+        sut.fetch(key: key, formatName: format.name, failure: {_ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected failure")
@@ -114,7 +114,7 @@ class CacheTests: XCTestCase {
         sut.setValue(image, key, formatName: format.name)
         
         self.clearMemoryCache()
-        sut.fetchValueForKey(key, formatName: format.name, failure : { _ in
+        sut.fetch(key: key, formatName: format.name, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) { _ in
@@ -123,13 +123,13 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForKey_OnSuccess () {
+    func testFetch_WithKey_OnSuccess () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         sut.setValue(image, key)
         
-        let fetch = sut.fetchValueForKey(key).onSuccess {
+        let fetch = sut.fetch(key: key).onSuccess {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         }
@@ -137,12 +137,12 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForKey_OnFailure () {
+    func testFetch_WithKey_OnFailure () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForKey(key).onFailure { error in
+        let fetch = sut.fetch(key: key).onFailure { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -152,14 +152,14 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForKey_MemoryHit () {
+    func testFetch_WithKey_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
         sut.setValue(image, key)
         
-        let fetch = sut.fetchValueForKey(key,  success: {
+        let fetch = sut.fetch(key: key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -168,14 +168,14 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForKey_MemoryMiss_DiskHit () {
+    func testFetch_WithKey_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let fetch = sut.fetchValueForKey(key,  success: {
+        let fetch = sut.fetch(key: key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -184,11 +184,11 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForKey_MemoryMiss_DiskMiss () {
+    func testFetch_WithKey_MemoryMiss_DiskMiss () {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForKey(key, failure : { error in
+        let fetch = sut.fetch(key: key, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -202,11 +202,11 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForKey_InexistingFormat () {
+    func testFetch_WithKey_InexistingFormat () {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForKey(key, formatName: self.name, failure : { error in
+        let fetch = sut.fetch(key: key, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -362,7 +362,7 @@ class CacheTests: XCTestCase {
 
         sut.removeValue(key)
         
-        sut.fetchValueForKey(key, failure : { _ in
+        sut.fetch(key: key, failure : { _ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected failure")
@@ -381,7 +381,7 @@ class CacheTests: XCTestCase {
         
         sut.removeValue(key, formatName: format.name)
         
-        sut.fetchValueForKey(key, formatName: format.name, failure : { _ in
+        sut.fetch(key: key, formatName: format.name, failure : { _ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected failure")
@@ -400,7 +400,7 @@ class CacheTests: XCTestCase {
         
         sut.removeValue(key, formatName: format.name)
         
-        sut.fetchValueForKey(key, failure : { _ in
+        sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) { _ in
@@ -418,7 +418,7 @@ class CacheTests: XCTestCase {
         
         sut.removeValue(key, formatName: self.name)
         
-        sut.fetchValueForKey(key, failure : { _ in
+        sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) { _ in
@@ -438,7 +438,7 @@ class CacheTests: XCTestCase {
         
         sut.removeAllValues()
         
-        sut.fetchValueForKey(key, failure : { _ in
+        sut.fetch(key: key, failure : { _ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected failure")
@@ -459,7 +459,7 @@ class CacheTests: XCTestCase {
 
         sut.onMemoryWarning()
         
-        let fetch = sut.fetchValueForKey(key, failure : { _ in
+        let fetch = sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) { _ in
