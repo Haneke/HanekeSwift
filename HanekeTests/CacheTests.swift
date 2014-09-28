@@ -130,12 +130,12 @@ class CacheTests: XCTestCase {
         
         sut.setValue(image, key)
         
-        let didSuccess = sut.fetchValueForKey(key,  success: {
+        let fetch = sut.fetchValueForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
-        XCTAssertTrue(didSuccess)
+        XCTAssertTrue(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -146,12 +146,12 @@ class CacheTests: XCTestCase {
         sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let didSuccess = sut.fetchValueForKey(key,  success: {
+        let fetch = sut.fetchValueForKey(key,  success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -159,7 +159,7 @@ class CacheTests: XCTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchValueForKey(key, failure : { error in
+        let fetch = sut.fetchValueForKey(key, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -169,7 +169,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -177,7 +177,7 @@ class CacheTests: XCTestCase {
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchValueForKey(key, formatName: self.name, failure : { error in
+        let fetch = sut.fetchValueForKey(key, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -187,7 +187,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -198,12 +198,12 @@ class CacheTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         sut.setValue(image, key)
         
-        let didSuccess = sut.fetchValueForFetcher(fetcher, success: {
+        let fetch = sut.fetchValueForFetcher(fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
-        XCTAssertTrue(didSuccess)
+        XCTAssertTrue(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -215,12 +215,12 @@ class CacheTests: XCTestCase {
         sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let didSuccess = sut.fetchValueForFetcher(fetcher, success: {
+        let fetch = sut.fetchValueForFetcher(fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -230,7 +230,7 @@ class CacheTests: XCTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchValueForFetcher(fetcher, failure : { _ in
+        let fetch = sut.fetchValueForFetcher(fetcher, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) {
@@ -238,7 +238,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -255,7 +255,7 @@ class CacheTests: XCTestCase {
         let formattedImage = resizer.resizeImage(image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let didSuccess = sut.fetchValueForFetcher(fetcher, formatName : format.name, failure : { _ in
+        let fetch = sut.fetchValueForFetcher(fetcher, formatName : format.name, failure : { _ in
             XCTFail("expected sucesss")
             expectation.fulfill()
         }) {
@@ -263,7 +263,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -272,7 +272,7 @@ class CacheTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let fetcher = SimpleFetcher<UIImage>(key: self.name, thing: image)
 
-        let didSuccess = sut.fetchValueForFetcher(fetcher, formatName: self.name, failure : { error in
+        let fetch = sut.fetchValueForFetcher(fetcher, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
@@ -282,7 +282,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         
-        XCTAssertFalse(didSuccess)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
@@ -390,13 +390,13 @@ class CacheTests: XCTestCase {
 
         sut.onMemoryWarning()
         
-        let sync = sut.fetchValueForKey(key, failure : { _ in
+        let fetch = sut.fetchValueForKey(key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) { _ in
             expectation.fulfill()
         }
-        XCTAssertFalse(sync)
+        XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectationsWithTimeout(1, nil)
     }
     

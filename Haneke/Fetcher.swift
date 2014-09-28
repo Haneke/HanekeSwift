@@ -42,7 +42,7 @@ class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
 
 public extension Cache {
     
-    public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = OriginalFormatName, success doSuccess : (T) -> ()) -> Bool {
+    public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = OriginalFormatName, success doSuccess : (T) -> ()) -> Fetch<T> {
         let fetcher = SimpleFetcher<T>(key: key, thing: getValue)
         return self.fetchValueForFetcher(fetcher, formatName: formatName, success: doSuccess)
     }
