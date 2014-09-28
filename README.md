@@ -94,7 +94,7 @@ The above lines take care of:
 
 Formats allow to specify the disk cache size and any transformations to the values before being cached. For example, the `UIImageView` extension uses a format that resizes images to fit or fill the image view as needed.
 
-You can also use custom formats. Say you want to limit the disk capacity for icons to 10MB and apply rounded corners to the images. This is how it could like:
+You can also use custom formats. Say you want to limit the disk capacity for icons to 10MB and apply rounded corners to the images. This is how it could look like:
 
 ```swift
 let cache = Haneke.sharedImageCache
@@ -114,7 +114,7 @@ Because we told the cache to use the `"icons"` format Haneke will execute the fo
 
 ##Fetchers
 
-The `fetch` functions for urls and path are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url by explictly using a network fetcher:
+The `fetch` functions for urls and paths are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url by explictly using a network fetcher:
 
 ```swift
 let URL = NSURL(string: "http://haneke.io/icon.png")
@@ -149,11 +149,13 @@ public protocol DataConvertible {
     typealias Result
     
     class func convertFromData(data:NSData) -> Result?
+    
 }
 
 public protocol DataRepresentable {
     
     func asData() -> NSData!
+    
 }
 ```
 
