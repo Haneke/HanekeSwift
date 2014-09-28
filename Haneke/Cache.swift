@@ -115,14 +115,14 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return fetch
     }
 
-    public func removeValue(key : String, formatName : String = OriginalFormatName) {
+    public func remove(#key : String, formatName : String = OriginalFormatName) {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.removeObjectForKey(key)
             diskCache.removeData(key)
         }
     }
     
-    public func removeAllValues() {
+    public func removeAll() {
         for (_, (_, memoryCache, diskCache)) in self.formats {
             memoryCache.removeAllObjects()
             diskCache.removeAllData()

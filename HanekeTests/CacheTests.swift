@@ -20,7 +20,7 @@ class CacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        sut.removeAllValues()
+        sut.removeAll()
         super.tearDown()
     }
     
@@ -355,12 +355,12 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveValue_Existing() {
+    func testRemove_Existing() {
         let key = self.name
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
 
-        sut.removeValue(key)
+        sut.remove(key: key)
         
         sut.fetch(key: key, failure : { _ in
             expectation.fulfill()
@@ -371,7 +371,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveValue_ExistingInFormat() {
+    func testRemove_ExistingInFormat() {
         let sut = self.sut!
         let key = "key"
         let format = Format<UIImage>(self.name)
@@ -379,7 +379,7 @@ class CacheTests: XCTestCase {
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key, formatName: format.name)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeValue(key, formatName: format.name)
+        sut.remove(key: key, formatName: format.name)
         
         sut.fetch(key: key, formatName: format.name, failure : { _ in
             expectation.fulfill()
@@ -390,7 +390,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveValueExistingUsingAnotherFormat() {
+    func testRemoveExistingUsingAnotherFormat() {
         let sut = self.sut!
         let key = "key"
         let format = Format<UIImage>(self.name)
@@ -398,7 +398,7 @@ class CacheTests: XCTestCase {
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeValue(key, formatName: format.name)
+        sut.remove(key: key, formatName: format.name)
         
         sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
@@ -409,14 +409,14 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveValueExistingUsingInexistingFormat() {
+    func testRemoveExistingUsingInexistingFormat() {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
         sut.set(value: image, key: key)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeValue(key, formatName: self.name)
+        sut.remove(key: key, formatName: self.name)
         
         sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
@@ -427,16 +427,16 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveValueInexisting() {
-        sut.removeValue(self.name)
+    func testRemove_WithInexistingKey() {
+        sut.remove(key: self.name)
     }
     
-    func testRemoveAllValues_One() {
+    func testRemoveAll_One() {
         let key = self.name
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
         
-        sut.removeAllValues()
+        sut.removeAll()
         
         sut.fetch(key: key, failure : { _ in
             expectation.fulfill()
@@ -447,8 +447,8 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testRemoveAllValues_None() {
-        sut.removeAllValues()
+    func testRemoveAll_None() {
+        sut.removeAll()
     }
     
     func testOnMemoryWarning() {

@@ -210,7 +210,7 @@ class NetworkFetcherTests: XCTestCase {
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
         
-        cache.removeAllValues()
+        cache.removeAll()
     }
     
     func testCacheFetch_Failure() {
@@ -232,7 +232,7 @@ class NetworkFetcherTests: XCTestCase {
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
         
-        cache.removeAllValues()
+        cache.removeAll()
     }
     
     func testCacheFetch_WithFormat() {
@@ -256,7 +256,7 @@ class NetworkFetcherTests: XCTestCase {
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
         
-        cache.removeAllValues()
+        cache.removeAll()
     }
     
 }

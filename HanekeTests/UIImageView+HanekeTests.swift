@@ -23,7 +23,7 @@ class UIImageView_HanekeTests: XCTestCase {
         
         let format = sut.hnk_format
         let cache = Haneke.sharedImageCache
-        cache.removeAllValues()
+        cache.removeAll()
         super.tearDown()
     }
     
