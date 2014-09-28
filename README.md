@@ -5,9 +5,7 @@ Haneke is a lightweight *generic* cache for iOS written in Swift. It's designed 
 ```swift
 let cache = Cache<JSON>("movies")
 let URL = NSURL(string: "http://haneke.io/movies.json")
-cache.fetch(URL: URL, failure: { error in
-    // Handle error
-}) { JSON in
+cache.fetch(URL: URL).onSuccess { JSON in
     // Do something with JSON
 }
 ```
@@ -52,9 +50,7 @@ cache.setValue(data, key: "some-data")
         
 // Eventually...
 
-cache.fetchValueForKey("some-data", failure: { error in
-    // Handle error
-}) { data in
+cache.fetchValueForKey("some-data").onSuccess { data in
     // Do something with data
 }
 ```
@@ -64,9 +60,7 @@ For cases in which the value is not readily available and must be fetched from n
 ```Swift
 let cache = Haneke.sharedJSONCache
 let URL = NSURL(string: "http://haneke.io/movies.json")
-cache.fetch(URL: URL, failure: { error in
-    // Handle error
-}) { JSON in
+cache.fetch(URL: URL).onSuccess { JSON in
     // Do something with JSON
 }
 ```
@@ -111,9 +105,7 @@ let format = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
 cache.addFormat(format)
 
 let URL = NSURL(string: "http://haneke.io/icon.png")
-cache.fetch(URL: URL, formatName: "icons", failure: { error in
-    // Handle error
-}) { image in
+cache.fetch(URL: URL, formatName: "icons").onSuccess { image in
     // image will be a nice rounded icon
 }
 ```
@@ -127,9 +119,7 @@ The `fetch` functions for urls and path are actually convenience methods. Under 
 ```swift
 let URL = NSURL(string: "http://haneke.io/icon.png")
 let fetcher = NetworkFetcher<UIImage>(URL: URL)
-cache.fetchValueForFetcher(fetcher, failure: { error in
-    // Handle error
-}) { image in
+cache.fetchValueForFetcher(fetcher).onSuccess { image in
     // Do something with image
 }
 ```
