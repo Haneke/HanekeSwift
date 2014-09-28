@@ -127,12 +127,7 @@ public extension UIImageView {
             }
         }
         animated = true
-        switch fetch.state {
-        case FetchState.Success(_):
-            return true
-        default:
-            return false
-        }
+        return fetch.hasSucceeded
     }
     
     func hnk_setImage(image : UIImage, animated : Bool, success doSuccess : ((UIImage) -> ())?) {

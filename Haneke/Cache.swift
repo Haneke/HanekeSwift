@@ -17,81 +17,6 @@ class ObjectWrapper : NSObject {
     }
 }
 
-public class Wrapper<T> {
-    public let value: T
-    public init(_ value: T) { self.value = value }
-}
-
-public enum FetchState<T> {
-    case Pending
-    case Success(Wrapper<T>)
-    case Failure(NSError?)
-}
-
-public class Fetch<T> {
-    
-    public typealias Succeeder = (T) -> ()
-
-    public typealias Failer = (NSError?) -> ()
-    
-    var onSuccess : ((T) -> ())?
-
-    var onFailure : Failer?
-    
-    var state : FetchState<T> = FetchState.Pending
-    
-    public func onSuccess(onSuccess : Succeeder) -> Self {
-        self.onSuccess = onSuccess
-        switch self.state {
-            case FetchState.Success(let wrapper):
-                onSuccess(wrapper.value)
-            default:
-                break
-        }
-        return self
-    }
-    
-    public func onFailure(onFailure : Failer) -> Self {
-        self.onFailure = onFailure
-        switch self.state {
-            case FetchState.Failure(let error):
-                onFailure(error)
-            default:
-                break
-        }
-        return self
-    }
-    
-    public func succeed(value : T) {
-        self.state = FetchState.Success(Wrapper(value))
-        self.onSuccess?(value)
-    }
-    
-    public func fail(error : NSError?) {
-        self.state = FetchState.Failure(error)
-        self.onFailure?(error)
-    }
-    
-    var hasFailed : Bool {
-        switch self.state {
-        case FetchState.Failure(_):
-            return true
-        default:
-            return false
-        }
-    }
-    
-    var hasSucceeded : Bool {
-        switch self.state {
-        case FetchState.Success(_):
-            return true
-        default:
-            return false
-            }
-    }
-    
-}
-
 extension Haneke {
     // It'd be better to define this in the Cache class but Swift doesn't allow to declare an enum in a generic type
     public enum CacheError : Int {
@@ -148,10 +73,8 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return value.asData()
     }
     
-    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Fetch<T> {
-        let fetch = Fetch<T>()
-        fetch.onSuccess = doSuccess
-        fetch.onFailure = doFailure
+    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetch = Cache.buildFetch(failure: doFailure, success: doSuccess)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
                 if let result = wrapper.value as? T {
@@ -176,11 +99,9 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return fetch
     }
     
-    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Fetch<T> {
+    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
-        let fetch = Fetch<T>()
-        fetch.onSuccess = doSuccess
-        fetch.onFailure = doFailure
+        let fetch = Cache.buildFetch(failure: doFailure, success: doSuccess)
         self.fetchValueForKey(key, formatName: formatName, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
                 fetch.fail(error)
@@ -292,6 +213,17 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             return decompressedImage!
         }
         return value
+    }
+    
+    private class func buildFetch(failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetch = Fetch<T>()
+        if let succeed = succeed {
+            fetch.onSuccess(succeed)
+        }
+        if let fail = fail {
+            fetch.onFailure(fail)
+        }
+        return fetch
     }
     
 }
