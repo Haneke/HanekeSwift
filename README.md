@@ -46,11 +46,11 @@ The cache is a key-value store. For example, here's how you would cache and then
 ```Swift
 let cache = Haneke.sharedDataCache
         
-cache.setValue(data, key: "some-data")
+cache.set(value: data, key: "funny-games.mp4")
         
 // Eventually...
 
-cache.fetchValueForKey("some-data").onSuccess { data in
+cache.fetch(key: "funny-games.mp4").onSuccess { data in
     // Do something with data
 }
 ```
@@ -110,16 +110,16 @@ cache.fetch(URL: URL, formatName: "icons").onSuccess { image in
 }
 ```
 
-Because we told the cache to use the "icons" format Haneke will execute the format transformation in background and return the resulting value.
+Because we told the cache to use the `"icons"` format Haneke will execute the format transformation in background and return the resulting value.
 
 ##Fetchers
 
-The `fetch` functions for urls and path are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url:
+The `fetch` functions for urls and path are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url by explictly using a network fetcher:
 
 ```swift
 let URL = NSURL(string: "http://haneke.io/icon.png")
 let fetcher = NetworkFetcher<UIImage>(URL: URL)
-cache.fetchValueForFetcher(fetcher).onSuccess { image in
+cache.fetch(fetcher: fetcher).onSuccess { image in
     // Do something with image
 }
 ```
@@ -132,7 +132,7 @@ Haneke provides two specialized fetchers: `NetworkFetcher<T>` and `DiskFetcher<T
 
 ###Custom fetchers
 
-Custom fetchers must subclass `Fetcher<T>` and are responsible for:
+Through custom fetchers you can fetch original values from other sources than network or disk (e.g., Core Data), or even change how Haneke acceses network or disk (e.g., use [Alamofire](https://github.com/Alamofire/Alamofire) for networking instead of `NSURLSession`). A custom fetcher must subclass `Fetcher<T>` and is responsible for:
 
 * Providing the key (e.g., `NSURL.absoluteString` in the case of `NetworkFetcher`) associated with the value to be fetched
 * Fetching the value in background and calling the success or failure closure accordingly, both in the main queue
