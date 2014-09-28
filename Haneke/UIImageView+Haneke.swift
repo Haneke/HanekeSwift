@@ -111,7 +111,7 @@ public extension UIImageView {
         let format = self.hnk_format
         let cache = Haneke.sharedImageCache
         var animated = false
-        let fetch = cache.fetchValueForFetcher(fetcher, formatName: format.name, failure: {[weak self] error in
+        let fetch = cache.fetch(fetcher: fetcher, formatName: format.name, failure: {[weak self] error in
             if let strongSelf = self {
                 if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 

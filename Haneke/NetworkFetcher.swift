@@ -112,7 +112,7 @@ public extension Cache {
     
     public func fetch(#URL : NSURL, formatName : String = OriginalFormatName,  failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = NetworkFetcher<T>(URL: URL)
-        return self.fetchValueForFetcher(fetcher, formatName: formatName, failure: doFailure, success: doSuccess)
+        return self.fetch(fetcher: fetcher, formatName: formatName, failure: doFailure, success: doSuccess)
     }
     
 }

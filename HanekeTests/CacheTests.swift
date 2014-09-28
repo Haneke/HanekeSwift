@@ -220,12 +220,12 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_OnSuccess () {
+    func testFetch_WithFetcher_OnSuccess () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let fetcher = SimpleFetcher<UIImage>(key: self.name, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForFetcher(fetcher).onSuccess {
+        let fetch = sut.fetch(fetcher: fetcher).onSuccess {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         }
@@ -233,7 +233,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_OnFailure () {
+    func testFetch_WithFetcher_OnFailure () {
         class FailFetcher<T : DataConvertible> : Fetcher<T> {
             
             var error : NSError!
@@ -252,7 +252,7 @@ class CacheTests: XCTestCase {
         fetcher.error = NSError(domain: "test", code: 376, userInfo: nil)
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForFetcher(fetcher).onFailure { error in
+        let fetch = sut.fetch(fetcher: fetcher).onFailure { error in
             XCTAssertEqual(error!, fetcher.error)
             expectation.fulfill()
         }
@@ -260,14 +260,14 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_MemoryHit () {
+    func testFetch_WithFetcher_MemoryHit () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         sut.setValue(image, key)
         
-        let fetch = sut.fetchValueForFetcher(fetcher, success: {
+        let fetch = sut.fetch(fetcher: fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -276,7 +276,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_MemoryMiss_DiskHit () {
+    func testFetch_WithFetcher_MemoryMiss_DiskHit () {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 20), false)
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
@@ -284,7 +284,7 @@ class CacheTests: XCTestCase {
         sut.setValue(image, key)
         self.clearMemoryCache()
         
-        let fetch = sut.fetchValueForFetcher(fetcher, success: {
+        let fetch = sut.fetch(fetcher: fetcher, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -293,13 +293,13 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_MemoryMiss_DiskMiss () {
+    func testFetch_WithFetcher_MemoryMiss_DiskMiss () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForFetcher(fetcher, failure : { _ in
+        let fetch = sut.fetch(fetcher: fetcher, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }) {
@@ -311,7 +311,7 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_ApplyFormat_ScaleModeFill () {
+    func testFetch_WithFetcher_ApplyFormat_ScaleModeFill () {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(3, 3))
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
@@ -324,7 +324,7 @@ class CacheTests: XCTestCase {
         let formattedImage = resizer.resizeImage(image)
         let expectation = self.expectationWithDescription(self.name)
         
-        let fetch = sut.fetchValueForFetcher(fetcher, formatName : format.name, failure : { _ in
+        let fetch = sut.fetch(fetcher: fetcher, formatName : format.name, failure : { _ in
             XCTFail("expected sucesss")
             expectation.fulfill()
         }) {
@@ -336,12 +336,12 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
-    func testFetchValueForFetcher_InexistingFormat () {
+    func testFetch_WithFetcher_InexistingFormat () {
         let expectation = self.expectationWithDescription(self.name)
         let image = UIImage.imageWithColor(UIColor.redColor())
         let fetcher = SimpleFetcher<UIImage>(key: self.name, thing: image)
 
-        let fetch = sut.fetchValueForFetcher(fetcher, formatName: self.name, failure : { error in
+        let fetch = sut.fetch(fetcher: fetcher, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)

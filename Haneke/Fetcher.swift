@@ -44,7 +44,7 @@ public extension Cache {
     
     public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = OriginalFormatName, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = SimpleFetcher<T>(key: key, thing: getValue)
-        return self.fetchValueForFetcher(fetcher, formatName: formatName, success: doSuccess)
+        return self.fetch(fetcher: fetcher, formatName: formatName, success: doSuccess)
     }
     
 }
