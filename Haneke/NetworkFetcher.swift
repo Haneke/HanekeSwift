@@ -38,11 +38,11 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
         self.cancelled = false
         self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data : NSData!, response : NSURLResponse!, error : NSError!) -> Void in
             if let strongSelf = self {
-                strongSelf.onReceiveData(data, response: response, error: error, failure: doFailure, success: doSuccess)
+                strongSelf.onReceiveData(data, response: response, error: error, failure: fail, success: succeed)
             }
         }
         self.task?.resume()
@@ -55,7 +55,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
 
         if cancelled { return }
         
@@ -65,7 +65,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return; }
             
             NSLog("Request \(URL.absoluteString!) failed with error \(error)")
-            dispatch_async(dispatch_get_main_queue(), { doFailure(error) })
+            dispatch_async(dispatch_get_main_queue(), { fail(error) })
             return
         }
         
@@ -78,14 +78,14 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         
         if httpResponse?.statusCode != 200 {
             let description = NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
-            self.failWithCode(.InvalidStatusCode, localizedDescription: description, failure: doFailure)
+            self.failWithCode(.InvalidStatusCode, localizedDescription: description, failure: fail)
             return
         }
         
         if !httpResponse.hnk_validateLengthOfData(data) {
             let localizedFormat = NSLocalizedString("Request expected %ld bytes and received %ld bytes", comment: "Error description")
             let description = String(format:localizedFormat, response.expectedContentLength, data.length)
-            self.failWithCode(.MissingData, localizedDescription: description, failure: doFailure)
+            self.failWithCode(.MissingData, localizedDescription: description, failure: fail)
             return
         }
         
@@ -93,26 +93,26 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         if thing == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
-            self.failWithCode(.InvalidData, localizedDescription: description, failure: doFailure)
+            self.failWithCode(.InvalidData, localizedDescription: description, failure: fail)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue()) { doSuccess(thing!) }
+        dispatch_async(dispatch_get_main_queue()) { succeed(thing!) }
 
     }
     
-    private func failWithCode(code : Haneke.NetworkFetcher.ErrorCode, localizedDescription : String, failure doFailure : ((NSError?) -> ())) {
+    private func failWithCode(code : Haneke.NetworkFetcher.ErrorCode, localizedDescription : String, failure fail : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
         let error = Haneke.errorWithCode(code.toRaw(), description: localizedDescription)
-        dispatch_async(dispatch_get_main_queue()) { doFailure(error) }
+        dispatch_async(dispatch_get_main_queue()) { fail(error) }
     }
 }
 
 public extension Cache {
     
-    public func fetch(#URL : NSURL, formatName : String = OriginalFormatName,  failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#URL : NSURL, formatName : String = OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = NetworkFetcher<T>(URL: URL)
-        return self.fetchValueForFetcher(fetcher, formatName: formatName, failure: doFailure, success: doSuccess)
+        return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }
     
 }

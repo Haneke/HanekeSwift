@@ -49,7 +49,7 @@ class FetcherTests: XCTestCase {
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
         
-        cache.removeAllValues()
+        cache.removeAll()
     }
     
     func testCacheFetch_WithFormat() {
@@ -66,7 +66,7 @@ class FetcherTests: XCTestCase {
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
         
-        cache.removeAllValues()
+        cache.removeAll()
     }
     
 }

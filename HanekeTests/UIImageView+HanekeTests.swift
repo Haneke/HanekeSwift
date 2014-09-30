@@ -23,7 +23,7 @@ class UIImageView_HanekeTests: XCTestCase {
         
         let format = sut.hnk_format
         let cache = Haneke.sharedImageCache
-        cache.removeAllValues()
+        cache.removeAll()
         super.tearDown()
     }
     
@@ -114,7 +114,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let cache = Haneke.sharedImageCache
         let format1 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        cache.setValue(image, self.name, formatName: format1.name)
+        cache.set(value: image, key: self.name, formatName: format1.name)
         
         let format2 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         
@@ -155,7 +155,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let key = self.name
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
-        cache.setValue(image, key, formatName: format.name)
+        cache.set(value: image, key: key, formatName: format.name)
         
         sut.hnk_setImage(image, key: key)
         
@@ -192,7 +192,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let key = self.name
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
-        cache.setValue(image, key, formatName: format.name)
+        cache.set(value: image, key: key, formatName: format.name)
         
         sut.hnk_setImage(image, key: key, placeholder: placeholder)
         
@@ -235,7 +235,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
-        cache.setValue(image, key, formatName: format.name)
+        cache.set(value: image, key: key, formatName: format.name)
         
         sut.hnk_setImageFromFetcher(fetcher)
         
@@ -275,7 +275,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
-        cache.setValue(image, key, formatName: format.name)
+        cache.set(value: image, key: key, formatName: format.name)
         
         sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
         
@@ -307,9 +307,9 @@ class UIImageView_HanekeTests: XCTestCase {
                 super.init(key: key)
             }
             
-            override func fetch(failure doFailure : ((NSError?) -> ()), success doSuccess : (T.Result) -> ()) {
+            override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
                 let error = Haneke.errorWithCode(0, description: "test")
-                doFailure(error)
+                fail(error)
             }
             
             override func cancelFetch() {}
@@ -349,7 +349,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
-        cache.setValue(image, fetcher.key, formatName: format.name)
+        cache.set(value: image, key: fetcher.key, formatName: format.name)
         
         sut.hnk_setImageFromURL(URL)
         
@@ -387,7 +387,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_format
-        cache.setValue(image, fetcher.key, formatName: format.name)
+        cache.set(value: image, key: fetcher.key, formatName: format.name)
         
         sut.hnk_setImageFromURL(URL, placeholder: placeholder)
         
