@@ -172,7 +172,6 @@ class UIImageView_HanekeTests: XCTestCase {
         sut.hnk_setImage(image, key: key)
         
         XCTAssertEqual(sut.image!, previousImage)
-        let fetcher = sut.hnk_fetcher
         XCTAssertEqual(sut.hnk_fetcher.key, key)
     }
     

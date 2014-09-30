@@ -15,7 +15,7 @@ public extension Haneke {
             public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
             public static let CompressionQuality : Float = 0.75
         }
-        static var associatedFetchers = [COpaquePointer: Fetcher<UIImage>]()
+        static var SetImageFetcherKey = 0
     }
 }
 
@@ -65,11 +65,16 @@ public extension UIImageView {
     // See: http://stackoverflow.com/questions/25907421/associating-swift-things-with-nsobject-instances
     var hnk_fetcher : Fetcher<UIImage>! {
         get {
-            return Haneke.UIKit.associatedFetchers[self.hnk_pointer]
+            let wrapper = objc_getAssociatedObject(self, &Haneke.UIKit.SetImageFetcherKey) as? ObjectWrapper
+            let fetcher = wrapper?.value as? Fetcher<UIImage>
+            return fetcher
         }
         set (fetcher) {
-            NSObject.hnk_setDeinitObserverIfNeeded(self)
-            Haneke.UIKit.associatedFetchers[self.hnk_pointer] = fetcher
+            var wrapper : ObjectWrapper?
+            if let fetcher = fetcher {
+                wrapper = ObjectWrapper(value: fetcher)
+            }
+            objc_setAssociatedObject(self, &Haneke.UIKit.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     
@@ -150,11 +155,4 @@ public extension UIImageView {
         return true
     }
     
-}
-
-extension UIImageView : HasAssociatedSwift {
-    
-    func hnk_clearSwiftAssociations() {
-        Haneke.UIKit.associatedFetchers[self.hnk_pointer] = nil
-    }
 }
