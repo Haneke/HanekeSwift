@@ -23,7 +23,7 @@ public class Fetch<T> {
     
     public typealias Failer = (NSError?) -> ()
     
-    private var onSuccess : ((T) -> ())?
+    private var onSuccess : Succeeder?
     
     private var onFailure : Failer?
     
