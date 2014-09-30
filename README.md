@@ -5,9 +5,7 @@ Haneke is a lightweight *generic* cache for iOS written in Swift. It's designed 
 ```swift
 let cache = Cache<JSON>("movies")
 let URL = NSURL(string: "http://haneke.io/movies.json")
-cache.fetch(URL: URL, failure: { error in
-    // Handle error
-}) { JSON in
+cache.fetch(URL: URL).onSuccess { JSON in
     // Do something with JSON
 }
 ```
@@ -41,7 +39,7 @@ For images:
 
 ##Using the cache
 
-Haneke is generic cache with out-of-the-box support for `UIImage`, `NSData`, `JSON` and `String`. You can use the provided shared caches, or create your own. 
+Haneke provides shared caches for `UIImage`, `NSData`, `JSON` and `String`. You can also create your own caches. 
 
 The cache is a key-value store. For example, here's how you would cache and then fetch some data.
 
@@ -52,21 +50,17 @@ cache.setValue(data, key: "some-data")
         
 // Eventually...
 
-cache.fetchValueForKey("some-data", failure: { error in
-    // Handle error
-}) { data in
+cache.fetchValueForKey("some-data").onSuccess { data in
     // Do something with data
 }
 ```
 
-For cases in which the value is not readily available and must be fetched from network or disk, Haneke provides convenience `fetch` functions. Let's go back to the first example, now using a shared cache: 
+In most cases the value will not be readily available and will have to be fetched from network or disk. Haneke offers convenience `fetch` functions for these cases. Let's go back to the first example, now using a shared cache: 
 
 ```Swift
 let cache = Haneke.sharedJSONCache
 let URL = NSURL(string: "http://haneke.io/movies.json")
-cache.fetch(URL: URL, failure: { error in
-    // Handle error
-}) { JSON in
+cache.fetch(URL: URL).onSuccess { JSON in
     // Do something with JSON
 }
 ```
@@ -77,7 +71,7 @@ Further customization can be achieved by using [formats](#formats), [supporting 
 
 ##Extra ♡ for images
 
-Haneke provides convenience methods for `UIImageView` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
+Need to cache and display images? Haneke provides convenience methods for `UIImageView` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
 
 ```swift
 // Setting a remote image
@@ -111,9 +105,7 @@ let format = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
 cache.addFormat(format)
 
 let URL = NSURL(string: "http://haneke.io/icon.png")
-cache.fetch(URL: URL, formatName: "icons", failure: { error in
-    // Handle error
-}) { image in
+cache.fetch(URL: URL, formatName: "icons").onSuccess { image in
     // image will be a nice rounded icon
 }
 ```
@@ -127,9 +119,7 @@ The `fetch` functions for urls and path are actually convenience methods. Under 
 ```swift
 let URL = NSURL(string: "http://haneke.io/icon.png")
 let fetcher = NetworkFetcher<UIImage>(URL: URL)
-cache.fetchValueForFetcher(fetcher, failure: { error in
-    // Handle error
-}) { image in
+cache.fetchValueForFetcher(fetcher).onSuccess { image in
     // Do something with image
 }
 ```

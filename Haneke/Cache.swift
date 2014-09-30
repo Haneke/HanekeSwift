@@ -18,11 +18,11 @@ class ObjectWrapper : NSObject {
 }
 
 extension Haneke {
-        // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
-        public enum CacheError : Int {
-            case ObjectNotFound = -100
-            case FormatNotFound = -101
-        }
+    // It'd be better to define this in the Cache class but Swift doesn't allow to declare an enum in a generic type
+    public enum CacheError : Int {
+        case ObjectNotFound = -100
+        case FormatNotFound = -101
+    }
 }
 
 public let OriginalFormatName = "original"
@@ -73,42 +73,53 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return value.asData()
     }
     
-    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Bool {
+    public func fetchValueForKey(key : String, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetch = Cache.buildFetch(failure: doFailure, success: doSuccess)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
                 if let result = wrapper.value as? T {
-                    doSuccess(result)
+                    fetch.succeed(result)
                     diskCache.updateAccessDate(dataFromValue(result, format: format), key: key)
-                    return true
+                    return fetch
                 }
             }
 
-            self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: doFailure, success: doSuccess)
+            self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: { error in
+                fetch.fail(error)
+            }) { value in
+                fetch.succeed(value)
+            }
 
-        } else if let block = doFailure {
+        } else {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
             let error = Haneke.errorWithCode(Haneke.CacheError.FormatNotFound.toRaw(), description: description)
-            block(error)
+            fetch.fail(error)
         }
-        return false
+        return fetch
     }
     
-    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure doFailure : ((NSError?) -> ())? = nil, success doSuccess : (T) -> ()) -> Bool {
+    public func fetchValueForFetcher(fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure doFailure : Fetch<T>.Failer? = nil, success doSuccess : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
-        let didSuccess = self.fetchValueForKey(key, formatName: formatName, failure: { error in
+        let fetch = Cache.buildFetch(failure: doFailure, success: doSuccess)
+        self.fetchValueForKey(key, formatName: formatName, failure: { error in
             if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
-                doFailure?(error)
-                return
+                fetch.fail(error)
             }
             
             if let (format, _, _) = self.formats[formatName] {
-                self.fetchValueFromFetcher(fetcher, format: format, failure: doFailure, success: doSuccess)
+                self.fetchValueFromFetcher(fetcher, format: format, failure: {error in
+                    fetch.fail(error)
+                }) {value in
+                    fetch.succeed(value)
+                }
             }
             
             // Unreachable code. Formats can't be removed from Cache.
-        }, success: doSuccess)
-        return didSuccess
+        }) { value in
+            fetch.succeed(value)
+        }
+        return fetch
     }
 
     public func removeValue(key : String, formatName : String = OriginalFormatName) {
@@ -202,6 +213,17 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             return decompressedImage!
         }
         return value
+    }
+    
+    private class func buildFetch(failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetch = Fetch<T>()
+        if let succeed = succeed {
+            fetch.onSuccess(succeed)
+        }
+        if let fail = fail {
+            fetch.onFailure(fail)
+        }
+        return fetch
     }
     
 }

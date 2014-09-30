@@ -30,6 +30,9 @@
 		A00D365219C6E5570007586E /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360119C355C30007586E /* NetworkFetcher.swift */; };
 		A00D365319C6E5B00007586E /* Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E7D19BF59880002511F /* Haneke.swift */; };
 		A00D365519C6E9BE0007586E /* XCTestCase+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D365419C6E9BE0007586E /* XCTestCase+Test.swift */; };
+		A01E148319D7FA54000247ED /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01E148219D7FA54000247ED /* Fetch.swift */; };
+		A01E148419D7FA54000247ED /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01E148219D7FA54000247ED /* Fetch.swift */; };
+		A01E148919D7FEF7000247ED /* FetchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01E148819D7FEF7000247ED /* FetchTests.swift */; };
 		A02088BA19A89C6100CE8F01 /* NSData+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02088B919A89C6100CE8F01 /* NSData+Test.swift */; };
 		A03F7E7E19BF59880002511F /* Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E7D19BF59880002511F /* Haneke.swift */; };
 		A03F7E8019BF60040002511F /* HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E7F19BF60040002511F /* HanekeTests.swift */; };
@@ -129,6 +132,8 @@
 		A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HanekeTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A00D364F19C6E1050007586E /* NSHTTPURLResponse+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+HanekeTests.swift"; sourceTree = "<group>"; };
 		A00D365419C6E9BE0007586E /* XCTestCase+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Test.swift"; sourceTree = "<group>"; };
+		A01E148219D7FA54000247ED /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
+		A01E148819D7FEF7000247ED /* FetchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchTests.swift; sourceTree = "<group>"; };
 		A02088B919A89C6100CE8F01 /* NSData+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSData+Test.swift"; sourceTree = "<group>"; };
 		A03F7E7D19BF59880002511F /* Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Haneke.swift; sourceTree = "<group>"; };
 		A03F7E7F19BF60040002511F /* HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HanekeTests.swift; sourceTree = "<group>"; };
@@ -274,6 +279,7 @@
 				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
 				8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */,
 				A0D7D6821997B2D8000CAF46 /* Extensions */,
+				A01E148219D7FA54000247ED /* Fetch.swift */,
 				A03F7E8119BF94AA0002511F /* Fetcher.swift */,
 				A0FDBF9119AD444500326016 /* Format.swift */,
 				A095C95B1980418C00CD0F4C /* Haneke.h */,
@@ -303,6 +309,7 @@
 				8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */,
 				A00D364E19C6E0CB0007586E /* Extensions */,
 				A0EE773119BFDFA500B315A0 /* FetcherTests.swift */,
+				A01E148819D7FEF7000247ED /* FetchTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
 				A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */,
 				A03F7E7F19BF60040002511F /* HanekeTests.swift */,
@@ -534,6 +541,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A01E148319D7FA54000247ED /* Fetch.swift in Sources */,
 				A06EE28019B18C7800572D17 /* String+Haneke.swift in Sources */,
 				A0FDBF9219AD444500326016 /* Format.swift in Sources */,
 				A0C6BA3A19AC0D1E007111E9 /* NSFileManager+Haneke.swift in Sources */,
@@ -578,9 +586,11 @@
 				A06EE27519AE1A6A00572D17 /* FormatTests.swift in Sources */,
 				A05F58FA19CCB1DA0009EBDE /* DataTests.swift in Sources */,
 				36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */,
+				A01E148419D7FA54000247ED /* Fetch.swift in Sources */,
 				A00D365319C6E5B00007586E /* Haneke.swift in Sources */,
 				A0EE773219BFDFA500B315A0 /* FetcherTests.swift in Sources */,
 				A00D365019C6E1050007586E /* NSHTTPURLResponse+HanekeTests.swift in Sources */,
+				A01E148919D7FEF7000247ED /* FetchTests.swift in Sources */,
 				A02088BA19A89C6100CE8F01 /* NSData+Test.swift in Sources */,
 				A0C6BA3F19ACA3C4007111E9 /* DiskTestCase.swift in Sources */,
 				A00D365219C6E5570007586E /* NetworkFetcher.swift in Sources */,
