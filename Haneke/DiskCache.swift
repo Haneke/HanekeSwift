@@ -98,13 +98,19 @@ public class DiskCache {
     
     public func removeAllData() {
         let fileManager = NSFileManager.defaultManager()
-        let path = self.cachePath
+        let cachePath = self.cachePath
         dispatch_async(cacheQueue, {
             var error: NSError? = nil
-            if fileManager.removeItemAtPath(path, error: &error) {
-                self.size = 0
+            if let contents = fileManager.contentsOfDirectoryAtPath(cachePath, error: &error) as? [String] {
+                for pathComponent in contents {
+                    let path = cachePath.stringByAppendingPathComponent(pathComponent)
+                    if !fileManager.removeItemAtPath(path, error: &error) {
+                        NSLog("Failed to remove path \(path) with error \(error!)")
+                    }
+                }
+                self.calculateSize()
             } else {
-                NSLog("Failed to remove all data with error \(error!)")
+                NSLog("Failed to list directory with error \(error!)")
             }
         })
     }

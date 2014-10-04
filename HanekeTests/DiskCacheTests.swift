@@ -428,7 +428,22 @@ class DiskCacheTests: XCTestCase {
         // Preconditions
         XCTAssertFalse(fileManager.fileExistsAtPath(path))
         
-        sut.removeData(self.name)
+        sut.removeAllData()
+    }
+    
+    func testRemoveAllData_ThenSetData() {
+        let key = self.name
+        let path = sut.pathForKey(key)
+        let data = NSData.dataWithLength(12)
+        let fileManager = NSFileManager.defaultManager()
+        
+        sut.removeAllData()
+
+        sut.setData(data, key: key)
+        dispatch_sync(sut.cacheQueue) {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+        }
     }
     
     func testPathForKey() {
