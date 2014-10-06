@@ -26,7 +26,12 @@ public extension UIButton {
     
     public func hnk_setBackgroundImage(image : UIImage, key : String, state : UIControlState, placeholder : UIImage? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
-        self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, success: succeed)
+        self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, failure : fail, success: succeed)
+    }
+    
+    public func hnk_setBackgroundImageFromFile(path : String, state : UIControlState, placeholder : UIImage? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+        let fetcher = DiskFetcher<UIImage>(path: path)
+        self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, failure: fail, success: succeed)
     }
     
     public func hnk_setBackgroundImageFromFetcher(fetcher : Fetcher<UIImage>, state : UIControlState, placeholder : UIImage? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil){
