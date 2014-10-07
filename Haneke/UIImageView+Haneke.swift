@@ -28,23 +28,27 @@ public extension UIImageView {
             return UIImageView.hnk_formatWithSize(viewSize, scaleMode: scaleMode)
     }
     
-    public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
-        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, failure: fail, success: succeed)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
-        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, success: succeed)
+            self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, success: succeed)
     }
     
-    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>, placeholder : UIImage? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>,
+        placeholder : UIImage? = nil,
+        format : Format<UIImage>? = nil,
+        failure fail : ((NSError?) -> ())? = nil,
+        success succeed : ((UIImage) -> ())? = nil) {
 
         self.hnk_cancelSetImage()
         
         self.hnk_fetcher = fetcher
         
-        let didSetImage = self.hnk_fetchImageForFetcher(fetcher, failure: fail, success: succeed)
+            let didSetImage = self.hnk_fetchImageForFetcher(fetcher, format: format, failure: fail, success: succeed)
         
         if didSetImage { return }
      
@@ -108,13 +112,15 @@ public extension UIImageView {
         format.convertToData = {(image : UIImage) -> NSData in
             image.hnk_data(compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
         }
-        cache.addFormat(format)
         return format
     }
     
-    func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
-        let format = self.hnk_format
+    func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
         let cache = Haneke.sharedImageCache
+        let format = format ?? self.hnk_format
+        if cache.formats[format.name] == nil {
+            cache.addFormat(format)
+        }
         var animated = false
         let fetch = cache.fetch(fetcher: fetcher, formatName: format.name, failure: {[weak self] error in
             if let strongSelf = self {
