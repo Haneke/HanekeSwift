@@ -95,14 +95,12 @@ class UIImageView_HanekeTests: XCTestCase {
     func testFormatWithSize() {
         let size = CGSizeMake(10, 20)
         let scaleMode = ScaleMode.Fill
-        let cache = Haneke.sharedImageCache
         let image = UIImage.imageWithColor(UIColor.redColor())
         let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
         
         let format = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         
         XCTAssertEqual(format.diskCapacity, Haneke.UIKit.DefaultFormat.DiskCapacity)
-        XCTAssertTrue(cache.formats[format.name] != nil) // Can't use XCTAssertNotNil because it expects AnyObject
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
@@ -114,6 +112,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let cache = Haneke.sharedImageCache
         let format1 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         let image = UIImage.imageWithColor(UIColor.greenColor())
+        cache.addFormat(format1)
         cache.set(value: image, key: self.name, formatName: format1.name)
         
         let format2 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
@@ -213,6 +212,21 @@ class UIImageView_HanekeTests: XCTestCase {
         
         XCTAssertNil(sut.image)
         XCTAssertEqual(sut.hnk_fetcher.key, key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testSetImage_UsingFormat() {
+        let image = UIImage.imageWithColor(UIColor.redColor())
+        let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImage(image, key: key, format: format, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(expectedImage))
+            expectation.fulfill()
+        })
+        
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -328,6 +342,22 @@ class UIImageView_HanekeTests: XCTestCase {
         
         XCTAssertNil(sut.image)
         XCTAssertTrue(sut.hnk_fetcher === fetcher)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testSetImageFromFetcher_UsingFormat() {
+        let image = UIImage.imageWithColor(UIColor.redColor())
+        let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let key = self.name
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromFetcher(fetcher, format: format, success: { resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(expectedImage))
+            expectation.fulfill()
+        })
+        
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -465,6 +495,28 @@ class UIImageView_HanekeTests: XCTestCase {
         
         XCTAssertNil(sut.image)
         XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+
+    func testSetImageFromURL_UsingFormat() {
+        let image = UIImage.imageWithColor(UIColor.redColor())
+        let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                let data = UIImagePNGRepresentation(image)
+                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+        })
+        let URL = NSURL(string: "http://haneke.io")
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setImageFromURL(URL, format: format, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(expectedImage))
+            expectation.fulfill()
+        })
+        
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
