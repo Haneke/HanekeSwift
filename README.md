@@ -99,10 +99,10 @@ You can also use custom formats. Say you want to limit the disk capacity for ico
 ```swift
 let cache = Haneke.sharedImageCache
 
-let format = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
+let iconFormat = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
     return imageByRoundingCornersOfImage(image)
 }
-cache.addFormat(format)
+cache.addFormat(iconFormat)
 
 let URL = NSURL(string: "http://haneke.io/icon.png")
 cache.fetch(URL: URL, formatName: "icons").onSuccess { image in
@@ -111,6 +111,12 @@ cache.fetch(URL: URL, formatName: "icons").onSuccess { image in
 ```
 
 Because we told the cache to use the `"icons"` format Haneke will execute the format transformation in background and return the resulting value.
+
+Formats can also be used from the `UIImageView` extension:
+
+```swift
+imageView.hnk_setImageFromURL(url, format: iconFormat)
+```
 
 ##Fetchers
 
