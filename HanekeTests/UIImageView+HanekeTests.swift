@@ -96,11 +96,11 @@ class UIImageView_HanekeTests: XCTestCase {
         let size = CGSizeMake(10, 20)
         let scaleMode = ImageResizer.ScaleMode.Fill
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         
         let format = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKit.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
@@ -125,12 +125,12 @@ class UIImageView_HanekeTests: XCTestCase {
     
     func testFormat_Default() {
         let cache = Haneke.sharedImageCache
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: sut.hnk_scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: sut.hnk_scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
         let format = sut.hnk_format
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKit.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
         XCTAssertTrue(cache.formats[format.name] != nil) // Can't use XCTAssertNotNil because it expects AnyObject
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
