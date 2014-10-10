@@ -9,14 +9,18 @@
 import UIKit
 
 extension Haneke {
-    public struct NetworkFetcher {
-        // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
+    
+    // It'd be better to define this in the NetworkFetcher class but Swift doesn't allow to declare an enum in a generic type
+    public struct NetworkFetcherGlobals {
+
         public enum ErrorCode : Int {
             case InvalidData = -400
             case MissingData = -401
             case InvalidStatusCode = -402
         }
+        
     }
+    
 }
 
 public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
@@ -101,7 +105,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
 
     }
     
-    private func failWithCode(code : Haneke.NetworkFetcher.ErrorCode, localizedDescription : String, failure fail : ((NSError?) -> ())) {
+    private func failWithCode(code : Haneke.NetworkFetcherGlobals.ErrorCode, localizedDescription : String, failure fail : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
         let error = Haneke.errorWithCode(code.toRaw(), description: localizedDescription)
         dispatch_async(dispatch_get_main_queue()) { fail(error) }
