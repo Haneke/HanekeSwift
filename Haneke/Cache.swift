@@ -52,7 +52,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         )
         
-        var originalFormat = Format<T>(Haneke.CacheGlobals.OriginalFormatName, diskCapacity : UINT64_MAX)
+        var originalFormat = Format<T>(Haneke.CacheGlobals.OriginalFormatName)
         self.addFormat(originalFormat)
     }
     

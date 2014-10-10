@@ -15,7 +15,7 @@ class DiskCacheTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        sut = DiskCache(self.name, capacity : UINT64_MAX)
+        sut = DiskCache(self.name)
     }
     
     override func tearDown() {
@@ -32,7 +32,7 @@ class DiskCacheTests: XCTestCase {
     func testInit() {
         let name = self.name
 
-        let sut = DiskCache(name, capacity : UINT64_MAX)
+        let sut = DiskCache(name)
         
         XCTAssertEqual(sut.name, name)
         XCTAssertEqual(sut.size, 0)
@@ -40,11 +40,11 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithOneFile() {
         let name = self.name
-        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
+        let directory = DiskCache(name).cachePath
         let expectedSize = 8
         self.writeDataWithLength(expectedSize, directory: directory)
         
-        let sut = DiskCache(name, capacity : UINT64_MAX)
+        let sut = DiskCache(name)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(expectedSize))
@@ -53,12 +53,12 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithTwoFiles() {
         let name = self.name
-        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
+        let directory = DiskCache(name).cachePath
         let lengths = [4, 7]
         self.writeDataWithLength(lengths[0], directory: directory)
         self.writeDataWithLength(lengths[1], directory: directory)
         
-        let sut = DiskCache(name, capacity : UINT64_MAX)
+        let sut = DiskCache(name)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
@@ -67,7 +67,7 @@ class DiskCacheTests: XCTestCase {
     
     func testInitCapacityZeroOneExistingFile() {
         let name = self.name
-        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
+        let directory = DiskCache(name).cachePath
         let path = self.writeDataWithLength(1, directory: directory)
         
         let sut = DiskCache(name, capacity : 0)
@@ -80,7 +80,7 @@ class DiskCacheTests: XCTestCase {
     
     func testInitCapacityZeroTwoExistingFiles() {
         let name = self.name
-        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
+        let directory = DiskCache(name).cachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(2, directory: directory)
         
@@ -95,7 +95,7 @@ class DiskCacheTests: XCTestCase {
     
     func testInitLeastRecentlyUsedExistingFileDeleted() {
         let name = self.name
-        let directory = DiskCache(name, capacity : UINT64_MAX).cachePath
+        let directory = DiskCache(name).cachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(1, directory: directory)
         NSFileManager.defaultManager().setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path2, error: nil)
@@ -120,7 +120,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCachePathEmtpyName() {
-        let sut = DiskCache("", capacity : UINT64_MAX)
+        let sut = DiskCache("")
         let cachePath = DiskCache.basePath()
         XCTAssertEqual(sut.cachePath, cachePath)
         

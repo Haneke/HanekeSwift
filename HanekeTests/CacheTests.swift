@@ -87,7 +87,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name)
+        let format = Format<UIImage>(self.name, diskCapacity: 0)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
@@ -107,7 +107,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        var format = Format<UIImage>(self.name, diskCapacity: UINT64_MAX)
+        var format = Format<UIImage>(self.name)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         

@@ -47,7 +47,7 @@ public class DiskCache {
         return cacheQueue
     }()
     
-    public init(_ name : String, capacity : UInt64) {
+    public init(_ name : String, capacity : UInt64 = UINT64_MAX) {
         self.name = name
         self.capacity = capacity
         dispatch_async(self.cacheQueue, {
