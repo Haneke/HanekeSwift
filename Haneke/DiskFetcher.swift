@@ -9,12 +9,16 @@
 import Foundation
 
 extension Haneke {
-    public struct DiskFetcher {
-        // It'd be better to define this in the DiskFetcher class but Swift doesn't allow to declare an enum in a generic type
+
+    // It'd be better to define this in the DiskFetcher class but Swift doesn't allow to declare an enum in a generic type
+    public struct DiskFetcherGlobals {
+        
         public enum ErrorCode : Int {
             case InvalidData = -500
         }
+        
     }
+    
 }
 
 public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
@@ -68,7 +72,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         if thing == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
             let description = String(format:localizedFormat, self.path)
-            let error = Haneke.errorWithCode(Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw(), description: description)
+            let error = Haneke.errorWithCode(Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw(), description: description)
             dispatch_async(dispatch_get_main_queue()) {
                 fail(error)
             }

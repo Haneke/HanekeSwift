@@ -70,7 +70,7 @@ class DiskFetcherTests: DiskTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
