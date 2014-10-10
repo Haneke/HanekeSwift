@@ -49,7 +49,7 @@ class CacheTests: XCTestCase {
         
         sut.set(value: image, key: key)
         
-        sut.fetch(key: key, formatName: OriginalFormatName, success: {
+        sut.fetch(key: key, formatName: Haneke.CacheGlobals.OriginalFormatName, success: {
             XCTAssertTrue($0.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -144,7 +144,7 @@ class CacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key).onFailure { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheError.ObjectNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }
@@ -190,7 +190,7 @@ class CacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheError.ObjectNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -208,7 +208,7 @@ class CacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -343,7 +343,7 @@ class CacheTests: XCTestCase {
 
         let fetch = sut.fetch(fetcher: fetcher, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheError.FormatNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in

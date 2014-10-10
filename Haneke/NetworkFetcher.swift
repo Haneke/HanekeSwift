@@ -110,7 +110,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
 
 public extension Cache {
     
-    public func fetch(#URL : NSURL, formatName : String = OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#URL : NSURL, formatName : String = Haneke.CacheGlobals.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = NetworkFetcher<T>(URL: URL)
         return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }

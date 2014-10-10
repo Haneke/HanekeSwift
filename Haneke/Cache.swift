@@ -18,14 +18,20 @@ class ObjectWrapper : NSObject {
 }
 
 extension Haneke {
+    
     // It'd be better to define this in the Cache class but Swift doesn't allow to declare an enum in a generic type
-    public enum CacheError : Int {
-        case ObjectNotFound = -100
-        case FormatNotFound = -101
-    }
-}
+    public struct CacheGlobals {
+        
+        public static let OriginalFormatName = "original"
 
-public let OriginalFormatName = "original"
+        public enum Error : Int {
+            case ObjectNotFound = -100
+            case FormatNotFound = -101
+        }
+        
+    }
+    
+}
 
 public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentable> {
     
@@ -46,7 +52,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         )
         
-        var originalFormat = Format<T>(OriginalFormatName, diskCapacity : UINT64_MAX)
+        var originalFormat = Format<T>(Haneke.CacheGlobals.OriginalFormatName, diskCapacity : UINT64_MAX)
         self.addFormat(originalFormat)
     }
     
@@ -55,7 +61,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
-    public func set(#value : T, key: String, formatName : String = OriginalFormatName) {
+    public func set(#value : T, key: String, formatName : String = Haneke.CacheGlobals.OriginalFormatName) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             let wrapper = ObjectWrapper(value: value)
             memoryCache.setObject(wrapper, forKey: key)
@@ -66,7 +72,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
-    public func fetch(#key : String, formatName : String = OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#key : String, formatName : String = Haneke.CacheGlobals.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
@@ -86,17 +92,17 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         } else {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
-            let error = Haneke.errorWithCode(Haneke.CacheError.FormatNotFound.toRaw(), description: description)
+            let error = Haneke.errorWithCode(Haneke.CacheGlobals.Error.FormatNotFound.toRaw(), description: description)
             fetch.fail(error)
         }
         return fetch
     }
     
-    public func fetch(#fetcher : Fetcher<T>, formatName : String = OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#fetcher : Fetcher<T>, formatName : String = Haneke.CacheGlobals.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
-            if error?.code == Haneke.CacheError.FormatNotFound.toRaw() {
+            if error?.code == Haneke.CacheGlobals.Error.FormatNotFound.toRaw() {
                 fetch.fail(error)
             }
             
@@ -115,7 +121,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return fetch
     }
 
-    public func remove(#key : String, formatName : String = OriginalFormatName) {
+    public func remove(#key : String, formatName : String = Haneke.CacheGlobals.OriginalFormatName) {
         if let (_, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.removeObjectForKey(key)
             diskCache.removeData(key)
@@ -163,7 +169,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                 if (error?.code == NSFileReadNoSuchFileError) {
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
-                    let error = Haneke.errorWithCode(Haneke.CacheError.ObjectNotFound.toRaw(), description: description)
+                    let error = Haneke.errorWithCode(Haneke.CacheGlobals.Error.ObjectNotFound.toRaw(), description: description)
                     block(error)
                 } else {
                     block(error)
