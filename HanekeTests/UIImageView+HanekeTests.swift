@@ -29,72 +29,72 @@ class UIImageView_HanekeTests: XCTestCase {
     
     func testScaleMode_ScaleToFill() {
         sut.contentMode = .ScaleToFill
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.Fill)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.Fill)
     }
     
     func testScaleMode_ScaleAspectFit() {
         sut.contentMode = .ScaleAspectFit
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.AspectFit)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.AspectFit)
     }
     
     func testScaleMode_ScaleAspectFill() {
         sut.contentMode = .ScaleAspectFill
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.AspectFill)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.AspectFill)
     }
     
     func testScaleMode_Redraw() {
         sut.contentMode = .Redraw
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_Center() {
         sut.contentMode = .Center
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_Top() {
         sut.contentMode = .Top
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_Bottom() {
         sut.contentMode = .Bottom
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_Left() {
         sut.contentMode = .Left
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_Right() {
         sut.contentMode = .Right
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_TopLeft() {
         sut.contentMode = .TopLeft
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_TopRight() {
         sut.contentMode = .TopRight
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_BottomLeft() {
         sut.contentMode = .BottomLeft
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testScaleMode_BottomRight() {
         sut.contentMode = .BottomRight
-        XCTAssertEqual(sut.hnk_scaleMode, ScaleMode.None)
+        XCTAssertEqual(sut.hnk_scaleMode, ImageResizer.ScaleMode.None)
     }
     
     func testFormatWithSize() {
         let size = CGSizeMake(10, 20)
-        let scaleMode = ScaleMode.Fill
+        let scaleMode = ImageResizer.ScaleMode.Fill
         let image = UIImage.imageWithColor(UIColor.redColor())
         let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
         
@@ -108,7 +108,7 @@ class UIImageView_HanekeTests: XCTestCase {
     
     func testFormatWithSize_Twice() {
         let size = CGSizeMake(10, 20)
-        let scaleMode = ScaleMode.Fill
+        let scaleMode = ImageResizer.ScaleMode.Fill
         let cache = Haneke.sharedImageCache
         let format1 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
         let image = UIImage.imageWithColor(UIColor.greenColor())

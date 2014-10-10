@@ -8,10 +8,6 @@
 
 import UIKit
 
-public enum ScaleMode : String {
-    case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
-}
-
 public struct Format<T> {
     
     public let name : String
@@ -41,6 +37,10 @@ public struct Format<T> {
 }
 
 public struct ImageResizer {
+    
+    public enum ScaleMode : String {
+        case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
+    }
     
     public typealias T = UIImage
     
