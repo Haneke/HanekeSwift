@@ -144,7 +144,7 @@ class CacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key).onFailure { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.ObjectNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }
@@ -190,7 +190,7 @@ class CacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.ObjectNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.ObjectNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -208,7 +208,7 @@ class CacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.FormatNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -343,7 +343,7 @@ class CacheTests: XCTestCase {
 
         let fetch = sut.fetch(fetcher: fetcher, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.Error.FormatNotFound.toRaw())
+            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.FormatNotFound.toRaw())
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in

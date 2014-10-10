@@ -24,7 +24,7 @@ extension Haneke {
         
         public static let OriginalFormatName = "original"
 
-        public enum Error : Int {
+        public enum ErrorCode : Int {
             case ObjectNotFound = -100
             case FormatNotFound = -101
         }
@@ -92,7 +92,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         } else {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
-            let error = Haneke.errorWithCode(Haneke.CacheGlobals.Error.FormatNotFound.toRaw(), description: description)
+            let error = Haneke.errorWithCode(Haneke.CacheGlobals.ErrorCode.FormatNotFound.toRaw(), description: description)
             fetch.fail(error)
         }
         return fetch
@@ -102,7 +102,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         let key = fetcher.key
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
-            if error?.code == Haneke.CacheGlobals.Error.FormatNotFound.toRaw() {
+            if error?.code == Haneke.CacheGlobals.ErrorCode.FormatNotFound.toRaw() {
                 fetch.fail(error)
             }
             
@@ -169,7 +169,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                 if (error?.code == NSFileReadNoSuchFileError) {
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
-                    let error = Haneke.errorWithCode(Haneke.CacheGlobals.Error.ObjectNotFound.toRaw(), description: description)
+                    let error = Haneke.errorWithCode(Haneke.CacheGlobals.ErrorCode.ObjectNotFound.toRaw(), description: description)
                     block(error)
                 } else {
                     block(error)
