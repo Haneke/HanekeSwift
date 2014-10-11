@@ -53,12 +53,12 @@ public class Fetch<T> {
         return self
     }
     
-    public func succeed(value : T) {
+    func succeed(value : T) {
         self.state = FetchState.Success(Wrapper(value))
         self.onSuccess?(value)
     }
     
-    public func fail(_ error : NSError? = nil) {
+    func fail(_ error : NSError? = nil) {
         self.state = FetchState.Failure(error)
         self.onFailure?(error)
     }
