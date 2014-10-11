@@ -16,7 +16,7 @@ class CacheTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        sut = Cache<UIImage>(self.name)
+        sut = Cache<UIImage>(name: self.name)
     }
     
     override func tearDown() {
@@ -26,18 +26,18 @@ class CacheTests: XCTestCase {
     
     func testInit() {
         let name = "name"
-        let sut = Cache<UIImage>(name)
+        let sut = Cache<UIImage>(name: name)
         
         XCTAssertNotNil(sut.memoryWarningObserver)
         XCTAssertEqual(name, sut.name)
     }
     
     func testDeinit() {
-        weak var sut = Cache<UIImage>("test")
+        weak var sut = Cache<UIImage>(name: self.name)
     }
     
     func testAddFormat() {
-        let format = Format<UIImage>(self.name)
+        let format = Format<UIImage>(name: self.name)
         
         sut.addFormat(format)
     }
@@ -60,7 +60,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let format = Format<UIImage>(self.name)
+        let format = Format<UIImage>(name: self.name)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -87,7 +87,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name, diskCapacity: 0)
+        let format = Format<UIImage>(name: self.name, diskCapacity: 0)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
@@ -107,7 +107,7 @@ class CacheTests: XCTestCase {
         let sut = self.sut!
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        var format = Format<UIImage>(self.name)
+        var format = Format<UIImage>(name: self.name)
         sut.addFormat(format)
         let expectation = self.expectationWithDescription("fetch image")
         
@@ -317,7 +317,7 @@ class CacheTests: XCTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         
         let resizer = ImageResizer(size : CGSizeMake(10, 20), scaleMode : .Fill)
-        let format = Format<UIImage>(self.name, transform: {
+        let format = Format<UIImage>(name: self.name, transform: {
             return resizer.resizeImage($0)
         })
         sut.addFormat(format)
@@ -374,7 +374,7 @@ class CacheTests: XCTestCase {
     func testRemove_ExistingInFormat() {
         let sut = self.sut!
         let key = "key"
-        let format = Format<UIImage>(self.name)
+        let format = Format<UIImage>(name: self.name)
         sut.addFormat(format)
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key, formatName: format.name)
         let expectation = self.expectationWithDescription("fetch image")
@@ -393,7 +393,7 @@ class CacheTests: XCTestCase {
     func testRemoveExistingUsingAnotherFormat() {
         let sut = self.sut!
         let key = "key"
-        let format = Format<UIImage>(self.name)
+        let format = Format<UIImage>(name: self.name)
         sut.addFormat(format)
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
         let expectation = self.expectationWithDescription("fetch image")
@@ -476,8 +476,8 @@ class CacheTests: XCTestCase {
             
             var expectation : XCTestExpectation?
             
-            override init(_ name: String) {
-                super.init(name)
+            override init(name: String) {
+                super.init(name: name)
             }
             
             override func onMemoryWarning() {
@@ -486,7 +486,7 @@ class CacheTests: XCTestCase {
             }
         }
         
-        let sut = CacheMock<UIImage>("test")
+        let sut = CacheMock<UIImage>(name: self.name)
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)

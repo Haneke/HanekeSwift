@@ -20,7 +20,7 @@ public struct Haneke {
     public static var sharedImageCache : Cache<UIImage> {
         struct Static {
             static let name = "shared-images"
-            static let cache = Cache<UIImage>(name)
+            static let cache = Cache<UIImage>(name: name)
         }
         return Static.cache
     }
@@ -28,7 +28,7 @@ public struct Haneke {
     public static var sharedDataCache : Cache<NSData> {
         struct Static {
             static let name = "shared-data"
-            static let cache = Cache<NSData>(name)
+            static let cache = Cache<NSData>(name: name)
         }
         return Static.cache
     }
@@ -36,7 +36,7 @@ public struct Haneke {
     public static var sharedStringCache : Cache<String> {
         struct Static {
             static let name = "shared-strings"
-            static let cache = Cache<String>(name)
+            static let cache = Cache<String>(name: name)
         }
         return Static.cache
     }
@@ -44,7 +44,7 @@ public struct Haneke {
     public static var sharedJSONCache : Cache<JSON> {
     struct Static {
         static let name = "shared-json"
-        static let cache = Cache<JSON>(name)
+        static let cache = Cache<JSON>(name: name)
         }
         return Static.cache
     }

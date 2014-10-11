@@ -109,7 +109,7 @@ public extension UIImageView {
             return format
         }
         
-        var format = Format<UIImage>(name,
+        var format = Format<UIImage>(name: name,
             diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
                 let resizer = ImageResizer(size:size,
                 scaleMode:scaleMode,

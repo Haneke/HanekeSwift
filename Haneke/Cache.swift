@@ -39,7 +39,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     
     let memoryWarningObserver : NSObjectProtocol!
     
-    public init(_ name : String) {
+    public init(name : String) {
         self.name = name
         
         let notifications = NSNotificationCenter.defaultCenter()
@@ -52,7 +52,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         )
         
-        var originalFormat = Format<T>(Haneke.CacheGlobals.OriginalFormatName)
+        var originalFormat = Format<T>(name: Haneke.CacheGlobals.OriginalFormatName)
         self.addFormat(originalFormat)
     }
     
@@ -150,7 +150,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     public func addFormat(format : Format<T>) {
         let name = self.name
         let memoryCache = NSCache()
-        let diskCache = DiskCache(name, capacity : format.diskCapacity)
+        let diskCache = DiskCache(name: name, capacity : format.diskCapacity)
         self.formats[format.name] = (format, memoryCache, diskCache)
     }
     

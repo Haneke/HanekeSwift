@@ -15,7 +15,7 @@ class DiskCacheTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        sut = DiskCache(self.name)
+        sut = DiskCache(name: self.name)
     }
     
     override func tearDown() {
@@ -32,7 +32,7 @@ class DiskCacheTests: XCTestCase {
     func testInit() {
         let name = self.name
 
-        let sut = DiskCache(name)
+        let sut = DiskCache(name: name)
         
         XCTAssertEqual(sut.name, name)
         XCTAssertEqual(sut.size, 0)
@@ -40,11 +40,11 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithOneFile() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name: name).cachePath
         let expectedSize = 8
         self.writeDataWithLength(expectedSize, directory: directory)
         
-        let sut = DiskCache(name)
+        let sut = DiskCache(name: name)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(expectedSize))
@@ -53,12 +53,12 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithTwoFiles() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name: name).cachePath
         let lengths = [4, 7]
         self.writeDataWithLength(lengths[0], directory: directory)
         self.writeDataWithLength(lengths[1], directory: directory)
         
-        let sut = DiskCache(name)
+        let sut = DiskCache(name: name)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
@@ -67,10 +67,10 @@ class DiskCacheTests: XCTestCase {
     
     func testInitCapacityZeroOneExistingFile() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name: name).cachePath
         let path = self.writeDataWithLength(1, directory: directory)
         
-        let sut = DiskCache(name, capacity : 0)
+        let sut = DiskCache(name: name, capacity : 0)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, 0)
@@ -80,11 +80,11 @@ class DiskCacheTests: XCTestCase {
     
     func testInitCapacityZeroTwoExistingFiles() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name: name).cachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(2, directory: directory)
         
-        let sut = DiskCache(name, capacity : 0)
+        let sut = DiskCache(name: name, capacity : 0)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, 0)
@@ -95,12 +95,12 @@ class DiskCacheTests: XCTestCase {
     
     func testInitLeastRecentlyUsedExistingFileDeleted() {
         let name = self.name
-        let directory = DiskCache(name).cachePath
+        let directory = DiskCache(name: name).cachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(1, directory: directory)
         NSFileManager.defaultManager().setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path2, error: nil)
         
-        let sut = DiskCache(name, capacity : 1)
+        let sut = DiskCache(name: name, capacity : 1)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, 1)
@@ -120,7 +120,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCachePathEmtpyName() {
-        let sut = DiskCache("")
+        let sut = DiskCache(name: "")
         let cachePath = DiskCache.basePath()
         XCTAssertEqual(sut.cachePath, cachePath)
         
@@ -226,7 +226,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetDataControlCapacity() {
-        let sut = DiskCache(self.name, capacity:0)
+        let sut = DiskCache(name: self.name, capacity:0)
         let key = self.name
         let path = sut.pathForKey(key)
         
@@ -452,7 +452,6 @@ class DiskCacheTests: XCTestCase {
 
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }
-
     
     // MARK: Helpers
 

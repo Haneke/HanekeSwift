@@ -218,7 +218,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImage_UsingFormat() {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let format = Format<UIImage>(name: self.name, diskCapacity: 0) { _ in return expectedImage }
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
@@ -348,7 +348,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromFetcher_UsingFormat() {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let format = Format<UIImage>(name: self.name, diskCapacity: 0) { _ in return expectedImage }
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
         let expectation = self.expectationWithDescription(self.name)
@@ -501,7 +501,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromURL_UsingFormat() {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let format = Format<UIImage>(name: self.name, diskCapacity: 0) { _ in return expectedImage }
         OHHTTPStubs.stubRequestsPassingTest({ _ in
             return true
             }, withStubResponse: { _ in
