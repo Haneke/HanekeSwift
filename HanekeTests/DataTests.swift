@@ -141,4 +141,40 @@ class JSONDataTests: XCTestCase {
         // XCAssertThrows(json.asData())
     }
     
+    func testArray_Array() {
+        let object = [self.name]
+        let json = JSON.Array(object)
+        
+        let result = json.array
+        
+        XCTAssertNotNil(result)
+    }
+    
+    func testArray_Dictionary() {
+        let object = ["test": self.name]
+        let json = JSON.Dictionary(object)
+        
+        let result = json.array
+        
+        XCTAssertNil(result)
+    }
+    
+    func testDictionary_Array() {
+        let object = [self.name]
+        let json = JSON.Array(object)
+        
+        let result = json.dictionary
+        
+        XCTAssertNil(result)
+    }
+    
+    func testDictionary_Dictionary() {
+        let object = ["test": self.name]
+        let json = JSON.Dictionary(object)
+        
+        let result = json.dictionary
+        
+        XCTAssertNotNil(result)
+    }
+    
 }
