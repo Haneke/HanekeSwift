@@ -31,10 +31,10 @@ class UIButton_HanekeTests: DiskTestCase {
     func testBackgroundImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_backgroundImageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKit.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
         XCTAssertTrue(Haneke.sharedImageCache.formats[format.name] != nil) // Can't use XCTAssertNotNil because it expects AnyObject
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
@@ -94,7 +94,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetBackgroundImage_UsingFormat_UIControlStateHighlighted() {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let format = Format<UIImage>(name: self.name, diskCapacity: 0) { _ in return expectedImage }
         let key = self.name
         let expectation = self.expectationWithDescription(self.name)
         
@@ -209,7 +209,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetBackgroundImageFromURL_UsingFormat() {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
-        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let format = Format<UIImage>(name: self.name, diskCapacity: 0) { _ in return expectedImage }
         OHHTTPStubs.stubRequestsPassingTest({ _ in
             return true
             }, withStubResponse: { _ in
