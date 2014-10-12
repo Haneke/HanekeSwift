@@ -38,15 +38,67 @@ class UIButton_HanekeTests: XCTestCase {
     
     // MARK: backgroundImageFormat
 
-    func testBackgroundImageFormat() {
+    func testBackgroundImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_backgroundImageFormat
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+        let image = UIImage.imageWithColor(UIColor.redColor())
         
-        XCTAssertTrue(format.diskCapacity == Haneke.UIKit.DefaultFormat.DiskCapacity, "")
+        XCTAssertEqual(format.diskCapacity, Haneke.UIKit.DefaultFormat.DiskCapacity)
+        XCTAssertTrue(Haneke.sharedImageCache.formats[format.name] != nil) // Can't use XCTAssertNotNil because it expects AnyObject
+        let result = format.apply(image)
+        let expected = resizer.resizeImage(image)
+        XCTAssertTrue(result.isEqualPixelByPixel(expected))
     }
     
-    func testSetBackgroundImageFormat_Nil() {
-
+    // MARK: setbackgroundImageFromFetcher
+    
+    func testSetBackgroundImageFromFetcher_MemoryMiss_UIControlStateSelected() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        
+        sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Selected)
+        
+        XCTAssertNil(sut.backgroundImageForState(.Selected))
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher === fetcher)
+    }
+    
+    func testSetBackgroundImageFromFetcher_MemoryHit_UIControlStateNormal() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Normal)
+        
+        XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+    }
+    
+    func testSetBackgroundImageFromFetcherSuccessFailure_MemoryHit_UIControlStateNormal() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Normal, failure: {error in
+            XCTFail("")
+            }){result in
+                XCTAssertTrue(result.isEqualPixelByPixel(image))
+        }
+    }
+    
+    // MARK: cancelSetBackgroundImage
+    
+    func testCancelSetBackgroundImage() {
+        sut.hnk_cancelSetBackgroundImage()
+        
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
    
 }
