@@ -11,28 +11,18 @@ import XCTest
 
 class UIButton_HanekeTests: XCTestCase {
     
-    lazy var directoryPath : String = {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let directoryPath = documentsPath.stringByAppendingPathComponent(self.name)
-        return directoryPath
-        }()
-    
     var sut : UIButton!
     
     override func setUp() {
         super.setUp()
         sut = UIButton(frame: CGRectMake(0, 0, 100, 20))
-        NSFileManager.defaultManager().createDirectoryAtPath(directoryPath, withIntermediateDirectories: true, attributes: nil, error: nil)
     }
     
     override func tearDown() {
         sut.hnk_cancelSetBackgroundImage()
         OHHTTPStubs.removeAllStubs()
         
-        let backgroundFormat = sut.hnk_backgroundImageFormat
-        Haneke.sharedImageCache.remove(key: self.name, formatName: backgroundFormat.name)
-        NSFileManager.defaultManager().removeItemAtPath(directoryPath, error: nil)
-        
+        Haneke.sharedImageCache.removeAll()
         super.tearDown()
     }
     
@@ -51,7 +41,119 @@ class UIButton_HanekeTests: XCTestCase {
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
     }
     
-    // MARK: setbackgroundImageFromFetcher
+    // MARK: setBackgroundImage
+    
+    func testBackgroundSetImage_MemoryMiss_UIControlStateNormal() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        
+        sut.hnk_setBackgroundImage(image, key: key, state: .Normal)
+        
+        XCTAssertNil(sut.backgroundImageForState(.Normal))
+        XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, key)
+    }
+    
+    func testBackgroundImage_MemoryHit_UIControlStateSelected() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImage(image, key: key, state: .Selected)
+        
+        XCTAssertTrue(sut.backgroundImageForState(.Selected)!.isEqualPixelByPixel(image))
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+    }
+    
+    func testBackgroundImage_UsingPlaceholder_MemoryMiss_UIControlStateDisabled() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        
+        sut.hnk_setBackgroundImage(image, key: key, state: .Disabled, placeholder: placeholder)
+        
+        XCTAssertEqual(sut.backgroundImageForState(.Disabled)!, placeholder)
+        XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, key)
+    }
+    
+    func testBackgroundImage_UsingPlaceholder_MemoryHit_UIControlStateNormal() {
+        let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImage(image, key: key, state: .Normal, placeholder: placeholder)
+        
+        XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+    }
+
+    // MARK: setBackgroundImageFromURL
+
+    func testSetBackgroundImageFromURL_MemoryMiss_UIControlStateSelected() {
+        let URL = NSURL(string: "http://haneke.io")
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        
+        sut.hnk_setBackgroundImageFromURL(URL, state: .Selected)
+        
+        XCTAssertNil(sut.backgroundImageForState(.Selected))
+        XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, fetcher.key)
+    }
+    
+    func testSetBackgroundImageFromURL_MemoryHit_UIControlStateNormal() {
+        let image = UIImage.imageWithColor(UIColor.orangeColor())
+        let URL = NSURL(string: "http://haneke.io")
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: fetcher.key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImageFromURL(URL, state: .Normal)
+        
+        XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+    }
+    
+    func testSetBackgroundImageFromURLSuccessFailure_MemoryHit_UIControlStateSelected() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let URL = NSURL(string: "http://haneke.io")
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: fetcher.key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImageFromURL(URL, state: .Selected, failure: {error in
+            XCTFail("")
+            }){result in
+                XCTAssertTrue(result.isEqualPixelByPixel(image))
+        }
+    }
+
+    func testSetBackgroundImageFromURL_Failure_UIControlStateNormal() {
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                let data = NSData.dataWithLength(100)
+                return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
+        })
+        let URL = NSURL(string: "http://haneke.io")
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setBackgroundImageFromURL(URL, state: .Normal, failure:{error in
+            XCTAssertEqual(error!.domain, Haneke.Domain)
+            expectation.fulfill()
+        })
+        
+        XCTAssertNil(sut.backgroundImageForState(.Normal))
+        XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, fetcher.key)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    // MARK: setBackgroundImageFromFetcher
     
     func testSetBackgroundImageFromFetcher_MemoryMiss_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
