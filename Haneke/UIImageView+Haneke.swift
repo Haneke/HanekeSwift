@@ -82,7 +82,7 @@ public extension UIImageView {
         }
     }
     
-    var hnk_scaleMode : ScaleMode {
+    public var hnk_scaleMode : ScaleMode {
         switch (self.contentMode) {
         case .ScaleToFill:
             return .Fill
