@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class UIButton_HanekeTests: XCTestCase {
+class UIButton_HanekeTests: DiskTestCase {
     
     var sut : UIButton!
     
@@ -90,7 +90,45 @@ class UIButton_HanekeTests: XCTestCase {
         XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
-
+    
+    // MARK: setBackgroundImageFromFile
+    
+    func testSetBackgroundImageFromFile_MemoryMiss_UIControlStateSelected() {
+        let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
+        
+        sut.hnk_setBackgroundImageFromFile(fetcher.key, state: .Selected)
+        
+        XCTAssertNil(sut.backgroundImageForState(.Selected))
+        XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, fetcher.key)
+    }
+    
+    func testSetBackgroundImageFromFile_MemoryHit_UIControlStateNormal() {
+        let image = UIImage.imageWithColor(UIColor.orangeColor())
+        let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: fetcher.key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImageFromFile(fetcher.key, state: .Normal)
+        
+        XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+    }
+    
+    func testSetBackgroundImageFromFileSuccessFailure_MemoryHit_UIControlStateSelected() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
+        let cache = Haneke.sharedImageCache
+        let format = sut.hnk_backgroundImageFormat
+        cache.set(value: image, key: fetcher.key, formatName: format.name)
+        
+        sut.hnk_setBackgroundImageFromFile(fetcher.key, state: .Selected, failure: {error in
+            XCTFail("")
+            }){result in
+                XCTAssertTrue(result.isEqualPixelByPixel(image))
+        }
+    }
+    
     // MARK: setBackgroundImageFromURL
 
     func testSetBackgroundImageFromURL_MemoryMiss_UIControlStateSelected() {
