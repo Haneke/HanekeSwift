@@ -91,6 +91,21 @@ class UIButton_HanekeTests: DiskTestCase {
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
     
+    func testSetBackgroundImage_UsingFormat_UIControlStateHighlighted() {
+        let image = UIImage.imageWithColor(UIColor.redColor())
+        let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        let key = self.name
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setBackgroundImage(image, key: key, state: .Highlighted, format: format, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(expectedImage))
+            expectation.fulfill()
+        })
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
     // MARK: setBackgroundImageFromFile
     
     func testSetBackgroundImageFromFile_MemoryMiss_UIControlStateSelected() {
@@ -191,6 +206,42 @@ class UIButton_HanekeTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
+    func testSetBackgroundImageFromURL_UsingFormat() {
+        let image = UIImage.imageWithColor(UIColor.redColor())
+        let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
+        let format = Format<UIImage>(self.name, diskCapacity: 0) { _ in return expectedImage }
+        OHHTTPStubs.stubRequestsPassingTest({ _ in
+            return true
+            }, withStubResponse: { _ in
+                let data = UIImagePNGRepresentation(image)
+                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+        })
+        let URL = NSURL(string: "http://haneke.io")
+        let fetcher = NetworkFetcher<UIImage>(URL: URL)
+        let expectation = self.expectationWithDescription(self.name)
+        
+        sut.hnk_setBackgroundImageFromURL(URL, format: format, success:{resultImage in
+            XCTAssertTrue(resultImage.isEqualPixelByPixel(expectedImage))
+            expectation.fulfill()
+        })
+        
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    func testCancelSetBackgroundImage_AfterSetImage_UIControlStateHighlighted() {
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        sut.hnk_setBackgroundImageFromURL(URL, state: .Highlighted, success: { _ in
+            XCTFail("unexpected success")
+            }, failure: { _ in
+                XCTFail("unexpected failure")
+        })
+        
+        sut.hnk_cancelSetBackgroundImage()
+        
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+        self.waitFor(0.1)
+    }
+    
     // MARK: setBackgroundImageFromFetcher
     
     func testSetBackgroundImageFromFetcher_MemoryMiss_UIControlStateSelected() {
@@ -239,6 +290,20 @@ class UIButton_HanekeTests: DiskTestCase {
         sut.hnk_cancelSetBackgroundImage()
         
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+    }
+    
+    func testCancelSetBackgroundImage_AfterSetImage() {
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        sut.hnk_setBackgroundImageFromURL(URL, success: { _ in
+            XCTFail("unexpected success")
+            }, failure: { _ in
+                XCTFail("unexpected failure")
+        })
+        
+        sut.hnk_cancelSetBackgroundImage()
+        
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+        self.waitFor(0.1)
     }
    
 }
