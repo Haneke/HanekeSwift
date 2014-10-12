@@ -10,13 +10,20 @@ import UIKit
 import ObjectiveC
 
 public extension Haneke {
-    public struct UIKit {
+
+    public struct UIKitGlobals {
+
         public struct DefaultFormat {
+            
             public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
             public static let CompressionQuality : Float = 0.75
+            
         }
+        
         static var SetImageFetcherKey = 0
+
     }
+
 }
 
 public extension UIImageView {
@@ -69,7 +76,7 @@ public extension UIImageView {
     // See: http://stackoverflow.com/questions/25907421/associating-swift-things-with-nsobject-instances
     var hnk_fetcher : Fetcher<UIImage>! {
         get {
-            let wrapper = objc_getAssociatedObject(self, &Haneke.UIKit.SetImageFetcherKey) as? ObjectWrapper
+            let wrapper = objc_getAssociatedObject(self, &Haneke.UIKitGlobals.SetImageFetcherKey) as? ObjectWrapper
             let fetcher = wrapper?.value as? Fetcher<UIImage>
             return fetcher
         }
@@ -78,11 +85,11 @@ public extension UIImageView {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &Haneke.UIKit.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &Haneke.UIKitGlobals.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     
-    public var hnk_scaleMode : ScaleMode {
+    public var hnk_scaleMode : ImageResizer.ScaleMode {
         switch (self.contentMode) {
         case .ScaleToFill:
             return .Fill
@@ -95,22 +102,22 @@ public extension UIImageView {
             }
     }
     
-    class func hnk_formatWithSize(size : CGSize, scaleMode : ScaleMode) -> Format<UIImage> {
+    class func hnk_formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode) -> Format<UIImage> {
         let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
         let cache = Haneke.sharedImageCache
         if let (format,_,_) = cache.formats[name] {
             return format
         }
         
-        var format = Format<UIImage>(name,
-            diskCapacity: Haneke.UIKit.DefaultFormat.DiskCapacity) {
+        var format = Format<UIImage>(name: name,
+            diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
                 let resizer = ImageResizer(size:size,
                 scaleMode:scaleMode,
-                compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+                compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
                 return resizer.resizeImage($0)
         }
         format.convertToData = {(image : UIImage) -> NSData in
-            image.hnk_data(compressionQuality: Haneke.UIKit.DefaultFormat.CompressionQuality)
+            image.hnk_data(compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         }
         return format
     }

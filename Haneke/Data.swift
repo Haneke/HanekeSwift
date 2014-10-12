@@ -96,4 +96,22 @@ public enum JSON : DataConvertible, DataRepresentable {
         }
     }
     
+    public var array : [AnyObject]! {
+        switch (self) {
+        case .Dictionary(let _):
+            return nil
+        case .Array(let array):
+            return array
+        }
+    }
+    
+    public var dictionary : [String:AnyObject]! {
+        switch (self) {
+        case .Dictionary(let dictionary):
+            return dictionary
+        case .Array(let _):
+            return nil
+        }
+    }
+    
 }
