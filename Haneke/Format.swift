@@ -8,10 +8,6 @@
 
 import UIKit
 
-public enum ScaleMode : String {
-    case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
-}
-
 public struct Format<T> {
     
     public let name : String
@@ -22,7 +18,7 @@ public struct Format<T> {
     
     public var convertToData : (T -> NSData)?
 
-    public init(_ name : String, diskCapacity : UInt64 = 0, transform : ((T) -> (T))? = nil) {
+    public init(name : String, diskCapacity : UInt64 = UINT64_MAX, transform : ((T) -> (T))? = nil) {
         self.name = name
         self.diskCapacity = diskCapacity
         self.transform = transform
@@ -41,6 +37,10 @@ public struct Format<T> {
 }
 
 public struct ImageResizer {
+    
+    public enum ScaleMode : String {
+        case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
+    }
     
     public typealias T = UIImage
     

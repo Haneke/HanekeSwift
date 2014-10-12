@@ -3,7 +3,7 @@
 Haneke is a lightweight *generic* cache for iOS written in Swift. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch JSON objects from a url:
 
 ```swift
-let cache = Cache<JSON>("movies")
+let cache = Cache<JSON>(name: "movies")
 let URL = NSURL(string: "http://haneke.io/movies.json")
 cache.fetch(URL: URL).onSuccess { JSON in
     // Do something with JSON
@@ -99,7 +99,7 @@ You can also use custom formats. Say you want to limit the disk capacity for ico
 ```swift
 let cache = Haneke.sharedImageCache
 
-let iconFormat = Format<UIImage>("icons", diskCapacity: 10 * 1024 * 1024) { image in
+let iconFormat = Format<UIImage>(name: "icons", diskCapacity: 10 * 1024 * 1024) { image in
     return imageByRoundingCornersOfImage(image)
 }
 cache.addFormat(iconFormat)
@@ -186,7 +186,7 @@ extension NSDictionary : DataConvertible, DataRepresentable {
 Then creating a `NSDictionary` cache would be as simple as:
 
 ```swift
-let cache = Cache<NSDictionary>("my-dictionaries")
+let cache = Cache<NSDictionary>(name: "dictionaries")
 ```
 
 ##Roadmap

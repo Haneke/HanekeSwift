@@ -70,7 +70,7 @@ class DiskFetcherTests: DiskTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -106,7 +106,7 @@ class DiskFetcherTests: DiskTestCase {
         let data = NSData.dataWithLength(1)
         let path = self.writeData(data)
         let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(self.name)
+        let cache = Cache<NSData>(name: self.name)
         
         cache.fetch(path: path, failure: {_ in
             XCTFail("expected success")
@@ -124,7 +124,7 @@ class DiskFetcherTests: DiskTestCase {
     func testCacheFetch_Failure() {
         let path = self.directoryPath.stringByAppendingPathComponent(self.name)
         let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(self.name)
+        let cache = Cache<NSData>(name: self.name)
         
         cache.fetch(path: path, failure: {_ in
             expectation.fulfill()
@@ -142,8 +142,8 @@ class DiskFetcherTests: DiskTestCase {
         let data = NSData.dataWithLength(1)
         let path = self.writeData(data)
         let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(self.name)
-        let format = Format<NSData>(self.name)
+        let cache = Cache<NSData>(name: self.name)
+        let format = Format<NSData>(name: self.name)
         cache.addFormat(format)
         
         cache.fetch(path: path, formatName: format.name, failure: {_ in

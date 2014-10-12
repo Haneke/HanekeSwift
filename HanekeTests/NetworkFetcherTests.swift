@@ -104,7 +104,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -126,7 +126,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.MissingData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.MissingData.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -177,7 +177,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcher.ErrorCode.InvalidStatusCode.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidStatusCode.toRaw())
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -198,7 +198,7 @@ class NetworkFetcherTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
         let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(self.name)
+        let cache = Cache<NSData>(name: self.name)
 
         cache.fetch(URL: URL, failure: {_ in
             XCTFail("expected success")
@@ -221,7 +221,7 @@ class NetworkFetcherTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
         let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(self.name)
+        let cache = Cache<NSData>(name: self.name)
         
         cache.fetch(URL: URL, failure: {_ in
             expectation.fulfill()
@@ -243,8 +243,8 @@ class NetworkFetcherTests: XCTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
         let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(self.name)
-        let format = Format<NSData>(self.name)
+        let cache = Cache<NSData>(name: self.name)
+        let format = Format<NSData>(name: self.name)
         cache.addFormat(format)
 
         cache.fetch(URL: URL, formatName: format.name, failure: {_ in

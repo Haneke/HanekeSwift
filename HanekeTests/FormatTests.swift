@@ -13,10 +13,10 @@ class FormatTests: XCTestCase {
 
     func testDefaultInit() {
         let name = self.name
-        let sut = Format<UIImage>(name)
+        let sut = Format<UIImage>(name: name)
         
         XCTAssertEqual(sut.name, name)
-        XCTAssertEqual(sut.diskCapacity, 0)
+        XCTAssertEqual(sut.diskCapacity, UINT64_MAX)
         XCTAssertTrue(sut.transform == nil)
     }
     

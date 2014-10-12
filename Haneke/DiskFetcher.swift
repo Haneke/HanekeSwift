@@ -9,12 +9,16 @@
 import Foundation
 
 extension Haneke {
-    public struct DiskFetcher {
-        // It'd be better to define this in the DiskFetcher class but Swift doesn't allow to declare an enum in a generic type
+
+    // It'd be better to define this in the DiskFetcher class but Swift doesn't allow to declare an enum in a generic type
+    public struct DiskFetcherGlobals {
+        
         public enum ErrorCode : Int {
             case InvalidData = -500
         }
+        
     }
+    
 }
 
 public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
@@ -68,7 +72,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         if thing == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
             let description = String(format:localizedFormat, self.path)
-            let error = Haneke.errorWithCode(Haneke.DiskFetcher.ErrorCode.InvalidData.toRaw(), description: description)
+            let error = Haneke.errorWithCode(Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw(), description: description)
             dispatch_async(dispatch_get_main_queue()) {
                 fail(error)
             }
@@ -88,7 +92,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
 
 public extension Cache {
     
-    public func fetch(#path : String, formatName : String = OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#path : String, formatName : String = Haneke.CacheGlobals.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = DiskFetcher<T>(path: path)
         return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }
