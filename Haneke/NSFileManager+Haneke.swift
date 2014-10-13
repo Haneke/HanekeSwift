@@ -13,8 +13,9 @@ extension NSFileManager {
     func enumerateContentsOfDirectoryAtPath(path : String, orderedByProperty property : String, ascending : Bool, usingBlock block : (NSURL, Int, inout Bool) -> Void ) {
 
         let directoryURL = NSURL(fileURLWithPath: path)
+        if directoryURL == nil { return }
         var error : NSError?
-        if let contents = self.contentsOfDirectoryAtURL(directoryURL, includingPropertiesForKeys: [property], options: NSDirectoryEnumerationOptions.allZeros, error: &error) as? [NSURL] {
+        if let contents = self.contentsOfDirectoryAtURL(directoryURL!, includingPropertiesForKeys: [property], options: NSDirectoryEnumerationOptions.allZeros, error: &error) as? [NSURL] {
 
             let sortedContents = contents.sorted({(URL1 : NSURL, URL2 : NSURL) -> Bool in
 
