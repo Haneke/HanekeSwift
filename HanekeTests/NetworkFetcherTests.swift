@@ -11,7 +11,7 @@ import XCTest
 
 class NetworkFetcherTests: XCTestCase {
 
-    let URL = NSURL(string: "http://haneke.io/image.jpg")
+    let URL = NSURL(string: "http://haneke.io/image.jpg")!
     var sut : NetworkFetcher<UIImage>!
     
     override func setUp() {

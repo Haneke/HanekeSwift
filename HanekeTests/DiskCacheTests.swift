@@ -133,7 +133,7 @@ class DiskCacheTests: XCTestCase {
     func testCacheQueue() {
         let expectedLabel = Haneke.Domain + "." + sut.name
 
-        let label = String.stringWithUTF8String(dispatch_queue_get_label(sut.cacheQueue))!
+        let label = String(UTF8String: dispatch_queue_get_label(sut.cacheQueue))!
 
         XCTAssertEqual(label, expectedLabel)
     }
@@ -158,7 +158,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)
+            let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
             XCTAssertEqual(self.sut.size, UInt64(data.length))
         })
@@ -175,7 +175,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)
+            let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
             XCTAssertEqual(sut.size, UInt64(data.length))
         })
@@ -206,7 +206,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)
+            let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
             XCTAssertEqual(self.sut.size, UInt64(data.length))
         })
