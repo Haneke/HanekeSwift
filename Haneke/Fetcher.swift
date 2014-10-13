@@ -39,12 +39,3 @@ class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
     override func cancelFetch() {}
     
 }
-
-public extension Cache {
-    
-    public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = Haneke.CacheGlobals.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetcher = SimpleFetcher<T>(key: key, thing: getValue)
-        return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
-    }
-    
-}

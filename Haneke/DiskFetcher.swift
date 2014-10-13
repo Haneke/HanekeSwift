@@ -89,12 +89,3 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         
     }
 }
-
-public extension Cache {
-    
-    public func fetch(#path : String, formatName : String = Haneke.CacheGlobals.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetcher = DiskFetcher<T>(path: path)
-        return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
-    }
-    
-}
