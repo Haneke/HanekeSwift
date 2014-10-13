@@ -63,7 +63,7 @@ class DiskFetcherTests: DiskTestCase {
     }
     
     func testFetchImage_Failure_HNKDiskEntityInvalidDataError() {
-        let data = NSData.data()
+        let data = NSData()
         data.writeToFile(sut.path, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
