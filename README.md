@@ -1,12 +1,13 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
-Haneke is a lightweight *generic* cache for iOS written in Swift. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch JSON objects from a url:
+Haneke is a lightweight *generic* cache for iOS written in Swift. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch objects from a url:
 
 ```swift
-let cache = Cache<JSON>(name: "movies")
-let URL = NSURL(string: "http://haneke.io/movies.json")
+let cache = Cache<JSON>(name: "github")
+let URL = NSURL(string: "https://api.github.com/users/haneke")
+    
 cache.fetch(URL: URL).onSuccess { JSON in
-    // Do something with JSON
+   println(JSON.dictionary?["bio"])
 }
 ```
 
