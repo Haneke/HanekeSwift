@@ -10,12 +10,14 @@ import UIKit
 
 public extension UIButton {
     
-    public var hnk_imageFormat : Format<UIImage> { //TODO
+    public var hnk_imageFormat : Format<UIImage> {
         let bounds = self.bounds
-            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first.")
-            let imageSize = self.backgroundRectForBounds(bounds).size
+            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
+            let contentRect = self.contentRectForBounds(bounds)
+            let imageInsets = self.imageEdgeInsets
+            let imageSize = CGSizeMake(CGRectGetWidth(contentRect) - imageInsets.left - imageInsets.right, CGRectGetHeight(contentRect) - imageInsets.top - imageInsets.bottom)
             
-            return UIButton.hnk_formatWithSize(imageSize, scaleMode: .Fill)
+            return UIButton.hnk_formatWithSize(imageSize, scaleMode: self.hnk_scaleMode)
     }
     
     public func hnk_setImageFromURL(URL : NSURL, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
@@ -72,7 +74,7 @@ public extension UIButton {
     }
     
     func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
-        let format = format ?? self.hnk_backgroundImageFormat
+        let format = format ?? self.hnk_imageFormat
         let cache = Haneke.sharedImageCache
         if cache.formats[format.name] == nil {
             cache.addFormat(format)
@@ -122,7 +124,7 @@ public extension UIButton {
         
     public var hnk_backgroundImageFormat : Format<UIImage> {
         let bounds = self.bounds
-            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first.")
+            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
             let imageSize = self.backgroundRectForBounds(bounds).size
             
             return UIButton.hnk_formatWithSize(imageSize, scaleMode: .Fill)
@@ -196,6 +198,7 @@ public extension UIButton {
             diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
                 let resizer = ImageResizer(size:size,
                     scaleMode:scaleMode,
+                    allowUpscaling: scaleMode == .AspectFit ? false : true,
                     compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
                 return resizer.resizeImage($0)
         }
