@@ -43,7 +43,7 @@ class UIButton_HanekeTests: DiskTestCase {
     
     // MARK: setBackgroundImage
     
-    func testBackgroundSetImage_MemoryMiss_UIControlStateNormal() {
+    func testSetBackgroundImage_MemoryMiss_UIControlStateNormal() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         
@@ -53,7 +53,7 @@ class UIButton_HanekeTests: DiskTestCase {
         XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, key)
     }
     
-    func testBackgroundImage_MemoryHit_UIControlStateSelected() {
+    func testSetBackgroundImage_MemoryHit_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let cache = Haneke.sharedImageCache
@@ -66,7 +66,7 @@ class UIButton_HanekeTests: DiskTestCase {
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
     
-    func testBackgroundImage_UsingPlaceholder_MemoryMiss_UIControlStateDisabled() {
+    func testSetBackgroundImage_UsingPlaceholder_MemoryMiss_UIControlStateDisabled() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
@@ -77,7 +77,7 @@ class UIButton_HanekeTests: DiskTestCase {
         XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, key)
     }
     
-    func testBackgroundImage_UsingPlaceholder_MemoryHit_UIControlStateNormal() {
+    func testSetBackgroundImage_UsingPlaceholder_MemoryHit_UIControlStateNormal() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
