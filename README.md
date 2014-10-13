@@ -34,7 +34,7 @@ _Really._
 
 For images:
 
-* Zero-config `UIImageView` category to use the cache, optimized for `UITableView` and `UICollectionView` cell reuse
+* Zero-config `UIImageView` and `UIButton` extensions to use the cache, optimized for `UITableView` and `UICollectionView` cell reuse
 * Background image resizing and decompression
 
 ##Using the cache
@@ -71,7 +71,7 @@ Further customization can be achieved by using [formats](#formats), [supporting 
 
 ##Extra ♡ for images
 
-Need to cache and display images? Haneke provides convenience methods for `UIImageView` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
+Need to cache and display images? Haneke provides convenience methods for `UIImageView` and `UIButton` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
 
 ```swift
 // Setting a remote image
@@ -112,7 +112,7 @@ cache.fetch(URL: URL, formatName: "icons").onSuccess { image in
 
 Because we told the cache to use the `"icons"` format Haneke will execute the format transformation in background and return the resulting value.
 
-Formats can also be used from the `UIImageView` extension:
+Formats can also be used from the `UIKit` extensions:
 
 ```swift
 imageView.hnk_setImageFromURL(url, format: iconFormat)
