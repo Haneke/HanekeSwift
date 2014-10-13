@@ -185,7 +185,7 @@ class UIImage_HanekeTests: XCTestCase {
         CGImageDestinationAddImage(imageDestinationRef, gradientImage.CGImage, exifProperties)
         CGImageDestinationFinalize(imageDestinationRef)
         
-        let image = UIImage(data:data, scale:UIScreen.mainScreen().scale)
+        let image = UIImage(data:data, scale:UIScreen.mainScreen().scale)!
         
         let decompressedImage = image.hnk_decompressedImage()
         

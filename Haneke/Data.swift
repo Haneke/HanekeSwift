@@ -25,7 +25,7 @@ extension UIImage : DataConvertible, DataRepresentable {
     public typealias Result = UIImage
     
     public class func convertFromData(data:NSData) -> Result? {
-        let image : UIImage? = UIImage(data: data) // Workaround for initializer that might return nil
+        let image = UIImage(data: data)
         return image
     }
     
@@ -40,7 +40,7 @@ extension String : DataConvertible, DataRepresentable {
     public typealias Result = String
     
     public static func convertFromData(data:NSData) -> Result? {
-        var string : String? = NSString(data: data, encoding: NSUTF8StringEncoding) // Workaround for initializer that might return nil
+        var string = NSString(data: data, encoding: NSUTF8StringEncoding)
         return string
     }
     
