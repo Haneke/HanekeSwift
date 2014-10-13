@@ -92,7 +92,6 @@ public extension UIButton {
         format.convertToData = {(image : UIImage) -> NSData in
             image.hnk_data(compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         }
-        cache.addFormat(format)        
         return format
     }
     
