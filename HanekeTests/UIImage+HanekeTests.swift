@@ -160,14 +160,14 @@ class UIImage_HanekeTests: XCTestCase {
     
     func _testDecompressedImageUsingColor(color : UIColor = UIColor.greenColor(), colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB(), alphaInfo :CGImageAlphaInfo, bitsPerComponent : size_t = 8) {
         let size = CGSizeMake(10, 20) // Using rectangle to check if image is rotated
-        let bitmapInfo = CGBitmapInfo.ByteOrderDefault | CGBitmapInfo.fromMask(alphaInfo.rawValue)
+        let bitmapInfo = CGBitmapInfo.ByteOrderDefault | CGBitmapInfo(alphaInfo.rawValue)
         let context = CGBitmapContextCreate(nil, UInt(size.width), UInt(size.height), bitsPerComponent, 0, colorSpace, bitmapInfo)
     
         CGContextSetFillColorWithColor(context, color.CGColor)
         CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height))
         let imageRef = CGBitmapContextCreateImage(context)
     
-        let image = UIImage(CGImage:imageRef, scale:UIScreen.mainScreen().scale, orientation:.Up)
+        let image = UIImage(CGImage:imageRef, scale:UIScreen.mainScreen().scale, orientation:.Up)!
         let decompressedImage = image.hnk_decompressedImage()
     
         XCTAssertNotEqual(image, decompressedImage)
