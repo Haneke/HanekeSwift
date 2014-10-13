@@ -13,6 +13,9 @@
 		8C0D39C119CF4BE000452BC4 /* DiskFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */; };
 		8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
 		8C0D39C719CF4D2D00452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
+		8CD6E29919DB65D000F44FCF /* UIButton+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */; };
+		8CD6E29F19E3467F00F44FCF /* UIButton+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD6E29E19E3467F00F44FCF /* UIButton+HanekeTests.swift */; };
+		8CD6E2A319E3481900F44FCF /* UIButton+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */; };
 		A0026E5619C91C05004DE0C6 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D68019978F9A000CAF46 /* DiskCache.swift */; };
 		A0026E9F19C9BFBC004DE0C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */; };
 		A0026EA119C9BFBC004DE0C6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026EA019C9BFBC004DE0C6 /* ViewController.swift */; };
@@ -117,6 +120,8 @@
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
 		8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcherTests.swift; sourceTree = "<group>"; };
 		8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcher.swift; sourceTree = "<group>"; };
+		8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+Haneke.swift"; sourceTree = "<group>"; };
+		8CD6E29E19E3467F00F44FCF /* UIButton+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+HanekeTests.swift"; sourceTree = "<group>"; };
 		A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HanekeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0026E9D19C9BFBC004DE0C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -238,6 +243,7 @@
 		A04210F719C9025C005000B8 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */,
 				A04210FB19C90292005000B8 /* UIImageView+Haneke.swift */,
 			);
 			name = UIKit;
@@ -247,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				A042110419C914CE005000B8 /* UIImageView+HanekeTests.swift */,
+				8CD6E29E19E3467F00F44FCF /* UIButton+HanekeTests.swift */,
 			);
 			name = UIKit;
 			sourceTree = "<group>";
@@ -542,6 +549,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A01E148319D7FA54000247ED /* Fetch.swift in Sources */,
+				8CD6E29919DB65D000F44FCF /* UIButton+Haneke.swift in Sources */,
 				A06EE28019B18C7800572D17 /* String+Haneke.swift in Sources */,
 				A0FDBF9219AD444500326016 /* Format.swift in Sources */,
 				A0C6BA3A19AC0D1E007111E9 /* NSFileManager+Haneke.swift in Sources */,
@@ -584,6 +592,7 @@
 				A00D365519C6E9BE0007586E /* XCTestCase+Test.swift in Sources */,
 				A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */,
 				A06EE27519AE1A6A00572D17 /* FormatTests.swift in Sources */,
+				8CD6E2A319E3481900F44FCF /* UIButton+Haneke.swift in Sources */,
 				A05F58FA19CCB1DA0009EBDE /* DataTests.swift in Sources */,
 				36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */,
 				A01E148419D7FA54000247ED /* Fetch.swift in Sources */,
@@ -592,6 +601,7 @@
 				A00D365019C6E1050007586E /* NSHTTPURLResponse+HanekeTests.swift in Sources */,
 				A01E148919D7FEF7000247ED /* FetchTests.swift in Sources */,
 				A02088BA19A89C6100CE8F01 /* NSData+Test.swift in Sources */,
+				8CD6E29F19E3467F00F44FCF /* UIButton+HanekeTests.swift in Sources */,
 				A0C6BA3F19ACA3C4007111E9 /* DiskTestCase.swift in Sources */,
 				A00D365219C6E5570007586E /* NetworkFetcher.swift in Sources */,
 				A042110519C914CE005000B8 /* UIImageView+HanekeTests.swift in Sources */,
