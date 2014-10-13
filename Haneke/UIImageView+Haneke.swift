@@ -103,7 +103,7 @@ public extension UIImageView {
     }
     
     class func hnk_formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode) -> Format<UIImage> {
-        let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
+        let name = "auto-\(size.width)x\(size.height)-\(scaleMode.rawValue)"
         let cache = Haneke.sharedImageCache
         if let (format,_,_) = cache.formats[name] {
             return format
