@@ -60,9 +60,10 @@ In most cases the value will not be readily available and will have to be fetche
 
 ```Swift
 let cache = Haneke.sharedJSONCache
-let URL = NSURL(string: "http://haneke.io/movies.json")
+let URL = NSURL(string: "https://api.github.com/users/haneke")
+    
 cache.fetch(URL: URL).onSuccess { JSON in
-    // Do something with JSON
+   println(JSON.dictionary?["bio"])
 }
 ```
 
