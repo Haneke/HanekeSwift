@@ -47,7 +47,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         
-        sut.hnk_setBackgroundImage(image, key: key, state: .Normal)
+        sut.hnk_setBackgroundImage(image, key: key)
         
         XCTAssertNil(sut.backgroundImageForState(.Normal))
         XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, key)
@@ -85,7 +85,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: key, formatName: format.name)
         
-        sut.hnk_setBackgroundImage(image, key: key, state: .Normal, placeholder: placeholder)
+        sut.hnk_setBackgroundImage(image, key: key, placeholder: placeholder)
         
         XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
@@ -124,7 +124,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: fetcher.key, formatName: format.name)
         
-        sut.hnk_setBackgroundImageFromFile(fetcher.key, state: .Normal)
+        sut.hnk_setBackgroundImageFromFile(fetcher.key)
         
         XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
@@ -164,7 +164,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: fetcher.key, formatName: format.name)
         
-        sut.hnk_setBackgroundImageFromURL(URL, state: .Normal)
+        sut.hnk_setBackgroundImageFromURL(URL)
         
         XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
@@ -196,7 +196,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
-        sut.hnk_setBackgroundImageFromURL(URL, state: .Normal, failure:{error in
+        sut.hnk_setBackgroundImageFromURL(URL, failure:{error in
             XCTAssertEqual(error!.domain, Haneke.Domain)
             expectation.fulfill()
         })
@@ -263,7 +263,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: key, formatName: format.name)
         
-        sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Normal)
+        sut.hnk_setBackgroundImageFromFetcher(fetcher)
         
         XCTAssertTrue(sut.backgroundImageForState(.Normal)!.isEqualPixelByPixel(image))
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
@@ -277,7 +277,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: key, formatName: format.name)
         
-        sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Normal, failure: {error in
+        sut.hnk_setBackgroundImageFromFetcher(fetcher, failure: {error in
             XCTFail("")
             }){result in
                 XCTAssertTrue(result.isEqualPixelByPixel(image))
