@@ -44,7 +44,7 @@ For images:
 - iOS 8.0+
 - Xcode 6.0
 
-_For Xcode 6.1, use [the `xcode6.1` branch](https://github.com/Haneke/HanekeSwift/tree/xcode6.1)._
+_For Xcode 6.1, use the [`xcode6.1`](https://github.com/Haneke/HanekeSwift/tree/xcode6.1) branch._
 
 ## Installation
 
