@@ -38,6 +38,24 @@ For images:
 * Zero-config `UIImageView` and `UIButton` extensions to use the cache, optimized for `UITableView` and `UICollectionView` cell reuse
 * Background image resizing and decompression
 
+
+## Requirements
+
+- iOS 8.0+
+- Xcode 6.0
+
+_For Xcode 6.1, use [the `xcode6.1` branch](https://github.com/Haneke/HanekeSwift/tree/xcode6.1)._
+
+## Installation
+
+_Haneke is packaged as a Swift framework. Currently this is the simplest way to add it to your app:_
+
+1. Drag `Haneke.xcodeproj` to your project in the _Project Navigator_.
+2. Select your project and then your app target. Open the _Build Phases_ panel.
+3. Expand the _Target Dependencies_ group, and add `Haneke.framework`.
+4. Click on the `+` button at the top left of the panel and select _New Copy Files Phase_. Set _Destination_ to _Frameworks_, and add `Haneke.framework`.
+5. `import Haneke` whenever you want to use Haneke.
+
 ##Using the cache
 
 Haneke provides shared caches for `UIImage`, `NSData`, `JSON` and `String`. You can also create your own caches. 
