@@ -10,6 +10,27 @@ import UIKit
 
 public extension UIButton {
     
+    class func hnk_formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode) -> Format<UIImage> {
+        let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
+        let cache = Haneke.sharedImageCache
+        if let (format,_,_) = cache.formats[name] {
+            return format
+        }
+        
+        var format = Format<UIImage>(name: name,
+            diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
+                let resizer = ImageResizer(size:size,
+                    scaleMode:scaleMode,
+                    allowUpscaling:scaleMode == ImageResizer.ScaleMode.AspectFit ? false : true,
+                    compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+                return resizer.resizeImage($0)
+        }
+        format.convertToData = {(image : UIImage) -> NSData in
+            image.hnk_data(compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        }
+        return format
+    }
+    
     public var hnk_imageFormat : Format<UIImage> {
         let bounds = self.bounds
             assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
@@ -185,27 +206,6 @@ public extension UIButton {
     
     var hnk_scaleMode : ImageResizer.ScaleMode {
         return self.contentHorizontalAlignment != UIControlContentHorizontalAlignment.Fill || self.contentVerticalAlignment != UIControlContentVerticalAlignment.Fill ? ImageResizer.ScaleMode.AspectFit : ImageResizer.ScaleMode.Fill;
-    }
-    
-    class func hnk_formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode) -> Format<UIImage> {
-        let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
-        let cache = Haneke.sharedImageCache
-        if let (format,_,_) = cache.formats[name] {
-            return format
-        }
-        
-        var format = Format<UIImage>(name: name,
-            diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
-                let resizer = ImageResizer(size:size,
-                    scaleMode:scaleMode,
-                    allowUpscaling: scaleMode == .AspectFit ? false : true,
-                    compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
-                return resizer.resizeImage($0)
-        }
-        format.convertToData = {(image : UIImage) -> NSData in
-            image.hnk_data(compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
-        }
-        return format
     }
     
     func hnk_fetchBackgroundImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
