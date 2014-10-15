@@ -228,20 +228,6 @@ class UIButton_HanekeTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
-    func testCancelSetImage_AfterSetImage_UIControlStateHighlighted() {
-        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
-        sut.hnk_setImageFromURL(URL, state: .Highlighted, success: { _ in
-            XCTFail("unexpected success")
-            }, failure: { _ in
-                XCTFail("unexpected failure")
-        })
-        
-        sut.hnk_cancelSetImage()
-        
-        XCTAssertTrue(sut.hnk_imageFetcher == nil)
-        self.waitFor(0.1)
-    }
-    
     // MARK: setImageFromFetcher
     
     func testSetImageFromFetcher_MemoryMiss_UIControlStateSelected() {
@@ -306,6 +292,19 @@ class UIButton_HanekeTests: DiskTestCase {
         self.waitFor(0.1)
     }
 
+    func testCancelSetImage_AfterSetImage_UIControlStateHighlighted() {
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        sut.hnk_setImageFromURL(URL, state: .Highlighted, success: { _ in
+            XCTFail("unexpected success")
+            }, failure: { _ in
+                XCTFail("unexpected failure")
+        })
+        
+        sut.hnk_cancelSetImage()
+        
+        XCTAssertTrue(sut.hnk_imageFetcher == nil)
+        self.waitFor(0.1)
+    }
     
     // MARK: backgroundImageFormat
 
@@ -508,20 +507,6 @@ class UIButton_HanekeTests: DiskTestCase {
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
-    func testCancelSetBackgroundImage_AfterSetImage_UIControlStateHighlighted() {
-        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
-        sut.hnk_setBackgroundImageFromURL(URL, state: .Highlighted, success: { _ in
-            XCTFail("unexpected success")
-            }, failure: { _ in
-                XCTFail("unexpected failure")
-        })
-        
-        sut.hnk_cancelSetBackgroundImage()
-        
-        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
-        self.waitFor(0.1)
-    }
-    
     // MARK: setBackgroundImageFromFetcher
     
     func testSetBackgroundImageFromFetcher_MemoryMiss_UIControlStateSelected() {
@@ -575,6 +560,20 @@ class UIButton_HanekeTests: DiskTestCase {
     func testCancelSetBackgroundImage_AfterSetImage() {
         let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
         sut.hnk_setBackgroundImageFromURL(URL, success: { _ in
+            XCTFail("unexpected success")
+            }, failure: { _ in
+                XCTFail("unexpected failure")
+        })
+        
+        sut.hnk_cancelSetBackgroundImage()
+        
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
+        self.waitFor(0.1)
+    }
+    
+    func testCancelSetBackgroundImage_AfterSetImage_UIControlStateHighlighted() {
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        sut.hnk_setBackgroundImageFromURL(URL, state: .Highlighted, success: { _ in
             XCTFail("unexpected success")
             }, failure: { _ in
                 XCTFail("unexpected failure")
