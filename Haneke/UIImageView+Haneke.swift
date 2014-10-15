@@ -14,7 +14,7 @@ public extension UIImageView {
         let viewSize = self.bounds.size
             assert(viewSize.width > 0 && viewSize.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
-            return Haneke.UIKitGlobals.hnk_formatWithSize(viewSize, scaleMode: scaleMode)
+            return Haneke.UIKitGlobals.formatWithSize(viewSize, scaleMode: scaleMode)
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
