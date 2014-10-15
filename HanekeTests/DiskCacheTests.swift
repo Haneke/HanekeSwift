@@ -192,7 +192,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)
+            let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
             XCTAssertEqual(sut.size, UInt64(data.length))
         })
