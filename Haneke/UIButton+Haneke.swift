@@ -191,7 +191,7 @@ public extension UIButton {
     // See: http://stackoverflow.com/questions/25907421/associating-swift-things-with-nsobject-instances
     var hnk_backgroundImageFetcher : Fetcher<UIImage>! {
         get {
-            let wrapper = objc_getAssociatedObject(self, &Haneke.UIKitGlobals.SetImageFetcherKey) as? ObjectWrapper
+            let wrapper = objc_getAssociatedObject(self, &Haneke.UIKitGlobals.SetBackgroundImageFetcherKey) as? ObjectWrapper
             let fetcher = wrapper?.value as? Fetcher<UIImage>
             return fetcher
         }
@@ -200,7 +200,7 @@ public extension UIButton {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &Haneke.UIKitGlobals.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &Haneke.UIKitGlobals.SetBackgroundImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     
