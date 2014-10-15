@@ -98,7 +98,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.redColor())
         let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         
-        let format = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
+        let format = Haneke.UIKitGlobals.formatWithSize(size, scaleMode: scaleMode)
         
         XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
@@ -110,12 +110,12 @@ class UIImageView_HanekeTests: XCTestCase {
         let size = CGSizeMake(10, 20)
         let scaleMode = ImageResizer.ScaleMode.Fill
         let cache = Haneke.sharedImageCache
-        let format1 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
+        let format1 = Haneke.UIKitGlobals.formatWithSize(size, scaleMode: scaleMode)
         let image = UIImage.imageWithColor(UIColor.greenColor())
         cache.addFormat(format1)
         cache.set(value: image, key: self.name, formatName: format1.name)
         
-        let format2 = UIImageView.hnk_formatWithSize(size, scaleMode: scaleMode)
+        let format2 = Haneke.UIKitGlobals.formatWithSize(size, scaleMode: scaleMode)
         
         let (_,memoryCache,_) = cache.formats[format2.name]!
         let wrapper = memoryCache.objectForKey(self.name)! as ObjectWrapper

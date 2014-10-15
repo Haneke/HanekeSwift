@@ -7,24 +7,6 @@
 //
 
 import UIKit
-import ObjectiveC
-
-public extension Haneke {
-
-    public struct UIKitGlobals {
-
-        public struct DefaultFormat {
-            
-            public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
-            public static let CompressionQuality : Float = 0.75
-            
-        }
-        
-        static var SetImageFetcherKey = 0
-
-    }
-
-}
 
 public extension UIImageView {
     
@@ -32,7 +14,7 @@ public extension UIImageView {
         let viewSize = self.bounds.size
             assert(viewSize.width > 0 && viewSize.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
-            return UIImageView.hnk_formatWithSize(viewSize, scaleMode: scaleMode)
+            return Haneke.UIKitGlobals.formatWithSize(viewSize, scaleMode: scaleMode)
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
@@ -100,26 +82,6 @@ public extension UIImageView {
         case .Redraw, .Center, .Top, .Bottom, .Left, .Right, .TopLeft, .TopRight, .BottomLeft, .BottomRight:
             return .None
             }
-    }
-    
-    class func hnk_formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode) -> Format<UIImage> {
-        let name = "auto-\(size.width)x\(size.height)-\(scaleMode.toRaw())"
-        let cache = Haneke.sharedImageCache
-        if let (format,_,_) = cache.formats[name] {
-            return format
-        }
-        
-        var format = Format<UIImage>(name: name,
-            diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
-                let resizer = ImageResizer(size:size,
-                scaleMode:scaleMode,
-                compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
-                return resizer.resizeImage($0)
-        }
-        format.convertToData = {(image : UIImage) -> NSData in
-            image.hnk_data(compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
-        }
-        return format
     }
     
     func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
