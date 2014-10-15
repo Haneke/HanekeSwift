@@ -164,10 +164,27 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
-    func testSetData_EscapedFilename() {
+    func testSetData_WithKeyIncludingSpecialCharacters() {
         let sut = self.sut!
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
         let key = "http://haneke.io"
+        let path = sut.pathForKey(key)
+        
+        sut.setData(data, key: key)
+        
+        dispatch_sync(sut.cacheQueue, {
+            let fileManager = NSFileManager.defaultManager()
+            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+            let resultData = NSData(contentsOfFile:path)
+            XCTAssertEqual(resultData, data)
+            XCTAssertEqual(sut.size, UInt64(data.length))
+        })
+    }
+    
+    func testSetData_WithLongKey() {
+        let sut = self.sut!
+        let data = NSData.dataWithLength(10)
+        let key = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pretium id nibh a pulvinar. Integer id ex in tellus egestas placerat. Praesent ultricies libero ligula, et convallis ligula imperdiet eu. Sed gravida, turpis sed vulputate feugiat, metus nisl scelerisque diam, ac aliquet metus nisi rutrum ipsum. Nulla vulputate pretium dolor, a pellentesque nulla. Nunc pellentesque tortor porttitor, sollicitudin leo in, sollicitudin ligula. Cras malesuada orci at neque interdum elementum. Integer sed sagittis diam. Mauris non elit sed augue consequat feugiat. Nullam volutpat tortor eget tempus pretium. Sed pharetra sem vitae diam hendrerit, sit amet dapibus arcu interdum. Fusce egestas quam libero, ut efficitur turpis placerat eu. Sed velit sapien, aliquam sit amet ultricies a, bibendum ac nibh. Maecenas imperdiet, quam quis tincidunt sollicitudin, nunc tellus ornare ipsum, nec rhoncus nunc nisi a lacus."
         let path = sut.pathForKey(key)
         
         sut.setData(data, key: key)
@@ -446,10 +463,24 @@ class DiskCacheTests: XCTestCase {
         }
     }
     
-    func testPathForKey() {
-        let key = self.name
+    func testPathForKey_WithShortKey() {
+        let key = "test"
         let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.escapedFilename())
 
+        XCTAssertEqual(sut.pathForKey(key), expectedPath)
+    }
+    
+    func testPathForKey_WithShortKeyWithSpecialCharacters() {
+        let key = "http://haneke.io"
+        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.escapedFilename())
+        
+        XCTAssertEqual(sut.pathForKey(key), expectedPath)
+    }
+    
+    func testPathForKey_WithLongKey() {
+        let key = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pretium id nibh a pulvinar. Integer id ex in tellus egestas placerat. Praesent ultricies libero ligula, et convallis ligula imperdiet eu. Sed gravida, turpis sed vulputate feugiat, metus nisl scelerisque diam, ac aliquet metus nisi rutrum ipsum. Nulla vulputate pretium dolor, a pellentesque nulla. Nunc pellentesque tortor porttitor, sollicitudin leo in, sollicitudin ligula. Cras malesuada orci at neque interdum elementum. Integer sed sagittis diam. Mauris non elit sed augue consequat feugiat. Nullam volutpat tortor eget tempus pretium. Sed pharetra sem vitae diam hendrerit, sit amet dapibus arcu interdum. Fusce egestas quam libero, ut efficitur turpis placerat eu. Sed velit sapien, aliquam sit amet ultricies a, bibendum ac nibh. Maecenas imperdiet, quam quis tincidunt sollicitudin, nunc tellus ornare ipsum, nec rhoncus nunc nisi a lacus."
+        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.MD5Filename())
+        
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }
     

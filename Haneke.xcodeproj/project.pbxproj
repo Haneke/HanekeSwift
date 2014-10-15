@@ -49,6 +49,8 @@
 		A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE28119B18FE600572D17 /* String+HanekeTests.swift */; };
 		A06EE28319B1902C00572D17 /* String+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE27F19B18C7800572D17 /* String+Haneke.swift */; };
 		A06EE28419B195B300572D17 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
+		A0720DEA19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
+		A0720DEB19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
 		A095C95C1980418C00CD0F4C /* Haneke.h in Headers */ = {isa = PBXBuildFile; fileRef = A095C95B1980418C00CD0F4C /* Haneke.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A095C973198041D100CD0F4C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
 		A095C975198045D200CD0F4C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* CacheTests.swift */; };
@@ -149,6 +151,7 @@
 		A06EE27419AE1A6A00572D17 /* FormatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormatTests.swift; sourceTree = "<group>"; };
 		A06EE27F19B18C7800572D17 /* String+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Haneke.swift"; sourceTree = "<group>"; };
 		A06EE28119B18FE600572D17 /* String+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HanekeTests.swift"; sourceTree = "<group>"; };
+		A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoSwiftMD5.swift; sourceTree = "<group>"; };
 		A095C9561980418C00CD0F4C /* Haneke.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Haneke.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C95A1980418C00CD0F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A095C95B1980418C00CD0F4C /* Haneke.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Haneke.h; sourceTree = "<group>"; };
@@ -258,6 +261,14 @@
 			name = UIKit;
 			sourceTree = "<group>";
 		};
+		A0720DE519EF2A73000FEE83 /* CryptoSwift */ = {
+			isa = PBXGroup;
+			children = (
+				A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */,
+			);
+			name = CryptoSwift;
+			sourceTree = "<group>";
+		};
 		A095C94C1980418C00CD0F4C = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				A095C972198041D100CD0F4C /* Cache.swift */,
+				A0720DE519EF2A73000FEE83 /* CryptoSwift */,
 				A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */,
 				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
 				8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */,
@@ -561,6 +573,7 @@
 				A095C973198041D100CD0F4C /* Cache.swift in Sources */,
 				A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */,
 				8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */,
+				A0720DEA19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */,
 				A0D7D68119978F9A000CAF46 /* DiskCache.swift in Sources */,
 				A04210FC19C90292005000B8 /* UIImageView+Haneke.swift in Sources */,
 				A00D360419C36E680007586E /* NSHTTPURLResponse+Haneke.swift in Sources */,
@@ -571,6 +584,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0720DEB19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */,
 				D18894C919C340C5008E9E4C /* CGSize+HanekeTests.swift in Sources */,
 				A06EE28319B1902C00572D17 /* String+Haneke.swift in Sources */,
 				A00D364919C6D8870007586E /* NetworkFetcherTests.swift in Sources */,
