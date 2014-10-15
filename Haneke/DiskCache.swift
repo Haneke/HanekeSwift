@@ -127,7 +127,8 @@ public class DiskCache {
     }
 
     public func pathForKey(key : String) -> String {
-        let filename = key.escapedFilename()
+        var escapedFilename = key.escapedFilename()
+        let filename = countElements(escapedFilename) < Int(NAME_MAX) ? escapedFilename : key.MD5Filename()
         let path = self.cachePath.stringByAppendingPathComponent(filename)
         return path
     }
