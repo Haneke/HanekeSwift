@@ -36,11 +36,42 @@ class CacheTests: XCTestCase {
         weak var sut = Cache<UIImage>(name: self.name)
     }
     
+    // MARK: cachePath
+    
+    func testCachePath() {
+        let expectedCachePath = DiskCache.basePath().stringByAppendingPathComponent(sut.name)
+        XCTAssertEqual(sut.cachePath, expectedCachePath)
+    }
+    
+    // MARK: formatPath
+    
+    func testFormatPath() {
+        let formatName = self.name
+        let expectedFormatPath = sut.cachePath.stringByAppendingPathComponent(formatName)
+        
+        let formatPath = sut.formatPath(formatName: formatName)
+        
+        XCTAssertEqual(formatPath, expectedFormatPath)
+    }
+    
+    func testFormatPath_WithEmptyName() {
+        let formatName = ""
+        let expectedFormatPath = sut.cachePath.stringByAppendingPathComponent(formatName)
+        
+        let formatPath = sut.formatPath(formatName: formatName)
+        
+        XCTAssertEqual(formatPath, expectedFormatPath)
+    }
+
+    // MARK: addFormat
+    
     func testAddFormat() {
         let format = Format<UIImage>(name: self.name)
         
         sut.addFormat(format)
     }
+
+    // MARK: set
     
     func testSet_WithDefaultFormat () {
         let image = UIImage.imageWithColor(UIColor.greenColor())
@@ -122,6 +153,8 @@ class CacheTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(1, nil)
     }
+    
+    // MARK: fetch
     
     func testFetch_WithKey_OnSuccess () {
         let image = UIImage.imageWithColor(UIColor.cyanColor())
@@ -355,6 +388,8 @@ class CacheTests: XCTestCase {
         self.waitForExpectationsWithTimeout(1, nil)
     }
     
+    // MARK: remove
+    
     func testRemove_Existing() {
         let key = self.name
         sut.set(value: UIImage.imageWithColor(UIColor.greenColor()), key: key)
@@ -430,6 +465,8 @@ class CacheTests: XCTestCase {
     func testRemove_WithInexistingKey() {
         sut.remove(key: self.name)
     }
+    
+    // MARK: removeAll
     
     func testRemoveAll_One() {
         let key = self.name
