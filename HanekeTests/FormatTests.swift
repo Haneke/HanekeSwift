@@ -20,13 +20,13 @@ class FormatTests: XCTestCase {
         XCTAssertTrue(sut.transform == nil)
     }
     
-    func testIsIdentity_WithoutTransform_ExpectTrue {
+    func testIsIdentity_WithoutTransform_ExpectTrue() {
         let sut = Format<UIImage>(name: name)
         
         XCTAssertTrue(sut.isIdentity)
     }
     
-    func testIsIdentity_WithTransform_ExpectFalse {
+    func testIsIdentity_WithTransform_ExpectFalse() {
         let sut = Format<UIImage>(name: name, transform: { return $0 })
         
         XCTAssertFalse(sut.isIdentity)

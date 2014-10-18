@@ -61,12 +61,15 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
-    public func set(#value : T, key: String, formatName : String = Haneke.CacheGlobals.OriginalFormatName) {
+    public func set(#value : T, key: String, formatName : String = Haneke.CacheGlobals.OriginalFormatName, success succeed : ((T) -> ())? = nil) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            let wrapper = ObjectWrapper(value: value)
-            memoryCache.setObject(wrapper, forKey: key)
-            // Value data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(dataFromValue(value, format: format), key: key)
+            self.format(value: value, format: format) { formattedValue in
+                let wrapper = ObjectWrapper(value: formattedValue)
+                memoryCache.setObject(wrapper, forKey: key)
+                // Value data is sent as @autoclosure to be executed in the disk cache queue.
+                diskCache.setData(self.dataFromValue(formattedValue, format: format), key: key)
+                succeed?(formattedValue)
+            }
         } else {
             assertionFailure("Can't set value before adding format")
         }
@@ -107,7 +110,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
             
             if let (format, _, _) = self.formats[formatName] {
-                self.fetchValueFromFetcher(fetcher, format: format, failure: {error in
+                self.fetchAndSet(fetcher, format: format, failure: {error in
                     fetch.fail(error)
                 }) {value in
                     fetch.succeed(value)
@@ -209,10 +212,19 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
-    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
+    private func fetchAndSet(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
         fetcher.fetch(failure: { error in
             let _ = fail?(error)
         }) { value in
+            self.set(value: value, key: fetcher.key, formatName: format.name, success: succeed)
+        }
+    }
+    
+    private func format(#value : T, format : Format<T>, success succeed : (T) -> ()) {
+        // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
+        if format.isIdentity && !(value is UIImage) {
+            succeed(value)
+        } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 var formatted = format.apply(value)
                 
@@ -222,16 +234,14 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                         formatted = self.decompressedImageIfNeeded(formatted)
                     }
                 }
-
+                
                 dispatch_async(dispatch_get_main_queue()) {
                     succeed(formatted)
-                    self.set(value: formatted, key: fetcher.key, formatName: format.name)
                 }
             }
         }
     }
     
-    // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
     private func decompressedImageIfNeeded(value : T) -> T {
         if let image = value as? UIImage {
             let decompressedImage = image.hnk_decompressedImage() as? T
