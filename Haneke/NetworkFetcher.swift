@@ -66,7 +66,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         let URL = self.URL
         
         if let error = error {
-            if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return; }
+            if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return }
             
             NSLog("Request \(URL.absoluteString!) failed with error \(error)")
             dispatch_async(dispatch_get_main_queue(), { fail(error) })

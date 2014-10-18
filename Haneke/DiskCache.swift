@@ -186,7 +186,7 @@ public class DiskCache {
         if !success {
             NSLog("Failed to update access date with error \(error!)")
         }
-        return success;
+        return success
     }
     
     private func removeFileAtPath(path:String) {

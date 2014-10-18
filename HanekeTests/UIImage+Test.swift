@@ -48,12 +48,12 @@ extension UIImage {
         fromColor.getRed(&r1, green: &g1, blue: &b1, alpha: &a1)
         var r2 : CGFloat = 0, g2 : CGFloat = 0 , b2 : CGFloat = 0, a2 : CGFloat = 0
         toColor.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
-        let gradientComponents = [r1, g1, b1, a1, r2, g2, b2, a2];
-        let gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations);
-        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, size.height), 0);
-        let image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        return image;
+        let gradientComponents = [r1, g1, b1, a1, r2, g2, b2, a2]
+        let gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations)
+        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, size.height), 0)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image
     }
     
 }

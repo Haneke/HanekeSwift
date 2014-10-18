@@ -348,7 +348,7 @@ class DiskCacheTests: XCTestCase {
     
     func testUpdateAccessDateFileNotInDisk() {
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let key = self.name;
+        let key = self.name
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
         
