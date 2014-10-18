@@ -25,13 +25,15 @@ public struct Format<T> {
     }
     
     public func apply(thing : T) -> T {
-        // TODO: Pre-apply closure
         var transformed = thing
         if let transform = self.transform {
             transformed = transform(thing)
         }
-        // TODO: Post-apply closure
         return transformed
+    }
+    
+    var isIdentity : Bool {
+        return self.transform == nil
     }
 
 }
