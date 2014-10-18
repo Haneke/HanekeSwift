@@ -24,10 +24,10 @@ public struct Format<T> {
         self.transform = transform
     }
     
-    public func apply(thing : T) -> T {
-        var transformed = thing
+    public func apply(value : T) -> T {
+        var transformed = value
         if let transform = self.transform {
-            transformed = transform(thing)
+            transformed = transform(value)
         }
         return transformed
     }
@@ -59,10 +59,6 @@ public struct ImageResizer {
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
         self.compressionQuality = compressionQuality
-    }
-    
-    public func tranform(thing: T) -> T {
-        return thing
     }
     
     public func resizeImage(image: UIImage) -> UIImage {

@@ -27,7 +27,7 @@ public extension UIButton {
     }
     
     public func hnk_setImage(image : UIImage, key : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
@@ -137,7 +137,7 @@ public extension UIButton {
     }
     
     public func hnk_setBackgroundImage(image : UIImage, key : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     

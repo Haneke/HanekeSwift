@@ -93,15 +93,15 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let thing : T.Result? = T.convertFromData(data)
-        if thing == nil {
+        let value : T.Result? = T.convertFromData(data)
+        if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: fail)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue()) { succeed(thing!) }
+        dispatch_async(dispatch_get_main_queue()) { succeed(value!) }
 
     }
     

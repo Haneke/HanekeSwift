@@ -214,7 +214,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromFetcher_MemoryMiss() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         
         sut.hnk_setImageFromFetcher(fetcher)
 
@@ -225,7 +225,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromFetcher_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectedImage = setImage(image, key: key)
         
         sut.hnk_setImageFromFetcher(fetcher)
@@ -238,7 +238,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         sut.image = previousImage
         
         sut.hnk_setImageFromFetcher(fetcher)
@@ -251,7 +251,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         
         sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
         
@@ -263,7 +263,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectedImage = setImage(image, key: key)
         
         sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
@@ -275,7 +275,7 @@ class UIImageView_HanekeTests: XCTestCase {
     func testSetImageFromFetcher_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
         
@@ -325,7 +325,7 @@ class UIImageView_HanekeTests: XCTestCase {
         let expectedImage = UIImage.imageWithColor(UIColor.greenColor())
         let format = Format<UIImage>(name: self.name, diskCapacity: 0) { _ in return expectedImage }
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromFetcher(fetcher, format: format, success: { resultImage in

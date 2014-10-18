@@ -253,7 +253,7 @@ class CacheTests: XCTestCase {
     
     func testFetchOnSuccess_WithSyncFetcher_ExpectAsyncSuccess () {
         let data = NSData.dataWithLength(10)
-        let fetcher = SimpleFetcher<NSData>(key: self.name, thing: data)
+        let fetcher = SimpleFetcher<NSData>(key: self.name, value: data)
         let expectation = self.expectationWithDescription(self.name)
         
         let fetch = sut.fetch(fetcher: fetcher).onSuccess {
@@ -302,7 +302,7 @@ class CacheTests: XCTestCase {
     func testFetch_AfterSet_WithFetcher_ExpectSyncSuccess () {
         let data = NSData.dataWithLength(10)
         let key = self.name
-        let fetcher = SimpleFetcher<NSData>(key: key, thing: data)
+        let fetcher = SimpleFetcher<NSData>(key: key, value: data)
         let expectation = self.expectationWithDescription(self.name)
         sut.set(value: data, key: key)
         
@@ -319,7 +319,7 @@ class CacheTests: XCTestCase {
     func testFetch_AfterSetAndClearingMemoryCache_WithFetcher_ExpectAsyncSuccess () {
         let data = NSData.dataWithLength(10)
         let key = self.name
-        let fetcher = SimpleFetcher<NSData>(key: key, thing: data)
+        let fetcher = SimpleFetcher<NSData>(key: key, value: data)
         let expectation = self.expectationWithDescription(self.name)
         sut.set(value: data, key: key)
         self.clearMemoryCache()
@@ -340,7 +340,7 @@ class CacheTests: XCTestCase {
     func testFetch_WithSyncFetcher_ExpectAsyncSuccess () {
         let key = self.name
         let data = NSData.dataWithLength(11)
-        let fetcher = SimpleFetcher<NSData>(key: key, thing: data)
+        let fetcher = SimpleFetcher<NSData>(key: key, value: data)
         let expectation = self.expectationWithDescription(self.name)
         
         let fetch = sut.fetch(fetcher: fetcher, failure : { _ in
@@ -362,7 +362,7 @@ class CacheTests: XCTestCase {
         let key = self.name
         let data = NSData.dataWithLength(12)
         let formattedData = NSData.dataWithLength(13)
-        let fetcher = SimpleFetcher<NSData>(key: key, thing: data)
+        let fetcher = SimpleFetcher<NSData>(key: key, value: data)
         let format = Format<NSData>(name: self.name, transform: { _ in
             return formattedData
         })
@@ -387,7 +387,7 @@ class CacheTests: XCTestCase {
     func testFetch_WithFetcherAndInexistingFormat_ExpectSyncFailure () {
         let expectation = self.expectationWithDescription(self.name)
         let data = NSData.dataWithLength(14)
-        let fetcher = SimpleFetcher<NSData>(key: self.name, thing: data)
+        let fetcher = SimpleFetcher<NSData>(key: self.name, value: data)
 
         let fetch = sut.fetch(fetcher: fetcher, formatName: self.name, failure : { error in
             XCTAssertEqual(error!.domain, Haneke.Domain)

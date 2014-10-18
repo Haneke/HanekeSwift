@@ -265,7 +265,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
     public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = Haneke.CacheGlobals.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetcher = SimpleFetcher<T>(key: key, thing: getValue)
+        let fetcher = SimpleFetcher<T>(key: key, value: getValue)
         return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }
     

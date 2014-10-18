@@ -67,9 +67,9 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let thing : T.Result? = T.convertFromData(data)
+        let value : T.Result? = T.convertFromData(data)
         
-        if thing == nil {
+        if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
             let description = String(format:localizedFormat, self.path)
             let error = Haneke.errorWithCode(Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw(), description: description)
@@ -83,7 +83,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             if self.cancelled {
                 return
             }
-            succeed(thing!)
+            succeed(value!)
         })
         
         

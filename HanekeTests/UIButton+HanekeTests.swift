@@ -225,7 +225,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetImageFromFetcher_MemoryMiss_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         
         sut.hnk_setImageFromFetcher(fetcher, state: .Selected)
         
@@ -236,7 +236,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetImageFromFetcher_MemoryHit_UIControlStateNormal() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectedImage = setImage(image, key: key, format: sut.hnk_imageFormat)
         
         sut.hnk_setImageFromFetcher(fetcher)
@@ -248,7 +248,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetImageFromFetcherSuccessFailure_MemoryHit_UIControlStateNormal() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_imageFormat
         cache.set(value: image, key: key, formatName: format.name)
@@ -498,7 +498,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetBackgroundImageFromFetcher_MemoryMiss_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         
         sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Selected)
         
@@ -509,7 +509,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetBackgroundImageFromFetcher_MemoryHit_UIControlStateNormal() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectedImage = setImage(image, key: key, format: sut.hnk_backgroundImageFormat)
         
         sut.hnk_setBackgroundImageFromFetcher(fetcher)
@@ -522,7 +522,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetBackgroundImageFromFetcherSuccessFailure_MemoryHit_UIControlStateNormal() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: key, formatName: format.name)
