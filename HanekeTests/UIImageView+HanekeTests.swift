@@ -381,7 +381,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         
         sut.hnk_setImageFromFile(fetcher.key)
         
-        XCTAssertTrue(sut.image!.isEqualPixelByPixel(image))
+        XCTAssertTrue(sut.image?.isEqualPixelByPixel(image) == true)
         XCTAssertTrue(sut.hnk_fetcher == nil)
     }
     
