@@ -24,16 +24,16 @@ public class Fetcher<T : DataConvertible> {
 
 class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
     
-    let getThing : () -> T.Result
+    let getValue : () -> T.Result
     
-    init(key : String, thing getThing : @autoclosure () -> T.Result) {
-        self.getThing = getThing
+    init(key : String, value getValue : @autoclosure () -> T.Result) {
+        self.getValue = getValue
         super.init(key: key)
     }
     
     override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
-        let thing = getThing()
-        succeed(thing)
+        let value = getValue()
+        succeed(value)
     }
     
     override func cancelFetch() {}

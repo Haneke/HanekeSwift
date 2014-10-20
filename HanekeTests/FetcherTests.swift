@@ -15,16 +15,16 @@ class FetcherTests: XCTestCase {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
 
         XCTAssertEqual(fetcher.key, key)
-        XCTAssertEqual(fetcher.getThing(), image)
+        XCTAssertEqual(fetcher.getValue(), image)
     }
     
     func testSimpleFetcherFetch() {
         let key = self.name
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectation = self.expectationWithDescription(self.name)
         
         fetcher.fetch(failure: { _ in
