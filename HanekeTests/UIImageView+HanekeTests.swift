@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class UIImageView_HanekeTests: XCTestCase {
+class UIImageView_HanekeTests: DiskTestCase {
 
     var sut : UIImageView!
     
@@ -334,6 +334,40 @@ class UIImageView_HanekeTests: XCTestCase {
         })
         
         self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
+    // MARK: setImageFromFile
+    
+    func testSetImageFromFile_MemoryMiss() {
+        let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
+        
+        sut.hnk_setImageFromFile(fetcher.key)
+        
+        XCTAssertNil(sut.image)
+        XCTAssertEqual(sut.hnk_fetcher.key, fetcher.key)
+    }
+    
+    func testSetImageFromFile_MemoryHit() {
+        let image = UIImage.imageWithColor(UIColor.orangeColor())
+        let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
+        let expectedImage = setImage(image, key: fetcher.key)
+        
+        sut.hnk_setImageFromFile(fetcher.key)
+        
+        XCTAssertTrue(sut.image?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertTrue(sut.hnk_fetcher == nil)
+    }
+    
+    func testSetImageFromFileSuccessFailure_MemoryHit() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
+        let expectedImage = setImage(image, key: fetcher.key)
+        
+        sut.hnk_setImageFromFile(fetcher.key, failure: {error in
+            XCTFail("")
+        }) { result in
+            XCTAssertTrue(result.isEqualPixelByPixel(expectedImage))
+        }
     }
     
     // MARK: setImageFromURL
