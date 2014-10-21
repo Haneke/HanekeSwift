@@ -55,7 +55,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         }
         
         var error: NSError?
-        let data = NSData.dataWithContentsOfFile(self.path, options: NSDataReadingOptions.allZeros, error: &error)
+        let data = NSData(contentsOfFile: self.path, options: NSDataReadingOptions.allZeros, error: &error)
         if data == nil {
             dispatch_async(dispatch_get_main_queue()) {
                 fail(error)
@@ -67,12 +67,12 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let value : T.Result? = T.convertFromData(data)
+        let value : T.Result? = T.convertFromData(data!)
         
         if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
             let description = String(format:localizedFormat, self.path)
-            let error = Haneke.errorWithCode(Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw(), description: description)
+            let error = Haneke.errorWithCode(Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.rawValue, description: description)
             dispatch_async(dispatch_get_main_queue()) {
                 fail(error)
             }

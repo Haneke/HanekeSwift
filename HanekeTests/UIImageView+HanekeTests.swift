@@ -290,21 +290,6 @@ class UIImageView_HanekeTests: DiskTestCase {
     }
     
     func testSetImageFromFetcher_Failure() {
-        class MockFetcher<T : DataConvertible> : Fetcher<T> {
-            
-            override init(key: String) {
-                super.init(key: key)
-            }
-            
-            override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
-                let error = Haneke.errorWithCode(0, description: "test")
-                fail(error)
-            }
-            
-            override func cancelFetch() {}
-            
-        }
-        
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = MockFetcher<UIImage>(key:key)
@@ -373,7 +358,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     // MARK: setImageFromURL
     
     func testSetImageFromURL_MemoryMiss() {
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL)
@@ -384,7 +369,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     
     func testSetImageFromURL_MemoryHit() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectedImage = setImage(image, key: fetcher.key)
         
@@ -396,7 +381,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     
     func testSetImageFromURL_ImageSet_MemoryMiss() {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         sut.image = previousImage
         
@@ -408,7 +393,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     
     func testSetImageFromURL_UsingPlaceholder_MemoryMiss() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL, placeholder: placeholder)
@@ -420,7 +405,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     func testSetImageFromURL_UsingPlaceholder_MemoryHit() {
         let placeholder = UIImage.imageWithColor(UIColor.yellowColor())
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectedImage = setImage(image, key: fetcher.key)
         
@@ -438,7 +423,7 @@ class UIImageView_HanekeTests: DiskTestCase {
                 let data = UIImagePNGRepresentation(image)
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         sut.contentMode = .Center // No resizing
         let expectation = self.expectationWithDescription(self.name)
@@ -461,14 +446,14 @@ class UIImageView_HanekeTests: DiskTestCase {
                 let data = UIImagePNGRepresentation(image)
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil).responseTime(0.1)
         })
-        let URL1 = NSURL(string: "http://haneke.io/1.png")
+        let URL1 = NSURL(string: "http://haneke.io/1.png")!
         sut.contentMode = .Center // No resizing
         sut.hnk_setImageFromURL(URL1, success:{_ in
             XCTFail("unexpected success")
             }, failure:{_ in
             XCTFail("unexpected failure")
         })
-        let URL2 = NSURL(string: "http://haneke.io/2.png")
+        let URL2 = NSURL(string: "http://haneke.io/2.png")!
         let fetcher2 = NetworkFetcher<UIImage>(URL: URL2)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -489,7 +474,7 @@ class UIImageView_HanekeTests: DiskTestCase {
                 let data = NSData.dataWithLength(100)
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -513,7 +498,7 @@ class UIImageView_HanekeTests: DiskTestCase {
                 let data = UIImagePNGRepresentation(image)
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -534,7 +519,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     }
     
     func testCancelSetImage_AfterSetImage() {
-        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")!
         sut.hnk_setImageFromURL(URL, success: { _ in
             XCTFail("unexpected success")
         }, failure: { _ in
@@ -562,4 +547,19 @@ class UIImageView_HanekeTests: DiskTestCase {
         return expectedImage
     }
 
+}
+
+class MockFetcher<T : DataConvertible> : Fetcher<T> {
+    
+    override init(key: String) {
+        super.init(key: key)
+    }
+    
+    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+        let error = Haneke.errorWithCode(0, description: "test")
+        fail(error)
+    }
+    
+    override func cancelFetch() {}
+    
 }

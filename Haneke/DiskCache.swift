@@ -55,7 +55,7 @@ public class DiskCache {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
             var error: NSError? = nil
-            if let data = NSData.dataWithContentsOfFile(path, options: NSDataReadingOptions.allZeros, error: &error) {
+            if let data = NSData(contentsOfFile: path, options: NSDataReadingOptions.allZeros, error: &error) {
                 dispatch_async(dispatch_get_main_queue(), {
                    succeed(data)
                 })

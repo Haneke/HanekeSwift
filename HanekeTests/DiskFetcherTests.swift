@@ -63,14 +63,14 @@ class DiskFetcherTests: DiskTestCase {
     }
     
     func testFetchImage_Failure_HNKDiskEntityInvalidDataError() {
-        let data = NSData.data()
+        let data = NSData()
         data.writeToFile(sut.path, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.DiskFetcherGlobals.ErrorCode.InvalidData.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in

@@ -88,7 +88,7 @@ public extension UIImageView {
             return .None
             }
     }
-    
+
     func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
         let cache = Haneke.sharedImageCache
         let format = format ?? self.hnk_format

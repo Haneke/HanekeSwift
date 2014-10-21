@@ -40,8 +40,8 @@ class FormatTests: XCTestCase {
         
         XCTAssertEqual(originalImage.size.width, resizedImage.size.width)
         XCTAssertEqual(originalImage.size.height, resizedImage.size.height)
-        XCTAssertNotEqual(resizedImage.size.width, 30)
-        XCTAssertNotEqual(resizedImage.size.height, 5)
+        XCTAssertNotEqual(Float(resizedImage.size.width), Float(30))
+        XCTAssertNotEqual(Float(resizedImage.size.height), Float(5))
     }
     
     func testResizeImageScaleFill() {
@@ -52,8 +52,8 @@ class FormatTests: XCTestCase {
         
         XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
         XCTAssertNotEqual(originalImage.size.height, resizedImage.size.height)
-        XCTAssertEqual(resizedImage.size.width, 30)
-        XCTAssertEqual(resizedImage.size.height, 5)
+        XCTAssertEqual(Float(resizedImage.size.width), Float(30))
+        XCTAssertEqual(Float(resizedImage.size.height), Float(5))
     }
     
     func testResizeImageScaleAspectFill() {
@@ -64,8 +64,8 @@ class FormatTests: XCTestCase {
         
         XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
         XCTAssertNotEqual(originalImage.size.height, resizedImage.size.height)
-        XCTAssertEqual(resizedImage.size.width, 30)
-        XCTAssertEqual(resizedImage.size.height, 30)
+        XCTAssertEqual(Float(resizedImage.size.width), Float(30))
+        XCTAssertEqual(Float(resizedImage.size.height), Float(30))
     }
     
     func testResizeImageScaleAspectFit() {
@@ -76,8 +76,8 @@ class FormatTests: XCTestCase {
         
         XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
         XCTAssertNotEqual(originalImage.size.height, resizedImage.size.height)
-        XCTAssertEqual(resizedImage.size.width, 5)
-        XCTAssertEqual(resizedImage.size.height, 5)
+        XCTAssertEqual(Float(resizedImage.size.width), Float(5))
+        XCTAssertEqual(Float(resizedImage.size.height), Float(5))
     }
     
     func testResizeImageScaleAspectFillWithoutUpscaling() {
@@ -88,8 +88,8 @@ class FormatTests: XCTestCase {
         
         XCTAssertEqual(originalImage.size.width, resizedImage.size.width)
         XCTAssertEqual(originalImage.size.height, resizedImage.size.height)
-        XCTAssertEqual(resizedImage.size.width, 1)
-        XCTAssertEqual(resizedImage.size.height, 1)
+        XCTAssertEqual(Float(resizedImage.size.width), Float(1))
+        XCTAssertEqual(Float(resizedImage.size.height), Float(1))
     }
 }
 

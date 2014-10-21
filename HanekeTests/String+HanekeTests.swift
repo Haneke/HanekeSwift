@@ -33,7 +33,8 @@ class String_HanekeTests: XCTestCase {
     func testMD5Filename() {
         XCTAssertEqual("".MD5Filename(), "".MD5String())
         XCTAssertEqual("test".MD5Filename(), "test".MD5String())
-        XCTAssertEqual("test.png".MD5Filename(), "test.png".MD5String().stringByAppendingPathExtension("png")!)
+        let expected = "test.png".MD5String().stringByAppendingPathExtension("png")!
+        XCTAssertEqual("test.png".MD5Filename(), expected)
     }
     
 }

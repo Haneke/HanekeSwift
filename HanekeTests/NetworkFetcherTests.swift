@@ -11,7 +11,7 @@ import XCTest
 
 class NetworkFetcherTests: XCTestCase {
 
-    let URL = NSURL(string: "http://haneke.io/image.jpg")
+    let URL = NSURL(string: "http://haneke.io/image.jpg")!
     var sut : NetworkFetcher<UIImage>!
     
     override func setUp() {
@@ -104,7 +104,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidData.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -126,7 +126,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.MissingData.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.MissingData.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -177,7 +177,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, Haneke.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidStatusCode.toRaw())
+            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidStatusCode.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in

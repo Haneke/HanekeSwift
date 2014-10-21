@@ -34,7 +34,7 @@ extension UIImage {
         return data
     }
     
-    func hnk_decompressedImage() -> UIImage {
+    func hnk_decompressedImage() -> UIImage! {
         let originalImageRef = self.CGImage
         let originalBitmapInfo = CGImageGetBitmapInfo(originalImageRef)
         let alphaInfo = CGImageGetAlphaInfo(originalImageRef)
@@ -44,7 +44,7 @@ extension UIImage {
         switch (alphaInfo) {
         case .None:
             bitmapInfo &= ~CGBitmapInfo.AlphaInfoMask
-            bitmapInfo |= CGBitmapInfo.fromMask(CGImageAlphaInfo.NoneSkipFirst.toRaw())
+            bitmapInfo |= CGBitmapInfo(CGImageAlphaInfo.NoneSkipFirst.rawValue)
         case .PremultipliedFirst, .PremultipliedLast, .NoneSkipFirst, .NoneSkipLast:
             break
         case .Only, .Last, .First: // Unsupported
