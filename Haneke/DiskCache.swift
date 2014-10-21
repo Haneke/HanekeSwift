@@ -18,7 +18,7 @@ public class DiskCache {
         return basePath
     }
     
-    public let name : String
+    public let path : String
 
     public var size : UInt64 = 0
 
@@ -30,25 +30,14 @@ public class DiskCache {
         }
     }
 
-    public lazy var cachePath : String = {
-        let basePath = DiskCache.basePath()
-        let cachePath = basePath.stringByAppendingPathComponent(self.name)
-        var error : NSError? = nil
-        let success = NSFileManager.defaultManager().createDirectoryAtPath(cachePath, withIntermediateDirectories: true, attributes: nil, error: &error)
-        if (!success) {
-            NSLog("Failed to create directory \(cachePath) with error \(error!)")
-        }
-        return cachePath
-    }()
-
     public lazy var cacheQueue : dispatch_queue_t = {
-        let queueName = Haneke.Domain + "." + self.name
+        let queueName = Haneke.Domain + "." + self.path.lastPathComponent
         let cacheQueue = dispatch_queue_create(queueName, nil)
         return cacheQueue
     }()
     
-    public init(name : String, capacity : UInt64 = UINT64_MAX) {
-        self.name = name
+    public init(path : String, capacity : UInt64 = UINT64_MAX) {
+        self.path = path
         self.capacity = capacity
         dispatch_async(self.cacheQueue, {
             self.calculateSize()
@@ -98,7 +87,7 @@ public class DiskCache {
     
     public func removeAllData() {
         let fileManager = NSFileManager.defaultManager()
-        let cachePath = self.cachePath
+        let cachePath = self.path
         dispatch_async(cacheQueue, {
             var error: NSError? = nil
             if let contents = fileManager.contentsOfDirectoryAtPath(cachePath, error: &error) as? [String] {
@@ -129,8 +118,8 @@ public class DiskCache {
     public func pathForKey(key : String) -> String {
         var escapedFilename = key.escapedFilename()
         let filename = countElements(escapedFilename) < Int(NAME_MAX) ? escapedFilename : key.MD5Filename()
-        let path = self.cachePath.stringByAppendingPathComponent(filename)
-        return path
+        let keyPath = self.path.stringByAppendingPathComponent(filename)
+        return keyPath
     }
     
     // MARK: Private
@@ -138,7 +127,7 @@ public class DiskCache {
     private func calculateSize() {
         let fileManager = NSFileManager.defaultManager()
         size = 0
-        let cachePath = self.cachePath
+        let cachePath = self.path
         var error : NSError?
         if let contents = fileManager.contentsOfDirectoryAtPath(cachePath, error: &error) as? [String] {
             for pathComponent in contents {
@@ -158,7 +147,7 @@ public class DiskCache {
         if self.size <= self.capacity { return }
         
         let fileManager = NSFileManager.defaultManager()
-        let cachePath = self.cachePath
+        let cachePath = self.path
         fileManager.enumerateContentsOfDirectoryAtPath(cachePath, orderedByProperty: NSURLContentModificationDateKey, ascending: true) { (URL : NSURL, _, inout stop : Bool) -> Void in
             
             if let path = URL.path {
@@ -197,7 +186,7 @@ public class DiskCache {
         if !success {
             NSLog("Failed to update access date with error \(error!)")
         }
-        return success;
+        return success
     }
     
     private func removeFileAtPath(path:String) {

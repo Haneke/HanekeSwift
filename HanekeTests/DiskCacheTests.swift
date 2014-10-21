@@ -13,13 +13,20 @@ class DiskCacheTests: XCTestCase {
 
     var sut : DiskCache!
     
+    lazy var diskCachePath : String = {
+        let diskCachePath =  DiskCache.basePath().stringByAppendingPathComponent(self.name)
+        NSFileManager.defaultManager().createDirectoryAtPath(diskCachePath, withIntermediateDirectories: true, attributes: nil, error: nil)
+        return diskCachePath
+    }()
+    
     override func setUp() {
         super.setUp()
-        sut = DiskCache(name: self.name)
+        sut = DiskCache(path:diskCachePath)
     }
     
     override func tearDown() {
         sut.removeAllData()
+        NSFileManager.defaultManager().removeItemAtPath(diskCachePath, error: nil)
         super.tearDown()
     }
     
@@ -30,21 +37,19 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testInit() {
-        let name = self.name
-
-        let sut = DiskCache(name: name)
+        let sut = DiskCache(path:diskCachePath)
         
-        XCTAssertEqual(sut.name, name)
+        XCTAssertEqual(sut.path, diskCachePath)
         XCTAssertEqual(sut.size, 0)
     }
     
     func testInitWithOneFile() {
         let name = self.name
-        let directory = DiskCache(name: name).cachePath
+        let path = diskCachePath
         let expectedSize = 8
-        self.writeDataWithLength(expectedSize, directory: directory)
+        self.writeDataWithLength(expectedSize, directory: path)
         
-        let sut = DiskCache(name: name)
+        let sut = DiskCache(path: path)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(expectedSize))
@@ -53,12 +58,12 @@ class DiskCacheTests: XCTestCase {
     
     func testInitWithTwoFiles() {
         let name = self.name
-        let directory = DiskCache(name: name).cachePath
+        let directory = diskCachePath
         let lengths = [4, 7]
         self.writeDataWithLength(lengths[0], directory: directory)
         self.writeDataWithLength(lengths[1], directory: directory)
         
-        let sut = DiskCache(name: name)
+        let sut = DiskCache(path: directory)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
@@ -67,10 +72,10 @@ class DiskCacheTests: XCTestCase {
     
     func testInitCapacityZeroOneExistingFile() {
         let name = self.name
-        let directory = DiskCache(name: name).cachePath
+        let directory = diskCachePath
         let path = self.writeDataWithLength(1, directory: directory)
         
-        let sut = DiskCache(name: name, capacity : 0)
+        let sut = DiskCache(path: directory, capacity : 0)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, 0)
@@ -80,11 +85,11 @@ class DiskCacheTests: XCTestCase {
     
     func testInitCapacityZeroTwoExistingFiles() {
         let name = self.name
-        let directory = DiskCache(name: name).cachePath
+        let directory = diskCachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(2, directory: directory)
         
-        let sut = DiskCache(name: name, capacity : 0)
+        let sut = DiskCache(path: directory, capacity : 0)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, 0)
@@ -95,12 +100,12 @@ class DiskCacheTests: XCTestCase {
     
     func testInitLeastRecentlyUsedExistingFileDeleted() {
         let name = self.name
-        let directory = DiskCache(name: name).cachePath
+        let directory = diskCachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(1, directory: directory)
         NSFileManager.defaultManager().setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path2, error: nil)
         
-        let sut = DiskCache(name: name, capacity : 1)
+        let sut = DiskCache(path: directory, capacity : 1)
         
         dispatch_sync(sut.cacheQueue, {
             XCTAssertEqual(sut.size, 1)
@@ -109,29 +114,8 @@ class DiskCacheTests: XCTestCase {
         })
     }
     
-    func testCachePath() {
-        let cachePath = DiskCache.basePath().stringByAppendingPathComponent(sut.name)
-        XCTAssertEqual(sut.cachePath, cachePath)
-        
-        let fileManager = NSFileManager.defaultManager()
-        var isDirectory: ObjCBool = ObjCBool(0)
-        XCTAssertTrue(fileManager.fileExistsAtPath(cachePath, isDirectory: &isDirectory))
-        XCTAssertTrue(isDirectory)
-    }
-    
-    func testCachePathEmtpyName() {
-        let sut = DiskCache(name: "")
-        let cachePath = DiskCache.basePath()
-        XCTAssertEqual(sut.cachePath, cachePath)
-        
-        let fileManager = NSFileManager.defaultManager()
-        var isDirectory: ObjCBool = ObjCBool(0)
-        XCTAssertTrue(fileManager.fileExistsAtPath(cachePath, isDirectory: &isDirectory))
-        XCTAssertTrue(isDirectory)
-    }
-    
     func testCacheQueue() {
-        let expectedLabel = Haneke.Domain + "." + sut.name
+        let expectedLabel = Haneke.Domain + "." + diskCachePath.lastPathComponent
 
         let label = String(UTF8String: dispatch_queue_get_label(sut.cacheQueue))!
 
@@ -243,7 +227,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetDataControlCapacity() {
-        let sut = DiskCache(name: self.name, capacity:0)
+        let sut = DiskCache(path: diskCachePath, capacity:0)
         let key = self.name
         let path = sut.pathForKey(key)
         
@@ -364,7 +348,7 @@ class DiskCacheTests: XCTestCase {
     
     func testUpdateAccessDateFileNotInDisk() {
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let key = self.name;
+        let key = self.name
         let path = sut.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
         
@@ -465,21 +449,21 @@ class DiskCacheTests: XCTestCase {
     
     func testPathForKey_WithShortKey() {
         let key = "test"
-        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.escapedFilename())
+        let expectedPath = sut.path.stringByAppendingPathComponent(key.escapedFilename())
 
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }
     
     func testPathForKey_WithShortKeyWithSpecialCharacters() {
         let key = "http://haneke.io"
-        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.escapedFilename())
+        let expectedPath = sut.path.stringByAppendingPathComponent(key.escapedFilename())
         
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }
     
     func testPathForKey_WithLongKey() {
         let key = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pretium id nibh a pulvinar. Integer id ex in tellus egestas placerat. Praesent ultricies libero ligula, et convallis ligula imperdiet eu. Sed gravida, turpis sed vulputate feugiat, metus nisl scelerisque diam, ac aliquet metus nisi rutrum ipsum. Nulla vulputate pretium dolor, a pellentesque nulla. Nunc pellentesque tortor porttitor, sollicitudin leo in, sollicitudin ligula. Cras malesuada orci at neque interdum elementum. Integer sed sagittis diam. Mauris non elit sed augue consequat feugiat. Nullam volutpat tortor eget tempus pretium. Sed pharetra sem vitae diam hendrerit, sit amet dapibus arcu interdum. Fusce egestas quam libero, ut efficitur turpis placerat eu. Sed velit sapien, aliquam sit amet ultricies a, bibendum ac nibh. Maecenas imperdiet, quam quis tincidunt sollicitudin, nunc tellus ornare ipsum, nec rhoncus nunc nisi a lacus."
-        let expectedPath = sut.cachePath.stringByAppendingPathComponent(key.MD5Filename())
+        let expectedPath = sut.path.stringByAppendingPathComponent(key.MD5Filename())
         
         XCTAssertEqual(sut.pathForKey(key), expectedPath)
     }

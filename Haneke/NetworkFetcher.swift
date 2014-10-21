@@ -66,7 +66,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         let URL = self.URL
         
         if let error = error {
-            if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return; }
+            if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return }
             
             NSLog("Request \(URL.absoluteString!) failed with error \(error)")
             dispatch_async(dispatch_get_main_queue(), { fail(error) })
@@ -93,15 +93,15 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let thing : T.Result? = T.convertFromData(data)
-        if thing == nil {
+        let value : T.Result? = T.convertFromData(data)
+        if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: fail)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue()) { succeed(thing!) }
+        dispatch_async(dispatch_get_main_queue()) { succeed(value!) }
 
     }
     

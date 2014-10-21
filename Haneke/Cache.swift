@@ -61,12 +61,15 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
-    public func set(#value : T, key: String, formatName : String = Haneke.CacheGlobals.OriginalFormatName) {
+    public func set(#value : T, key: String, formatName : String = Haneke.CacheGlobals.OriginalFormatName, success succeed : ((T) -> ())? = nil) {
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            let wrapper = ObjectWrapper(value: value)
-            memoryCache.setObject(wrapper, forKey: key)
-            // Value data is sent as @autoclosure to be executed in the disk cache queue.
-            diskCache.setData(dataFromValue(value, format: format), key: key)
+            self.format(value: value, format: format) { formattedValue in
+                let wrapper = ObjectWrapper(value: formattedValue)
+                memoryCache.setObject(wrapper, forKey: key)
+                // Value data is sent as @autoclosure to be executed in the disk cache queue.
+                diskCache.setData(self.dataFromValue(formattedValue, format: format), key: key)
+                succeed?(formattedValue)
+            }
         } else {
             assertionFailure("Can't set value before adding format")
         }
@@ -107,7 +110,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
             
             if let (format, _, _) = self.formats[formatName] {
-                self.fetchValueFromFetcher(fetcher, format: format, failure: {error in
+                self.fetchAndSet(fetcher, format: format, failure: {error in
                     fetch.fail(error)
                 }) {value in
                     fetch.succeed(value)
@@ -148,10 +151,29 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     var formats : [String : (Format<T>, NSCache, DiskCache)] = [:]
     
     public func addFormat(format : Format<T>) {
-        let name = self.name
+        let name = format.name
+        let formatPath = self.formatPath(formatName: name)
         let memoryCache = NSCache()
-        let diskCache = DiskCache(name: name, capacity : format.diskCapacity)
-        self.formats[format.name] = (format, memoryCache, diskCache)
+        let diskCache = DiskCache(path: formatPath, capacity : format.diskCapacity)
+        self.formats[name] = (format, memoryCache, diskCache)
+    }
+    
+    // MARK: Internal
+    
+    lazy var cachePath : String = {
+        let basePath = DiskCache.basePath()
+        let cachePath = basePath.stringByAppendingPathComponent(self.name)
+        return cachePath
+    }()
+    
+    func formatPath(#formatName : String) -> String {
+        let formatPath = self.cachePath.stringByAppendingPathComponent(formatName)
+        var error : NSError? = nil
+        let success = NSFileManager.defaultManager().createDirectoryAtPath(formatPath, withIntermediateDirectories: true, attributes: nil, error: &error)
+        if (!success) {
+            NSLog("Failed to create directory \(formatPath) with error \(error!)")
+        }
+        return formatPath
     }
     
     // MARK: Private
@@ -190,10 +212,19 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
-    private func fetchValueFromFetcher(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
+    private func fetchAndSet(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
         fetcher.fetch(failure: { error in
             let _ = fail?(error)
         }) { value in
+            self.set(value: value, key: fetcher.key, formatName: format.name, success: succeed)
+        }
+    }
+    
+    private func format(#value : T, format : Format<T>, success succeed : (T) -> ()) {
+        // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
+        if format.isIdentity && !(value is UIImage) {
+            succeed(value)
+        } else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 var formatted = format.apply(value)
                 
@@ -203,16 +234,14 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                         formatted = self.decompressedImageIfNeeded(formatted)
                     }
                 }
-
+                
                 dispatch_async(dispatch_get_main_queue()) {
                     succeed(formatted)
-                    self.set(value: formatted, key: fetcher.key, formatName: format.name)
                 }
             }
         }
     }
     
-    // HACK: Ideally Cache shouldn't treat images differently but I can't think of any other way of doing this that doesn't complicate the API for other types.
     private func decompressedImageIfNeeded(value : T) -> T {
         if let image = value as? UIImage {
             let decompressedImage = image.hnk_decompressedImage() as? T
@@ -236,7 +265,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
     public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = Haneke.CacheGlobals.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetcher = SimpleFetcher<T>(key: key, thing: getValue)
+        let fetcher = SimpleFetcher<T>(key: key, value: getValue)
         return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }
     

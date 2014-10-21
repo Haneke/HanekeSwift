@@ -40,7 +40,7 @@ extension UIImage {
         let alphaInfo = CGImageGetAlphaInfo(originalImageRef)
         
         // See: http://stackoverflow.com/questions/23723564/which-cgimagealphainfo-should-we-use
-        var bitmapInfo = originalBitmapInfo;
+        var bitmapInfo = originalBitmapInfo
         switch (alphaInfo) {
         case .None:
             bitmapInfo &= ~CGBitmapInfo.AlphaInfoMask
@@ -52,10 +52,10 @@ extension UIImage {
         }
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let pixelSize = CGSizeMake(self.size.width * self.scale, self.size.height * self.scale);
+        let pixelSize = CGSizeMake(self.size.width * self.scale, self.size.height * self.scale)
         if let context = CGBitmapContextCreate(nil, UInt(pixelSize.width), UInt(pixelSize.height), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo) {
             
-            let imageRect = CGRectMake(0, 0, pixelSize.width, pixelSize.height);
+            let imageRect = CGRectMake(0, 0, pixelSize.width, pixelSize.height)
             UIGraphicsPushContext(context)
             
             // Flip coordinate system. See: http://stackoverflow.com/questions/506622/cgcontextdrawimage-draws-image-upside-down-when-passed-uiimage-cgimage
@@ -65,12 +65,12 @@ extension UIImage {
             // UIImage and drawInRect takes into account image orientation, unlike CGContextDrawImage.
             self.drawInRect(imageRect)
             UIGraphicsPopContext()
-            let decompressedImageRef = CGBitmapContextCreateImage(context);
+            let decompressedImageRef = CGBitmapContextCreateImage(context)
             
-            let scale = UIScreen.mainScreen().scale;
-            let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up);
+            let scale = UIScreen.mainScreen().scale
+            let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up)
             
-            return image;
+            return image
             
         } else {
             return self

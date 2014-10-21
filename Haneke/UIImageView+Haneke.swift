@@ -7,24 +7,6 @@
 //
 
 import UIKit
-import ObjectiveC
-
-public extension Haneke {
-
-    public struct UIKitGlobals {
-
-        public struct DefaultFormat {
-            
-            public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
-            public static let CompressionQuality : Float = 0.75
-            
-        }
-        
-        static var SetImageFetcherKey = 0
-
-    }
-
-}
 
 public extension UIImageView {
     
@@ -32,7 +14,7 @@ public extension UIImageView {
         let viewSize = self.bounds.size
             assert(viewSize.width > 0 && viewSize.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
-            return UIImageView.hnk_formatWithSize(viewSize, scaleMode: scaleMode)
+            return Haneke.UIKitGlobals.formatWithSize(viewSize, scaleMode: scaleMode)
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
@@ -41,8 +23,13 @@ public extension UIImageView {
     }
     
     public func hnk_setImage(image: @autoclosure () -> UIImage, key : String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
-        let fetcher = SimpleFetcher<UIImage>(key: key, thing: image)
-            self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, success: succeed)
+        let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, success: succeed)
+    }
+    
+    public func hnk_setImageFromFile(path : String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+        let fetcher = DiskFetcher<UIImage>(path: path)
+        self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
     public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>,
@@ -101,27 +88,7 @@ public extension UIImageView {
             return .None
             }
     }
-    
-    class func hnk_formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode) -> Format<UIImage> {
-        let name = "auto-\(size.width)x\(size.height)-\(scaleMode.rawValue)"
-        let cache = Haneke.sharedImageCache
-        if let (format,_,_) = cache.formats[name] {
-            return format
-        }
-        
-        var format = Format<UIImage>(name: name,
-            diskCapacity: Haneke.UIKitGlobals.DefaultFormat.DiskCapacity) {
-                let resizer = ImageResizer(size:size,
-                scaleMode:scaleMode,
-                compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
-                return resizer.resizeImage($0)
-        }
-        format.convertToData = {(image : UIImage) -> NSData in
-            image.hnk_data(compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
-        }
-        return format
-    }
-    
+
     func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
         let cache = Haneke.sharedImageCache
         let format = format ?? self.hnk_format
