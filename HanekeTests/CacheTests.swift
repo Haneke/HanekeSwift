@@ -269,19 +269,6 @@ class CacheTests: XCTestCase {
     }
     
     func testFetchOnFailure_WithSyncFailingFetcher_ExpectAsyncFailure() {
-        class FailFetcher<T : DataConvertible> : Fetcher<T> {
-            
-            var error : NSError!
-            
-            override init(key : String) {
-                super.init(key: key)
-            }
-            
-            override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
-                fail(error)
-            }
-            
-        }
         
         let fetcher = FailFetcher<NSData>(key: self.name)
         fetcher.error = NSError(domain: "test", code: 376, userInfo: nil)
@@ -521,20 +508,6 @@ class CacheTests: XCTestCase {
     func testUIApplicationDidReceiveMemoryWarningNotification() {
         let expectation = expectationWithDescription("onMemoryWarning")
         
-        class CacheMock<T : DataConvertible where T.Result == T, T : DataRepresentable> : Cache<T> {
-            
-            var expectation : XCTestExpectation?
-            
-            override init(name: String) {
-                super.init(name: name)
-            }
-            
-            override func onMemoryWarning() {
-                super.onMemoryWarning()
-                expectation!.fulfill()
-            }
-        }
-        
         let sut = CacheMock<UIImage>(name: self.name)
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
@@ -602,3 +575,30 @@ class ImageCacheTests: XCTestCase {
     
 }
 
+class FailFetcher<T : DataConvertible> : Fetcher<T> {
+    
+    var error : NSError!
+    
+    override init(key : String) {
+        super.init(key: key)
+    }
+    
+    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+        fail(error)
+    }
+    
+}
+
+class CacheMock<T : DataConvertible where T.Result == T, T : DataRepresentable> : Cache<T> {
+    
+    var expectation : XCTestExpectation?
+    
+    override init(name: String) {
+        super.init(name: name)
+    }
+    
+    override func onMemoryWarning() {
+        super.onMemoryWarning()
+        expectation!.fulfill()
+    }
+}

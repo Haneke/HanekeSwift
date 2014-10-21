@@ -40,7 +40,7 @@ class DiskCacheTests: XCTestCase {
         let sut = DiskCache(path:diskCachePath)
         
         XCTAssertEqual(sut.path, diskCachePath)
-        XCTAssertEqual(sut.size, 0)
+        XCTAssertEqual(Int(sut.size), 0)
     }
     
     func testInitWithOneFile() {
@@ -78,7 +78,7 @@ class DiskCacheTests: XCTestCase {
         let sut = DiskCache(path: directory, capacity : 0)
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, 0)
+            XCTAssertEqual(Int(sut.size), 0)
             XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path))
         })
     }
@@ -92,7 +92,7 @@ class DiskCacheTests: XCTestCase {
         let sut = DiskCache(path: directory, capacity : 0)
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, 0)
+            XCTAssertEqual(Int(sut.size), 0)
             XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path1))
             XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path2))
         })
@@ -108,7 +108,7 @@ class DiskCacheTests: XCTestCase {
         let sut = DiskCache(path: directory, capacity : 1)
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, 1)
+            XCTAssertEqual(Int(sut.size), 1)
             XCTAssertTrue(NSFileManager.defaultManager().fileExistsAtPath(path1))
             XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path2))
         })
@@ -128,7 +128,7 @@ class DiskCacheTests: XCTestCase {
         sut.capacity = 0
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(self.sut.size, 0)
+            XCTAssertEqual(Int(self.sut.size), 0)
         })        
     }
     
@@ -222,7 +222,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(self.sut.size, 0)
+            XCTAssertEqual(Int(self.sut.size), 0)
         })
     }
     
@@ -236,7 +236,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue, {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(sut.size, 0)
+            XCTAssertEqual(Int(sut.size), 0)
         })
     }
     
@@ -391,7 +391,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(self.sut.size, 0)
+            XCTAssertEqual(Int(self.sut.size), 0)
         }
     }
     
@@ -417,7 +417,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(self.sut.size, 0)
+            XCTAssertEqual(Int(self.sut.size), 0)
         }
     }
     

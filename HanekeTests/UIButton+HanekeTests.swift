@@ -141,7 +141,7 @@ class UIButton_HanekeTests: DiskTestCase {
     // MARK: setImageFromURL
     
     func testSetImageFromURL_MemoryMiss_UIControlStateSelected() {
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         
         sut.hnk_setImageFromURL(URL, state: .Selected)
@@ -152,7 +152,7 @@ class UIButton_HanekeTests: DiskTestCase {
     
     func testSetImageFromURL_MemoryHit_UIControlStateNormal() {
         let image = UIImage.imageWithColor(UIColor.orangeColor())
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectedImage = setImage(image, key: fetcher.key, format: sut.hnk_imageFormat)
         
@@ -164,7 +164,7 @@ class UIButton_HanekeTests: DiskTestCase {
     
     func testSetImageFromURLSuccessFailure_MemoryHit_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let cache = Haneke.sharedImageCache
         let format = sut.hnk_imageFormat
@@ -184,7 +184,7 @@ class UIButton_HanekeTests: DiskTestCase {
                 let data = NSData.dataWithLength(100)
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -208,7 +208,7 @@ class UIButton_HanekeTests: DiskTestCase {
                 let data = UIImagePNGRepresentation(image)
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let URL = NSURL(string: "http://haneke.io")
+        let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
@@ -269,7 +269,7 @@ class UIButton_HanekeTests: DiskTestCase {
     }
     
     func testCancelSetImage_AfterSetImage() {
-        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")!
         sut.hnk_setImageFromURL(URL, success: { _ in
             XCTFail("unexpected success")
             }, failure: { _ in
@@ -283,7 +283,7 @@ class UIButton_HanekeTests: DiskTestCase {
     }
 
     func testCancelSetImage_AfterSetImage_UIControlStateHighlighted() {
-        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")!
         sut.hnk_setImageFromURL(URL, state: .Highlighted, success: { _ in
             XCTFail("unexpected success")
             }, failure: { _ in
@@ -557,7 +557,7 @@ class UIButton_HanekeTests: DiskTestCase {
     }
     
     func testCancelSetBackgroundImage_AfterSetImage_UIControlStateHighlighted() {
-        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")
+        let URL = NSURL(string: "http://imgs.xkcd.com/comics/election.png")!
         sut.hnk_setBackgroundImageFromURL(URL, state: .Highlighted, success: { _ in
             XCTFail("unexpected success")
             }, failure: { _ in

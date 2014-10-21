@@ -290,21 +290,6 @@ class UIImageView_HanekeTests: DiskTestCase {
     }
     
     func testSetImageFromFetcher_Failure() {
-        class MockFetcher<T : DataConvertible> : Fetcher<T> {
-            
-            override init(key: String) {
-                super.init(key: key)
-            }
-            
-            override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
-                let error = Haneke.errorWithCode(0, description: "test")
-                fail(error)
-            }
-            
-            override func cancelFetch() {}
-            
-        }
-        
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = MockFetcher<UIImage>(key:key)
@@ -562,4 +547,19 @@ class UIImageView_HanekeTests: DiskTestCase {
         return expectedImage
     }
 
+}
+
+class MockFetcher<T : DataConvertible> : Fetcher<T> {
+    
+    override init(key: String) {
+        super.init(key: key)
+    }
+    
+    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+        let error = Haneke.errorWithCode(0, description: "test")
+        fail(error)
+    }
+    
+    override func cancelFetch() {}
+    
 }

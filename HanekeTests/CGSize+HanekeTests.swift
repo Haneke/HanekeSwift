@@ -15,13 +15,13 @@ class CGSize_HanekeTests: XCTestCase {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 1), false)
         let sut: CGSize = image.size.hnk_aspectFillSize(CGSizeMake(10, 10))
         
-        XCTAssertEqual(sut.height, 10)
+        XCTAssertTrue(sut.height == 10)
     }
     
     func testAspectFitSize() {
         let image = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 10, height: 1), false)
         let sut: CGSize = image.size.hnk_aspectFitSize(CGSizeMake(20, 20))
         
-        XCTAssertEqual(sut.height, 2)
+        XCTAssertTrue(sut.height == 2)
     }
 }
