@@ -6,7 +6,7 @@ import Haneke
 /// Initialize a JSON cache and fetch/cache a JSON response.
 func example1() {
     let cache = Cache<JSON>(name: "github")
-    let URL = NSURL(string: "https://api.github.com/users/haneke")
+    let URL = NSURL(string: "https://api.github.com/users/haneke")!
     
     cache.fetch(URL: URL).onSuccess { JSON in
         println(JSON.dictionary?["bio"])
@@ -16,7 +16,7 @@ func example1() {
 /// Set a image view image from a url using the shared image cache and resizing.
 func example2() {
     let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-    let URL = NSURL(string: "https://avatars.githubusercontent.com/u/8600207?v=2")
+    let URL = NSURL(string: "https://avatars.githubusercontent.com/u/8600207?v=2")!
 
     imageView.hnk_setImageFromURL(URL)
 }
@@ -32,3 +32,5 @@ func example3() {
         println(NSString(data:data, encoding:NSUTF8StringEncoding))
     }
 }
+
+example1()
