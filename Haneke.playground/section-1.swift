@@ -32,5 +32,3 @@ func example3() {
         println(NSString(data:data, encoding:NSUTF8StringEncoding))
     }
 }
-
-example1()
