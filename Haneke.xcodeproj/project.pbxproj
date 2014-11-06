@@ -57,6 +57,10 @@
 		A095C973198041D100CD0F4C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
 		A095C975198045D200CD0F4C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* CacheTests.swift */; };
 		A09B13B719C91B1E009CC339 /* UIImageView+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04210FB19C90292005000B8 /* UIImageView+Haneke.swift */; };
+		A0C4721019FF65DA001A1B0D /* HanekeBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = A0C4720F19FF65DA001A1B0D /* HanekeBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A0C4722619FF663D001A1B0D /* HNKBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = A0C4722419FF663D001A1B0D /* HNKBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A0C4722719FF663D001A1B0D /* HNKBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A0C4722519FF663D001A1B0D /* HNKBridge.m */; };
+		A0C4722C1A0ADBBF001A1B0D /* HanekeBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0C4720B19FF65D9001A1B0D /* HanekeBridge.framework */; };
 		A0C6BA3A19AC0D1E007111E9 /* NSFileManager+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3919AC0D1E007111E9 /* NSFileManager+Haneke.swift */; };
 		A0C6BA3C19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3B19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift */; };
 		A0C6BA3D19ACA216007111E9 /* NSFileManager+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3919AC0D1E007111E9 /* NSFileManager+Haneke.swift */; };
@@ -162,6 +166,11 @@
 		A095C9671980418C00CD0F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A095C972198041D100CD0F4C /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		A095C974198045D200CD0F4C /* CacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
+		A0C4720B19FF65D9001A1B0D /* HanekeBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HanekeBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0C4720E19FF65DA001A1B0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A0C4720F19FF65DA001A1B0D /* HanekeBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HanekeBridge.h; sourceTree = "<group>"; };
+		A0C4722419FF663D001A1B0D /* HNKBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HNKBridge.h; sourceTree = "<group>"; };
+		A0C4722519FF663D001A1B0D /* HNKBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HNKBridge.m; sourceTree = "<group>"; };
 		A0C6BA3919AC0D1E007111E9 /* NSFileManager+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Haneke.swift"; sourceTree = "<group>"; };
 		A0C6BA3B19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+HanekeTests.swift"; sourceTree = "<group>"; };
 		A0C6BA3E19ACA3C4007111E9 /* DiskTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskTestCase.swift; sourceTree = "<group>"; };
@@ -188,6 +197,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0C4722C1A0ADBBF001A1B0D /* HanekeBridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +206,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00D364A19C6DA4A0007586E /* libOHHTTPStubs.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A0C4720719FF65D9001A1B0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +296,7 @@
 				A095C9581980418C00CD0F4C /* Haneke */,
 				A095C9651980418C00CD0F4C /* HanekeTests */,
 				A0026E9B19C9BFBC004DE0C6 /* HanekeDemo */,
+				A0C4720C19FF65DA001A1B0D /* HanekeBridge */,
 				A095C9571980418C00CD0F4C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -289,6 +307,7 @@
 				A095C9561980418C00CD0F4C /* Haneke.framework */,
 				A095C9611980418C00CD0F4C /* HanekeTests.xctest */,
 				A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */,
+				A0C4720B19FF65D9001A1B0D /* HanekeBridge.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -353,6 +372,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		A0C4720C19FF65DA001A1B0D /* HanekeBridge */ = {
+			isa = PBXGroup;
+			children = (
+				A0C4720F19FF65DA001A1B0D /* HanekeBridge.h */,
+				A0C4720D19FF65DA001A1B0D /* Supporting Files */,
+				A0C4722419FF663D001A1B0D /* HNKBridge.h */,
+				A0C4722519FF663D001A1B0D /* HNKBridge.m */,
+			);
+			path = HanekeBridge;
+			sourceTree = "<group>";
+		};
+		A0C4720D19FF65DA001A1B0D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A0C4720E19FF65DA001A1B0D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		A0D7D6821997B2D8000CAF46 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +422,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A095C95C1980418C00CD0F4C /* Haneke.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A0C4720819FF65D9001A1B0D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0C4722619FF663D001A1B0D /* HNKBridge.h in Headers */,
+				A0C4721019FF65DA001A1B0D /* HanekeBridge.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,6 +491,24 @@
 			productReference = A095C9611980418C00CD0F4C /* HanekeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		A0C4720A19FF65D9001A1B0D /* HanekeBridge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A0C4721E19FF65DA001A1B0D /* Build configuration list for PBXNativeTarget "HanekeBridge" */;
+			buildPhases = (
+				A0C4720619FF65D9001A1B0D /* Sources */,
+				A0C4720719FF65D9001A1B0D /* Frameworks */,
+				A0C4720819FF65D9001A1B0D /* Headers */,
+				A0C4720919FF65D9001A1B0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HanekeBridge;
+			productName = HanekeBridge;
+			productReference = A0C4720B19FF65D9001A1B0D /* HanekeBridge.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -462,6 +527,9 @@
 					A095C9601980418C00CD0F4C = {
 						CreatedOnToolsVersion = 6.0;
 						TestTargetID = A095C9551980418C00CD0F4C;
+					};
+					A0C4720A19FF65D9001A1B0D = {
+						CreatedOnToolsVersion = 6.1;
 					};
 				};
 			};
@@ -487,6 +555,7 @@
 				A095C9551980418C00CD0F4C /* Haneke */,
 				A095C9601980418C00CD0F4C /* HanekeTests */,
 				A0026E9919C9BFBC004DE0C6 /* HanekeDemo */,
+				A0C4720A19FF65D9001A1B0D /* HanekeBridge */,
 			);
 		};
 /* End PBXProject section */
@@ -541,6 +610,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A095C95F1980418C00CD0F4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A0C4720919FF65D9001A1B0D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -627,6 +703,14 @@
 				A042110519C914CE005000B8 /* UIImageView+HanekeTests.swift in Sources */,
 				A0D7D6891997C4C4000CAF46 /* UIImage+HanekeTests.swift in Sources */,
 				A0026E5619C91C05004DE0C6 /* DiskCache.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A0C4720619FF65D9001A1B0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0C4722719FF663D001A1B0D /* HNKBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +926,42 @@
 			};
 			name = Release;
 		};
+		A0C4721F19FF65DA001A1B0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = HanekeBridge/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A0C4722019FF65DA001A1B0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = HanekeBridge/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -877,6 +997,15 @@
 			buildConfigurations = (
 				A095C9701980418C00CD0F4C /* Debug */,
 				A095C9711980418C00CD0F4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A0C4721E19FF65DA001A1B0D /* Build configuration list for PBXNativeTarget "HanekeBridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0C4721F19FF65DA001A1B0D /* Debug */,
+				A0C4722019FF65DA001A1B0D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

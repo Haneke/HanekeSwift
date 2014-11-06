@@ -7,8 +7,13 @@
 //
 
 import Foundation
+import HanekeBridge
 
 public class DiskCache {
+    
+    public enum ExtendedFileAttribute : String {
+        case Key = "io.haneke.key"
+    }
     
     public class func basePath() -> String {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
@@ -168,6 +173,7 @@ public class DiskCache {
             if (!success) {
                 NSLog("Failed to write key \(key) with error \(error!)")
             }
+            (path as NSString).hnk_setValue(key, forExtendedFileAttribute: ExtendedFileAttribute.Key.rawValue);
             if let attributes = previousAttributes {
                 self.size -= attributes.fileSize()
             }
