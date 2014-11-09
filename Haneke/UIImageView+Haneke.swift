@@ -14,7 +14,7 @@ public extension UIImageView {
         let viewSize = self.bounds.size
             assert(viewSize.width > 0 && viewSize.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
-            return Haneke.UIKitGlobals.formatWithSize(viewSize, scaleMode: scaleMode)
+            return HanekeGlobals.UIKit.formatWithSize(viewSize, scaleMode: scaleMode)
     }
     
     public func hnk_setImageFromURL(URL: NSURL, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
@@ -63,7 +63,7 @@ public extension UIImageView {
     // See: http://stackoverflow.com/questions/25907421/associating-swift-things-with-nsobject-instances
     var hnk_fetcher : Fetcher<UIImage>! {
         get {
-            let wrapper = objc_getAssociatedObject(self, &Haneke.UIKitGlobals.SetImageFetcherKey) as? ObjectWrapper
+            let wrapper = objc_getAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey) as? ObjectWrapper
             let fetcher = wrapper?.value as? Fetcher<UIImage>
             return fetcher
         }
@@ -72,7 +72,7 @@ public extension UIImageView {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &Haneke.UIKitGlobals.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
         }
     }
     

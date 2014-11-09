@@ -32,10 +32,10 @@ class UIButton_HanekeTests: DiskTestCase {
     func testImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_imageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .AspectFit, allowUpscaling: false, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .AspectFit, allowUpscaling: false, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
@@ -301,10 +301,10 @@ class UIButton_HanekeTests: DiskTestCase {
     func testBackgroundImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_backgroundImageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))

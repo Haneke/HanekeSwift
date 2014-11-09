@@ -8,10 +8,6 @@
 
 import UIKit
 
-public struct Haneke {
-        
-}
-
 public struct HanekeGlobals {
     
     public static let Domain = "io.haneke"
