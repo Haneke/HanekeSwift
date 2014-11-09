@@ -80,7 +80,7 @@ public class DiskCache {
                     self.size -= attributes.fileSize()
                 }
             } else {
-                NSLog("Failed to remove key \(key) with error \(error!)")
+                println("Failed to remove key \(key) with error \(error!)")
             }
         })
     }
@@ -94,12 +94,12 @@ public class DiskCache {
                 for pathComponent in contents {
                     let path = cachePath.stringByAppendingPathComponent(pathComponent)
                     if !fileManager.removeItemAtPath(path, error: &error) {
-                        NSLog("Failed to remove path \(path) with error \(error!)")
+                        Log.error("Failed to remove path \(path)", error)
                     }
                 }
                 self.calculateSize()
             } else {
-                NSLog("Failed to list directory with error \(error!)")
+                Log.error("Failed to list directory", error)
             }
         })
     }
@@ -135,11 +135,11 @@ public class DiskCache {
                 if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
                     size += attributes.fileSize()
                 } else {
-                    NSLog("Failed to read file size of \(path) with error \(error!)")
+                    Log.error("Failed to read file size of \(path)", error)
                 }
             }
         } else {
-            NSLog("Failed to list directory with error \(error!)")
+            Log.error("Failed to list directory", error)
         }
     }
     
@@ -160,13 +160,13 @@ public class DiskCache {
     
     private func setDataSync(getData : @autoclosure () -> NSData?, key : String) {
         let path = self.pathForKey(key)
-        var error: NSError? = nil
+        var error: NSError?
         if let data = getData() {
             let fileManager = NSFileManager.defaultManager()
             let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
             let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
             if (!success) {
-                NSLog("Failed to write key \(key) with error \(error!)")
+                Log.error("Failed to write key \(key)", error)
             }
             if let attributes = previousAttributes {
                 self.size -= attributes.fileSize()
@@ -174,7 +174,7 @@ public class DiskCache {
             self.size += data.length
             self.controlCapacity()
         } else {
-            NSLog("Failed to get data for key \(key)")
+            Log.error("Failed to get data for key \(key)")
         }
     }
     
@@ -184,7 +184,7 @@ public class DiskCache {
         var error : NSError?
         let success = fileManager.setAttributes([NSFileModificationDate : now], ofItemAtPath: path, error: &error)
         if !success {
-            NSLog("Failed to update access date with error \(error!)")
+            Log.error("Failed to update access date", error)
         }
         return success
     }
@@ -199,10 +199,10 @@ public class DiskCache {
             if fileManager.removeItemAtPath(path, error: &error) {
                 self.size -= fileSize
             } else {
-                NSLog("Failed to remove file with error \(error)")
+                Log.error("Failed to remove file", error)
             }
         } else {
-            NSLog("Failed to remove file with error \(error)")
+            Log.error("Failed to remove file", error)
         }
     }
 }

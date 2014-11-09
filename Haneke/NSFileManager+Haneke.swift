@@ -53,7 +53,7 @@ extension NSFileManager {
                 if stop { break }
             }
         } else {
-            NSLog("Failed to list directory with error \(error)")
+            Log.error("Failed to list directory", error)
         }
     }
 

@@ -82,7 +82,7 @@ public enum JSON : DataConvertible, DataRepresentable {
                 return nil
             }
         } else {
-            NSLog("Invalid JSON data with error \(error?.localizedDescription)")
+            Log.error("Invalid JSON data", error)
             return nil
         }
     }

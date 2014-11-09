@@ -68,7 +68,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         if let error = error {
             if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return }
             
-            NSLog("Request \(URL.absoluteString!) failed with error \(error)")
+            Log.error("Request \(URL.absoluteString!) failed", error)
             dispatch_async(dispatch_get_main_queue(), { fail(error) })
             return
         }
@@ -76,7 +76,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         // Intentionally avoiding `if let` to continue in golden path style.
         let httpResponse : NSHTTPURLResponse! = response as? NSHTTPURLResponse
         if httpResponse == nil {
-            NSLog("Request \(URL.absoluteString!) received unknown response \(response)")
+            Log.error("Request \(URL.absoluteString!) received unknown response \(response)")
             return
         }
         

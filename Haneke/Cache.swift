@@ -171,7 +171,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         var error : NSError? = nil
         let success = NSFileManager.defaultManager().createDirectoryAtPath(formatPath, withIntermediateDirectories: true, attributes: nil, error: &error)
         if (!success) {
-            NSLog("Failed to create directory \(formatPath) with error \(error!)")
+            Log.error("Failed to create directory \(formatPath)", error)
         }
         return formatPath
     }
