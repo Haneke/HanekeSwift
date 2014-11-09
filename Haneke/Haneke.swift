@@ -53,11 +53,21 @@ public struct Haneke {
 
 struct Log {
     
-    static func error(message : String, _ error : NSError? = nil) {
+    static func debug(message : @autoclosure () -> String, _ error : NSError? = nil) {
+        #if DEBUG
+            if let error = error {
+                NSLog("%@ with error %@", message(), error);
+            } else {
+                NSLog("%@", message)
+            }
+        #endif
+    }
+    
+    static func error(message : @autoclosure () -> String, _ error : NSError? = nil) {
         if let error = error {
-            NSLog("%@ with error %@", message, error);
+            NSLog("%@ with error %@", message(), error);
         } else {
-            NSLog("%@", message)
+            NSLog("%@", message())
         }
     }
     

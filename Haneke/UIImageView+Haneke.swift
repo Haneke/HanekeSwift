@@ -131,7 +131,7 @@ public extension UIImageView {
     func hnk_shouldCancelForKey(key:String) -> Bool {
         if self.hnk_fetcher?.key == key { return false }
         
-        Log.error("Cancelled set image for \(key.lastPathComponent)")
+        Log.debug("Cancelled set image for \(key.lastPathComponent)")
         return true
     }
     
