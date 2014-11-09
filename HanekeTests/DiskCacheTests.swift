@@ -32,7 +32,7 @@ class DiskCacheTests: XCTestCase {
     
     func testBasePath() {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let basePath = cachesPath.stringByAppendingPathComponent(Haneke.Domain)
+        let basePath = cachesPath.stringByAppendingPathComponent(HanekeGlobals.Domain)
         XCTAssertEqual(DiskCache.basePath(), basePath)
     }
     
@@ -115,7 +115,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testCacheQueue() {
-        let expectedLabel = Haneke.Domain + "." + diskCachePath.lastPathComponent
+        let expectedLabel = HanekeGlobals.Domain + "." + diskCachePath.lastPathComponent
 
         let label = String(UTF8String: dispatch_queue_get_label(sut.cacheQueue))!
 

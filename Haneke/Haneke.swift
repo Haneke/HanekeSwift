@@ -9,6 +9,10 @@
 import UIKit
 
 public struct Haneke {
+        
+}
+
+public struct HanekeGlobals {
     
     public static let Domain = "io.haneke"
     
@@ -51,5 +55,5 @@ public struct Shared {
 
 func errorWithCode(code : Int, #description : String) -> NSError {
     let userInfo = [NSLocalizedDescriptionKey: description]
-    return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
+    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo)
 }

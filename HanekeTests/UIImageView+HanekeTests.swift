@@ -296,7 +296,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromFetcher(fetcher, failure: {error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -479,7 +479,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
