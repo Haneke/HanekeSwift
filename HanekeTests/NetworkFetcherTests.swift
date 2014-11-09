@@ -104,7 +104,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidData.rawValue)
+            XCTAssertEqual($0!.code, HanekeGlobals.NetworkFetcher.ErrorCode.InvalidData.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -126,7 +126,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.MissingData.rawValue)
+            XCTAssertEqual($0!.code, HanekeGlobals.NetworkFetcher.ErrorCode.MissingData.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -177,7 +177,7 @@ class NetworkFetcherTests: XCTestCase {
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual($0!.code, Haneke.NetworkFetcherGlobals.ErrorCode.InvalidStatusCode.rawValue)
+            XCTAssertEqual($0!.code, HanekeGlobals.NetworkFetcher.ErrorCode.InvalidStatusCode.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
