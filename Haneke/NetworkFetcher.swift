@@ -68,7 +68,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         if let error = error {
             if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled) { return }
             
-            Log.error("Request \(URL.absoluteString!) failed", error)
+            Log.debug("Request \(URL.absoluteString!) failed", error)
             dispatch_async(dispatch_get_main_queue(), { fail(error) })
             return
         }
@@ -76,7 +76,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         // Intentionally avoiding `if let` to continue in golden path style.
         let httpResponse : NSHTTPURLResponse! = response as? NSHTTPURLResponse
         if httpResponse == nil {
-            Log.error("Request \(URL.absoluteString!) received unknown response \(response)")
+            Log.debug("Request \(URL.absoluteString!) received unknown response \(response)")
             return
         }
         
@@ -106,8 +106,8 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     }
     
     private func failWithCode(code : HanekeGlobals.NetworkFetcher.ErrorCode, localizedDescription : String, failure fail : ((NSError?) -> ())) {
-        // TODO: Log error in debug mode
         let error = errorWithCode(code.rawValue, description: localizedDescription)
+        Log.debug(localizedDescription, error)
         dispatch_async(dispatch_get_main_queue()) { fail(error) }
     }
 }
