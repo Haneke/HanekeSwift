@@ -85,7 +85,5 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             }
             succeed(value!)
         })
-        
-        
     }
 }
