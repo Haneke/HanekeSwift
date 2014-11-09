@@ -14,7 +14,7 @@ public extension Haneke {
         
         static func formatWithSize(size : CGSize, scaleMode : ImageResizer.ScaleMode, allowUpscaling: Bool = true) -> Format<UIImage> {
             let name = "auto-\(size.width)x\(size.height)-\(scaleMode.rawValue)"
-            let cache = Haneke.sharedImageCache
+            let cache = Shared.imageCache
             if let (format,_,_) = cache.formats[name] {
                 return format
             }

@@ -22,7 +22,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         OHHTTPStubs.removeAllStubs()
         
         let format = sut.hnk_format
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         cache.removeAll()
         super.tearDown()
     }
@@ -107,7 +107,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     }
     
     func testFormat_Default() {
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let resizer = ImageResizer(size: sut.bounds.size, scaleMode: sut.hnk_scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
@@ -537,7 +537,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     func setImage(image : UIImage, key: String) -> UIImage {
         let format = sut.hnk_format
         let expectedImage = format.apply(image)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         cache.addFormat(format)
         let expectation = self.expectationWithDescription("set")
         cache.set(value: image, key: key, formatName: format.name) { _ in

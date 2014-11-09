@@ -76,7 +76,7 @@ public extension UIButton {
     
     func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
         let format = format ?? self.hnk_imageFormat
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         if cache.formats[format.name] == nil {
             cache.addFormat(format)
         }
@@ -186,7 +186,7 @@ public extension UIButton {
     
     func hnk_fetchBackgroundImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
         let format = format ?? self.hnk_backgroundImageFormat
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         if cache.formats[format.name] == nil {
             cache.addFormat(format)
         }
