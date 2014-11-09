@@ -194,7 +194,6 @@ public class DiskCache {
         let fileManager = NSFileManager.defaultManager()
         if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
             let modificationDate = attributes.fileModificationDate()
-            NSLog("%@", modificationDate!)
             let fileSize = attributes.fileSize()
             if fileManager.removeItemAtPath(path, error: &error) {
                 self.size -= fileSize
