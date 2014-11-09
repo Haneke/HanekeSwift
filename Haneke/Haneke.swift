@@ -11,11 +11,6 @@ import UIKit
 public struct Haneke {
     
     public static let Domain = "io.haneke"
- 
-    public static func errorWithCode(code : Int, description : String) -> NSError {
-        let userInfo = [NSLocalizedDescriptionKey: description]
-        return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
-    }
     
     public static var sharedImageCache : Cache<UIImage> {
         struct Static {
@@ -49,4 +44,9 @@ public struct Haneke {
         return Static.cache
     }
     
+}
+
+func errorWithCode(code : Int, #description : String) -> NSError {
+    let userInfo = [NSLocalizedDescriptionKey: description]
+    return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
 }

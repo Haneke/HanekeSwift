@@ -107,7 +107,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     private func failWithCode(code : Haneke.NetworkFetcherGlobals.ErrorCode, localizedDescription : String, failure fail : ((NSError?) -> ())) {
         // TODO: Log error in debug mode
-        let error = Haneke.errorWithCode(code.rawValue, description: localizedDescription)
+        let error = errorWithCode(code.rawValue, description: localizedDescription)
         dispatch_async(dispatch_get_main_queue()) { fail(error) }
     }
 }

@@ -556,7 +556,7 @@ class MockFetcher<T : DataConvertible> : Fetcher<T> {
     }
     
     override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
-        let error = Haneke.errorWithCode(0, description: "test")
+        let error = errorWithCode(0, description: "test")
         fail(error)
     }
     

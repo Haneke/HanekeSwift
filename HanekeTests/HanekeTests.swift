@@ -13,7 +13,7 @@ class HanekeTests: XCTestCase {
     func testErrorWithCode() {
         let code = 200
         let description = self.name
-        let error = Haneke.errorWithCode(code, description:description)
+        let error = errorWithCode(code, description:description)
         
         XCTAssertEqual(error.domain, Haneke.Domain)
         XCTAssertEqual(error.code, code)
