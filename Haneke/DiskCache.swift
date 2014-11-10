@@ -80,7 +80,7 @@ public class DiskCache {
                     self.size -= attributes.fileSize()
                 }
             } else {
-                println("Failed to remove key \(key) with error \(error!)")
+                Log.error("Failed to remove key \(key)", error)
             }
         })
     }
