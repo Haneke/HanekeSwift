@@ -57,25 +57,28 @@ func errorWithCode(code : Int, #description : String) -> NSError {
 struct Log {
     
     private static let Tag = "[HANEKE]"
-    private static let Debug = "[DEBUG]"
-    private static let Error = "[ERROR]"
+    
+    private enum Level : String {
+        case Debug = "[DEBUG]"
+        case Error = "[ERROR]"
+    }
+    
+    private static func log(level : Level, @autoclosure _ message: () -> String, _ error : NSError? = nil) {
+        if let error = error {
+            NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error);
+        } else {
+            NSLog("%@%@ %@", Tag, level.rawValue, message())
+        }
+    }
     
     static func debug(@autoclosure message: () -> String, _ error : NSError? = nil) {
         #if DEBUG
-            if let error = error {
-            NSLog("%@%@ %@ with error %@", Tag, Debug, message(), error);
-            } else {
-            NSLog("%@%@ %@", Tag, Debug, message)
-            }
+            log(.Debug, message, error)
         #endif
     }
     
     static func error(@autoclosure message: () -> String, _ error : NSError? = nil) {
-        if let error = error {
-            NSLog("%@%@ %@ with error %@", Tag, Error, message(), error);
-        } else {
-            NSLog("%@%@ %@", Tag, Error, message())
-        }
+        log(.Error, message, error)
     }
     
 }
