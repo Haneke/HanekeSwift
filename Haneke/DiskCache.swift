@@ -74,18 +74,8 @@ public class DiskCache {
 
     public func removeData(key : String) {
         dispatch_async(cacheQueue, {
-            let fileManager = NSFileManager.defaultManager()
             let path = self.pathForKey(key)
-            let attributesOpt : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
-            var error: NSError? = nil
-            let success = fileManager.removeItemAtPath(path, error:&error)
-            if (success) {
-                if let attributes = attributesOpt {
-                    self.size -= attributes.fileSize()
-                }
-            } else {
-                Log.error("Failed to remove key \(key)", error)
-            }
+            self.removeFileAtPath(path)
         })
     }
     
