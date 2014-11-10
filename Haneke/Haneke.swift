@@ -50,32 +50,3 @@ public struct Haneke {
     }
     
 }
-
-struct Log {
-    
-    private static let Tag = "[HANEKE]"
-    
-    private enum Level : String {
-        case Debug = "[DEBUG]"
-        case Error = "[ERROR]"
-    }
-    
-    private static func log(level : Level, _ message : @autoclosure () -> String, _ error : NSError? = nil) {
-        if let error = error {
-            NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error);
-        } else {
-            NSLog("%@%@ %@", Tag, level.rawValue, message())
-        }
-    }
-    
-    static func debug(message : @autoclosure () -> String, _ error : NSError? = nil) {
-        #if DEBUG
-            log(.Debug, message, error)
-        #endif
-    }
-    
-    static func error(message : @autoclosure () -> String, _ error : NSError? = nil) {
-        log(.Error, message, error)
-    }
-    
-}
