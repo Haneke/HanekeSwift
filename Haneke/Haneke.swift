@@ -53,21 +53,25 @@ public struct Haneke {
 
 struct Log {
     
+    private static let Tag = "[HANEKE]"
+    private static let Debug = "[DEBUG]"
+    private static let Error = "[ERROR]"
+    
     static func debug(message : @autoclosure () -> String, _ error : NSError? = nil) {
         #if DEBUG
             if let error = error {
-                NSLog("%@ with error %@", message(), error);
+                NSLog("%@%@ %@ with error %@", Tag, Debug, message(), error);
             } else {
-                NSLog("%@", message)
+                NSLog("%@%@ %@", Tag, Debug, message)
             }
         #endif
     }
     
     static func error(message : @autoclosure () -> String, _ error : NSError? = nil) {
         if let error = error {
-            NSLog("%@ with error %@", message(), error);
+            NSLog("%@%@ %@ with error %@", Tag, Error, message(), error);
         } else {
-            NSLog("%@", message())
+            NSLog("%@%@ %@", Tag, Error, message())
         }
     }
     
