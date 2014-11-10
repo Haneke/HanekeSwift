@@ -50,15 +50,3 @@ public struct Haneke {
     }
     
 }
-
-struct Log {
-    
-    static func error(message : String, _ error : NSError? = nil) {
-        if let error = error {
-            NSLog("%@ with error %@", message, error);
-        } else {
-            NSLog("%@", message)
-        }
-    }
-    
-}
