@@ -192,8 +192,17 @@ public class DiskCache {
             } else {
                 Log.error("Failed to remove file", error)
             }
+        } else if isNoSuchFileError(error) {
+            Log.debug("File not found", error)
         } else {
             Log.error("Failed to remove file", error)
         }
     }
+}
+
+private func isNoSuchFileError(error : NSError?) -> Bool {
+    if let error = error {
+        return NSCocoaErrorDomain.isEqualToString(error.domain) && error.code == NSFileReadNoSuchFileError
+    }
+    return false
 }
