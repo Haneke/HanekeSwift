@@ -32,23 +32,14 @@ public extension UIImageView {
         self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>,
-        placeholder : UIImage? = nil,
-        format : Format<UIImage>? = nil,
-        failure fail : ((NSError?) -> ())? = nil,
-        success succeed : ((UIImage) -> ())? = nil) {
-
+    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+        self.image = placeholder
         self.hnk_cancelSetImage()
-        
         self.hnk_fetcher = fetcher
         
-            let didSetImage = self.hnk_fetchImageForFetcher(fetcher, format: format, failure: fail, success: succeed)
+        let didSetImage = self.hnk_fetchImageForFetcher(fetcher, format: format, failure: fail, success: succeed)
         
         if didSetImage { return }
-     
-        if let placeholder = placeholder {
-            self.image = placeholder
-        }
     }
     
     public func hnk_cancelSetImage() {
