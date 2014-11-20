@@ -139,8 +139,8 @@ class CacheTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         let fetch = sut.fetch(key: key).onFailure { error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.ObjectNotFound.rawValue)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.ObjectNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }
@@ -178,8 +178,8 @@ class CacheTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         let fetch = sut.fetch(key: key, failure : { error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.ObjectNotFound.rawValue)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.ObjectNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -199,8 +199,8 @@ class CacheTests: XCTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         let fetch = sut.fetch(key: key, formatName: self.name, failure : { error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.FormatNotFound.rawValue)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -377,8 +377,8 @@ class CacheTests: XCTestCase {
         let fetcher = SimpleFetcher<NSData>(key: self.name, value: data)
 
         let fetch = sut.fetch(fetcher: fetcher, formatName: self.name, failure : { error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
-            XCTAssertEqual(error!.code, Haneke.CacheGlobals.ErrorCode.FormatNotFound.rawValue)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in

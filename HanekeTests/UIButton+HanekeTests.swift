@@ -23,7 +23,7 @@ class UIButton_HanekeTests: DiskTestCase {
         sut.hnk_cancelSetBackgroundImage()
         OHHTTPStubs.removeAllStubs()
         
-        Haneke.sharedImageCache.removeAll()
+        Shared.imageCache.removeAll()
         super.tearDown()
     }
     
@@ -32,10 +32,10 @@ class UIButton_HanekeTests: DiskTestCase {
     func testImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_imageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .AspectFit, allowUpscaling: false, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .AspectFit, allowUpscaling: false, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
@@ -127,7 +127,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetImageFromFileSuccessFailure_MemoryHit_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let format = sut.hnk_imageFormat
         cache.set(value: image, key: fetcher.key, formatName: format.name)
         
@@ -166,7 +166,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let format = sut.hnk_imageFormat
         cache.set(value: image, key: fetcher.key, formatName: format.name)
         
@@ -189,7 +189,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -249,7 +249,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let format = sut.hnk_imageFormat
         cache.set(value: image, key: key, formatName: format.name)
         
@@ -301,10 +301,10 @@ class UIButton_HanekeTests: DiskTestCase {
     func testBackgroundImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_backgroundImageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
@@ -399,7 +399,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testSetBackgroundImageFromFileSuccessFailure_MemoryHit_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let fetcher = DiskFetcher<UIImage>(path: self.uniquePath())
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: fetcher.key, formatName: format.name)
         
@@ -439,7 +439,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: fetcher.key, formatName: format.name)
         
@@ -462,7 +462,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setBackgroundImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -523,7 +523,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         let format = sut.hnk_backgroundImageFormat
         cache.set(value: image, key: key, formatName: format.name)
         
@@ -574,7 +574,7 @@ class UIButton_HanekeTests: DiskTestCase {
     
     func setImage(image : UIImage, key: String, format : Format<UIImage>) -> UIImage {
         let expectedImage = format.apply(image)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         cache.addFormat(format)
         let expectation = self.expectationWithDescription("set")
         cache.set(value: image, key: key, formatName: format.name) { _ in

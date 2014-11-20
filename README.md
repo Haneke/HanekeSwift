@@ -61,7 +61,7 @@ Haneke provides shared caches for `UIImage`, `NSData`, `JSON` and `String`. You 
 The cache is a key-value store. For example, here's how you would cache and then fetch some data.
 
 ```Swift
-let cache = Haneke.sharedDataCache
+let cache = Shared.dataCache
         
 cache.set(value: data, key: "funny-games.mp4")
         
@@ -75,6 +75,7 @@ cache.fetch(key: "funny-games.mp4").onSuccess { data in
 In most cases the value will not be readily available and will have to be fetched from network or disk. Haneke offers convenience `fetch` functions for these cases. Let's go back to the first example, now using a shared cache: 
 
 ```Swift
+let cache = Shared.JSONCache
 let cache = Haneke.sharedJSONCache
 let URL = NSURL(string: "https://api.github.com/users/haneke")!
     
@@ -115,7 +116,7 @@ Formats allow to specify the disk cache size and any transformations to the valu
 You can also use custom formats. Say you want to limit the disk capacity for icons to 10MB and apply rounded corners to the images. This is how it could look like:
 
 ```swift
-let cache = Haneke.sharedImageCache
+let cache = Shared.imageCache
 
 let iconFormat = Format<UIImage>(name: "icons", diskCapacity: 10 * 1024 * 1024) { image in
     return imageByRoundingCornersOfImage(image)

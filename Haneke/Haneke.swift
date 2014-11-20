@@ -8,16 +8,15 @@
 
 import UIKit
 
-public struct Haneke {
+public struct HanekeGlobals {
     
     public static let Domain = "io.haneke"
- 
-    public static func errorWithCode(code : Int, description : String) -> NSError {
-        let userInfo = [NSLocalizedDescriptionKey: description]
-        return NSError(domain: Haneke.Domain, code: code, userInfo: userInfo)
-    }
     
-    public static var sharedImageCache : Cache<UIImage> {
+}
+
+public struct Shared {
+    
+    public static var imageCache : Cache<UIImage> {
         struct Static {
             static let name = "shared-images"
             static let cache = Cache<UIImage>(name: name)
@@ -25,7 +24,7 @@ public struct Haneke {
         return Static.cache
     }
     
-    public static var sharedDataCache : Cache<NSData> {
+    public static var dataCache : Cache<NSData> {
         struct Static {
             static let name = "shared-data"
             static let cache = Cache<NSData>(name: name)
@@ -33,7 +32,7 @@ public struct Haneke {
         return Static.cache
     }
     
-    public static var sharedStringCache : Cache<String> {
+    public static var stringCache : Cache<String> {
         struct Static {
             static let name = "shared-strings"
             static let cache = Cache<String>(name: name)
@@ -41,14 +40,18 @@ public struct Haneke {
         return Static.cache
     }
     
-    public static var sharedJSONCache : Cache<JSON> {
-    struct Static {
-        static let name = "shared-json"
-        static let cache = Cache<JSON>(name: name)
+    public static var JSONCache : Cache<JSON> {
+        struct Static {
+            static let name = "shared-json"
+            static let cache = Cache<JSON>(name: name)
         }
         return Static.cache
     }
-    
+}
+
+func errorWithCode(code : Int, #description : String) -> NSError {
+    let userInfo = [NSLocalizedDescriptionKey: description]
+    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo)
 }
 
 struct Log {

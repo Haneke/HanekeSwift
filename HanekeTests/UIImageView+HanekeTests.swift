@@ -22,7 +22,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         OHHTTPStubs.removeAllStubs()
         
         let format = sut.hnk_format
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         cache.removeAll()
         super.tearDown()
     }
@@ -96,24 +96,24 @@ class UIImageView_HanekeTests: DiskTestCase {
         let size = CGSizeMake(10, 20)
         let scaleMode = ImageResizer.ScaleMode.Fill
         let image = UIImage.imageWithColor(UIColor.redColor())
-        let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: size, scaleMode: scaleMode, allowUpscaling: true, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         
-        let format = Haneke.UIKitGlobals.formatWithSize(size, scaleMode: scaleMode)
+        let format = HanekeGlobals.UIKit.formatWithSize(size, scaleMode: scaleMode)
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
         XCTAssertTrue(result.isEqualPixelByPixel(expected))
     }
     
     func testFormat_Default() {
-        let cache = Haneke.sharedImageCache
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: sut.hnk_scaleMode, allowUpscaling: true, compressionQuality: Haneke.UIKitGlobals.DefaultFormat.CompressionQuality)
+        let cache = Shared.imageCache
+        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: sut.hnk_scaleMode, allowUpscaling: true, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.greenColor())
         
         let format = sut.hnk_format
         
-        XCTAssertEqual(format.diskCapacity, Haneke.UIKitGlobals.DefaultFormat.DiskCapacity)
+        XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
         XCTAssertTrue(cache.formats[format.name] != nil) // Can't use XCTAssertNotNil because it expects AnyObject
         let result = format.apply(image)
         let expected = resizer.resizeImage(image)
@@ -296,7 +296,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromFetcher(fetcher, failure: {error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -479,7 +479,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, Haneke.Domain)
+            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -537,7 +537,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     func setImage(image : UIImage, key: String) -> UIImage {
         let format = sut.hnk_format
         let expectedImage = format.apply(image)
-        let cache = Haneke.sharedImageCache
+        let cache = Shared.imageCache
         cache.addFormat(format)
         let expectation = self.expectationWithDescription("set")
         cache.set(value: image, key: key, formatName: format.name) { _ in
@@ -556,7 +556,7 @@ class MockFetcher<T : DataConvertible> : Fetcher<T> {
     }
     
     override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
-        let error = Haneke.errorWithCode(0, description: "test")
+        let error = errorWithCode(0, description: "test")
         fail(error)
     }
     

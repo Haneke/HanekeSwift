@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum FetchState<T> {
+enum FetchState<T> {
     case Pending
     // Using Wrapper as a workaround for error 'unimplemented IR generation feature non-fixed multi-payload enum layout'
     // See: http://swiftradar.tumblr.com/post/88314603360/swift-fails-to-compile-enum-with-two-data-cases
