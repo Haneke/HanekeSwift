@@ -21,22 +21,22 @@ public extension UIButton {
             return HanekeGlobals.UIKit.formatWithSize(imageSize, scaleMode: scaleMode, allowUpscaling: scaleMode == ImageResizer.ScaleMode.AspectFit ? false : true)
     }
     
-    public func hnk_setImageFromURL(URL : NSURL, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImageFromURL(URL : NSURL, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage, Bool) -> ())? = nil) {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImage(image : UIImage, key : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImage(image : UIImage, key : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage, Bool) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, success: succeed)
     }
     
-    public func hnk_setImageFromFile(path : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImageFromFile(path : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage, Bool) -> ())? = nil) {
         let fetcher = DiskFetcher<UIImage>(path: path)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil){
+    public func hnk_setImageFromFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage, Bool) -> ())? = nil){
         self.hnk_cancelSetImage()
         self.hnk_imageFetcher = fetcher
         
@@ -74,7 +74,7 @@ public extension UIButton {
         }
     }
     
-    func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
+    func hnk_fetchImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage, Bool) -> ())?) -> Bool {
         let format = format ?? self.hnk_imageFormat
         let cache = Shared.imageCache
         if cache.formats[format.name] == nil {
@@ -101,11 +101,11 @@ public extension UIButton {
     }
     
     
-    func hnk_setImage(image : UIImage, state : UIControlState, animated : Bool, success succeed : ((UIImage) -> ())?) {
+    func hnk_setImage(image : UIImage, state : UIControlState, animated : Bool, success succeed : ((UIImage, Bool) -> ())?) {
         self.hnk_imageFetcher = nil
         
         if let succeed = succeed {
-            succeed(image)
+            succeed(image, animated)
         } else {
             let duration : NSTimeInterval = animated ? 0.1 : 0
             UIView.transitionWithView(self, duration: duration, options: .TransitionCrossDissolve, animations: {
@@ -131,22 +131,22 @@ public extension UIButton {
             return HanekeGlobals.UIKit.formatWithSize(imageSize, scaleMode: .Fill)
     }
     
-    public func hnk_setBackgroundImageFromURL(URL : NSURL, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setBackgroundImageFromURL(URL : NSURL, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage, Bool) -> ())? = nil) {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setBackgroundImage(image : UIImage, key : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setBackgroundImage(image : UIImage, key : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage, Bool) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, success: succeed)
     }
     
-    public func hnk_setBackgroundImageFromFile(path : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setBackgroundImageFromFile(path : String, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage, Bool) -> ())? = nil) {
         let fetcher = DiskFetcher<UIImage>(path: path)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setBackgroundImageFromFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil){
+    public func hnk_setBackgroundImageFromFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage, Bool) -> ())? = nil){
         self.hnk_cancelSetBackgroundImage()
         self.hnk_backgroundImageFetcher = fetcher
         
@@ -184,7 +184,7 @@ public extension UIButton {
         }
     }
     
-    func hnk_fetchBackgroundImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage) -> ())?) -> Bool {
+    func hnk_fetchBackgroundImageForFetcher(fetcher : Fetcher<UIImage>, state : UIControlState = .Normal, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())?, success succeed : ((UIImage, Bool) -> ())?) -> Bool {
         let format = format ?? self.hnk_backgroundImageFormat
         let cache = Shared.imageCache
         if cache.formats[format.name] == nil {
@@ -210,11 +210,11 @@ public extension UIButton {
         return fetch.hasSucceeded
     }
     
-    func hnk_setBackgroundImage(image : UIImage, state : UIControlState, animated : Bool, success succeed : ((UIImage) -> ())?) {
+    func hnk_setBackgroundImage(image : UIImage, state : UIControlState, animated : Bool, success succeed : ((UIImage, Bool) -> ())?) {
         self.hnk_backgroundImageFetcher = nil
         
         if let succeed = succeed {
-            succeed(image)
+            succeed(image, animated)
         } else {
             let duration : NSTimeInterval = animated ? 0.1 : 0
             UIView.transitionWithView(self, duration: duration, options: .TransitionCrossDissolve, animations: {
