@@ -44,7 +44,7 @@ public extension UIButton {
         
         if didSetImage { return }
         
-        if let placeHolder = placeholder {
+        if let placeholder = placeholder {
             self.setImage(placeholder, forState: state)
         }
     }
