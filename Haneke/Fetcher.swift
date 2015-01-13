@@ -13,29 +13,29 @@ public class Fetcher<T : DataConvertible> {
 
     let key : String
     
-    init(key : String) {
+    public init(key : String) {
         self.key = key
     }
     
-    func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {}
+    public func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {}
     
-    func cancelFetch() {}
+    public func cancelFetch() {}
 }
 
-class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
+public class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
     
     let getValue : () -> T.Result
     
-    init(key : String, value getValue : @autoclosure () -> T.Result) {
+    public init(key : String, value getValue : @autoclosure () -> T.Result) {
         self.getValue = getValue
         super.init(key: key)
     }
     
-    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
         let value = getValue()
         succeed(value)
     }
     
-    override func cancelFetch() {}
+    public override func cancelFetch() {}
     
 }
