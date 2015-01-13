@@ -75,15 +75,17 @@ public struct ImageResizer {
         }
         assert(self.size.width > 0 && self.size.height > 0, "Expected non-zero size. Use ScaleMode.None to avoid resizing.")
         
+        let scale = UIScreen.mainScreen().scale  // must check scale or scaled images could be upscaled in retina displays
+        
         // If does not allow to scale up the image
         if (!self.allowUpscaling) {
-            if (resizeToSize.width > image.size.width || resizeToSize.height > image.size.height) {
+            if (scale * resizeToSize.width > image.size.width || scale * resizeToSize.height > image.size.height) {
                 return image
             }
         }
         
         // Avoid unnecessary computations
-        if (resizeToSize.width == image.size.width && resizeToSize.height == image.size.height) {
+        if (scale * resizeToSize.width == image.size.width && scale * resizeToSize.height == image.size.height) {
             return image
         }
         
