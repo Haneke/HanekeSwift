@@ -80,12 +80,11 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     public func fetch(#key : String, formatName : String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
-                if let result = wrapper.value as? T {
+            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper,
+                let result = wrapper.value as? T {
                     fetch.succeed(result)
                     diskCache.updateAccessDate(self.dataFromValue(result, format: format), key: key)
                     return fetch
-                }
             }
 
             self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: { error in
