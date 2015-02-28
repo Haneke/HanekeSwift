@@ -31,7 +31,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testBasePath() {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as! String
         let basePath = cachesPath.stringByAppendingPathComponent(HanekeGlobals.Domain)
         XCTAssertEqual(DiskCache.basePath(), basePath)
     }
@@ -52,7 +52,7 @@ class DiskCacheTests: XCTestCase {
         let sut = DiskCache(path: path)
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, UInt64(expectedSize))
+            XCTAssertEqual(sut.size, Int(expectedSize))
         })
     }
     
@@ -66,7 +66,7 @@ class DiskCacheTests: XCTestCase {
         let sut = DiskCache(path: directory)
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
+            XCTAssertEqual(sut.size, Int(lengths.reduce(0, combine: +)))
         })
     }
     
@@ -144,7 +144,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(self.sut.size, UInt64(data.length))
+            XCTAssertEqual(self.sut.size, Int(data.length))
         })
     }
     
@@ -161,7 +161,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, UInt64(data.length))
+            XCTAssertEqual(sut.size, Int(data.length))
         })
     }
     
@@ -178,7 +178,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, UInt64(data.length))
+            XCTAssertEqual(sut.size, Int(data.length))
         })
     }
     
@@ -191,7 +191,7 @@ class DiskCacheTests: XCTestCase {
         sut.setData(NSData.dataWithLength(lengths[1]), key: keys[1])
         
         dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(self.sut.size, UInt64(lengths.reduce(0, combine: +)))
+            XCTAssertEqual(self.sut.size, Int(lengths.reduce(0, combine: +)))
         })
     }
     
@@ -209,7 +209,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(self.sut.size, UInt64(data.length))
+            XCTAssertEqual(self.sut.size, Int(data.length))
         })
     }
     
@@ -253,7 +253,7 @@ class DiskCacheTests: XCTestCase {
         })
         
         dispatch_sync(sut.cacheQueue) {
-            self.waitForExpectationsWithTimeout(0, nil)
+            self.waitForExpectationsWithTimeout(0, handler: nil)
         }
     }
     
@@ -270,7 +270,7 @@ class DiskCacheTests: XCTestCase {
         }
         
         dispatch_sync(sut.cacheQueue) {
-            self.waitForExpectationsWithTimeout(0, nil)
+            self.waitForExpectationsWithTimeout(0, handler: nil)
         }
     }
     
@@ -298,8 +298,8 @@ class DiskCacheTests: XCTestCase {
         // Preconditions
         dispatch_sync(sut.cacheQueue) {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
-            let accessDate = attributes[NSFileModificationDate] as NSDate
-            XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
+            let accessDate = attributes[NSFileModificationDate] as! NSDate
+            XCTAssertEqual(accessDate, NSDate.distantPast() as! NSDate)
         }
         
         sut.fetchData(key, success: {
@@ -308,10 +308,10 @@ class DiskCacheTests: XCTestCase {
         })
         
         dispatch_sync(sut.cacheQueue) {
-            self.waitForExpectationsWithTimeout(0, nil)
+            self.waitForExpectationsWithTimeout(0, handler: nil)
             
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
-            let accessDate = attributes[NSFileModificationDate] as NSDate
+            let accessDate = attributes[NSFileModificationDate] as! NSDate
             let now = NSDate()
             let interval = accessDate.timeIntervalSinceDate(now)
             XCTAssertEqualWithAccuracy(interval, 0, 1)
@@ -331,15 +331,15 @@ class DiskCacheTests: XCTestCase {
         // Preconditions
         dispatch_sync(sut.cacheQueue) {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
-            let accessDate = attributes[NSFileModificationDate] as NSDate
-            XCTAssertEqual(accessDate, NSDate.distantPast() as NSDate)
+            let accessDate = attributes[NSFileModificationDate] as! NSDate
+            XCTAssertEqual(accessDate, NSDate.distantPast() as! NSDate)
         }
         
         sut.updateAccessDate(data, key: key)
         
         dispatch_sync(sut.cacheQueue) {
             let attributes = fileManager.attributesOfItemAtPath(path, error: nil)!
-            let accessDate = attributes[NSFileModificationDate] as NSDate
+            let accessDate = attributes[NSFileModificationDate] as! NSDate
             let now = NSDate()
             let interval = accessDate.timeIntervalSinceDate(now)
             XCTAssertEqualWithAccuracy(interval, 0, 1)
@@ -376,7 +376,7 @@ class DiskCacheTests: XCTestCase {
             let fileManager = NSFileManager.defaultManager()
             let path = self.sut.pathForKey(keys[1])
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(self.sut.size, UInt64(datas[0].length))
+            XCTAssertEqual(self.sut.size, Int(datas[0].length))
         }
     }
     
