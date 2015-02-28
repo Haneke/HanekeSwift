@@ -26,7 +26,7 @@ class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
     
     let getValue : () -> T.Result
     
-    init(key : String, value getValue : @autoclosure () -> T.Result) {
+    init(key : String, @autoclosure(escaping) value getValue : () -> T.Result) {
         self.getValue = getValue
         super.init(key: key)
     }

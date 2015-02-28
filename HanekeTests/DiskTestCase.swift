@@ -11,7 +11,7 @@ import XCTest
 class DiskTestCase : XCTestCase {
  
     lazy var directoryPath : String = {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as! String
         let directoryPath = documentsPath.stringByAppendingPathComponent(self.name)
         return directoryPath
     }()

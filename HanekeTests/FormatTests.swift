@@ -16,7 +16,7 @@ class FormatTests: XCTestCase {
         let sut = Format<UIImage>(name: name)
         
         XCTAssertEqual(sut.name, name)
-        XCTAssertEqual(sut.diskCapacity, UINT64_MAX)
+        XCTAssertEqual(sut.diskCapacity, Int.max)
         XCTAssertTrue(sut.transform == nil)
     }
     
