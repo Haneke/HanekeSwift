@@ -16,6 +16,10 @@ extension Haneke {
             case MissingData = -401
             case InvalidStatusCode = -402
         }
+        
+        public static func keyFromUrl(url: NSURL) -> String {
+            return url.absoluteString!
+        }
     }
 }
 
@@ -26,7 +30,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     public init(URL : NSURL) {
         self.URL = URL
 
-        let key =  URL.absoluteString!
+        let key: String = HanekeGlobals.NetworkFetcher.keyFromUrl(URL)
         super.init(key: key)
     }
     

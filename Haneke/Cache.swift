@@ -122,6 +122,11 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
+    public func remove(#URL : NSURL, formatName : String = HanekeGlobals.Cache.OriginalFormatName) {
+        let key: String = HanekeGlobals.NetworkFetcher.keyFromUrl(URL)
+        self.remove(key: key, formatName: formatName)
+    }
+    
     public func removeAll() {
         for (_, (_, memoryCache, diskCache)) in self.formats {
             memoryCache.removeAllObjects()
