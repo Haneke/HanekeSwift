@@ -37,7 +37,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     
     let name : String
     
-    var memoryWarningObserver : NSObjectProtocol? = nil
+    var memoryWarningObserver : NSObjectProtocol!
     
     public init(name : String) {
         self.name = name
@@ -57,10 +57,8 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     }
     
     deinit {
-        if let memoryWarningObserver = memoryWarningObserver {
-            let notifications = NSNotificationCenter.defaultCenter()
-            notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
-        }
+        let notifications = NSNotificationCenter.defaultCenter()
+        notifications.removeObserver(memoryWarningObserver, name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
     }
     
     public func set(#value : T, key: String, formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : ((T) -> ())? = nil) {
@@ -80,11 +78,10 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     public func fetch(#key : String, formatName : String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper,
-                let result = wrapper.value as? T {
-                    fetch.succeed(result)
-                    diskCache.updateAccessDate(self.dataFromValue(result, format: format), key: key)
-                    return fetch
+            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper, let result = wrapper.value as? T {
+                fetch.succeed(result)
+                diskCache.updateAccessDate(self.dataFromValue(result, format: format), key: key)
+                return fetch
             }
 
             self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: { error in
