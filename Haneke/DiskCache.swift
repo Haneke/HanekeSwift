@@ -202,7 +202,7 @@ public class DiskCache {
 
 private func isNoSuchFileError(error : NSError?) -> Bool {
     if let error = error {
-        return NSCocoaErrorDomain.isEqualToString(error.domain) && error.code == NSFileReadNoSuchFileError
+        return NSCocoaErrorDomain == error.domain && error.code == NSFileReadNoSuchFileError
     }
     return false
 }
