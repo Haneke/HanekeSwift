@@ -29,7 +29,6 @@
 		A00D360219C355C30007586E /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360119C355C30007586E /* NetworkFetcher.swift */; };
 		A00D360419C36E680007586E /* NSHTTPURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360319C36E680007586E /* NSHTTPURLResponse+Haneke.swift */; };
 		A00D364919C6D8870007586E /* NetworkFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D364819C6D8870007586E /* NetworkFetcherTests.swift */; };
-		A00D364A19C6DA4A0007586E /* libOHHTTPStubs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A00D363F19C6D8220007586E /* libOHHTTPStubs.a */; };
 		A00D365019C6E1050007586E /* NSHTTPURLResponse+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D364F19C6E1050007586E /* NSHTTPURLResponse+HanekeTests.swift */; };
 		A00D365119C6E1100007586E /* NSHTTPURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360319C36E680007586E /* NSHTTPURLResponse+Haneke.swift */; };
 		A00D365219C6E5570007586E /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360119C355C30007586E /* NetworkFetcher.swift */; };
@@ -53,6 +52,7 @@
 		A06EE28419B195B300572D17 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
 		A0720DEA19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
 		A0720DEB19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
+		A079D3071ADADBD100B18540 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */; };
 		A095C95C1980418C00CD0F4C /* Haneke.h in Headers */ = {isa = PBXBuildFile; fileRef = A095C95B1980418C00CD0F4C /* Haneke.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A095C973198041D100CD0F4C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
 		A095C975198045D200CD0F4C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* CacheTests.swift */; };
@@ -82,41 +82,6 @@
 			remoteGlobalIDString = A095C9551980418C00CD0F4C;
 			remoteInfo = Haneke;
 		};
-		A00D363E19C6D8220007586E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 09110A4119805F4800D175E4;
-			remoteInfo = "OHHTTPStubs iOS";
-		};
-		A00D364019C6D8220007586E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 09110A5119805F4800D175E4;
-			remoteInfo = "OHHTTPStubs iOS Tests";
-		};
-		A00D364219C6D8220007586E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 095981C219806A7900807DBE;
-			remoteInfo = "OHHTTPStubs Mac";
-		};
-		A00D364419C6D8220007586E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 095981D219806A7900807DBE;
-			remoteInfo = "OHHTTPStubs Mac Tests";
-		};
-		A00D364619C6D84A0007586E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 09110A4019805F4800D175E4;
-			remoteInfo = "OHHTTPStubs iOS";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -137,7 +102,6 @@
 		A0026EC219C9C24C004DE0C6 /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		A00D360119C355C30007586E /* NetworkFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
 		A00D360319C36E680007586E /* NSHTTPURLResponse+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+Haneke.swift"; sourceTree = "<group>"; };
-		A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OHHTTPStubs.xcodeproj; path = Submodules/OHHTTPStubs/OHHTTPStubs.xcodeproj; sourceTree = "<group>"; };
 		A00D364819C6D8870007586E /* NetworkFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcherTests.swift; sourceTree = "<group>"; };
 		A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HanekeTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A00D364F19C6E1050007586E /* NSHTTPURLResponse+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+HanekeTests.swift"; sourceTree = "<group>"; };
@@ -155,6 +119,7 @@
 		A06EE27F19B18C7800572D17 /* String+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Haneke.swift"; sourceTree = "<group>"; };
 		A06EE28119B18FE600572D17 /* String+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HanekeTests.swift"; sourceTree = "<group>"; };
 		A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoSwiftMD5.swift; sourceTree = "<group>"; };
+		A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OHHTTPStubs.framework; path = "../../../../../../../../workspace/HanekeSwift/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos/OHHTTPStubs.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C9561980418C00CD0F4C /* Haneke.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Haneke.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C95A1980418C00CD0F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A095C95B1980418C00CD0F4C /* Haneke.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Haneke.h; sourceTree = "<group>"; };
@@ -195,7 +160,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A00D364A19C6DA4A0007586E /* libOHHTTPStubs.a in Frameworks */,
+				A079D3071ADADBD100B18540 /* OHHTTPStubs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,17 +187,6 @@
 				A0026E9D19C9BFBC004DE0C6 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A00D363819C6D8220007586E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A00D363F19C6D8220007586E /* libOHHTTPStubs.a */,
-				A00D364119C6D8220007586E /* OHHTTPStubs iOS Tests.xctest */,
-				A00D364319C6D8220007586E /* OHHTTPStubs.framework */,
-				A00D364519C6D8220007586E /* OHHTTPStubs Mac Tests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		A00D364E19C6E0CB0007586E /* Extensions */ = {
@@ -271,6 +225,14 @@
 				A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */,
 			);
 			name = CryptoSwift;
+			sourceTree = "<group>";
+		};
+		A079D3081ADADC2200B18540 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A095C94C1980418C00CD0F4C = {
@@ -334,10 +296,10 @@
 				A0EE773119BFDFA500B315A0 /* FetcherTests.swift */,
 				A01E148819D7FEF7000247ED /* FetchTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
+				A079D3081ADADC2200B18540 /* Frameworks */,
 				A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */,
 				A03F7E7F19BF60040002511F /* HanekeTests.swift */,
 				A00D364819C6D8870007586E /* NetworkFetcherTests.swift */,
-				A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */,
 				A095C9661980418C00CD0F4C /* Supporting Files */,
 				A04210FF19C90E5B005000B8 /* UIKit */,
 				A0D7D6871997C4AC000CAF46 /* Utils */,
@@ -437,7 +399,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A00D364719C6D84A0007586E /* PBXTargetDependency */,
 			);
 			name = HanekeTests;
 			productName = HanekeTests;
@@ -476,12 +437,6 @@
 			mainGroup = A095C94C1980418C00CD0F4C;
 			productRefGroup = A095C9571980418C00CD0F4C /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = A00D363819C6D8220007586E /* Products */;
-					ProjectRef = A00D363719C6D8220007586E /* OHHTTPStubs.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				A095C9551980418C00CD0F4C /* Haneke */,
@@ -490,37 +445,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		A00D363F19C6D8220007586E /* libOHHTTPStubs.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libOHHTTPStubs.a;
-			remoteRef = A00D363E19C6D8220007586E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A00D364119C6D8220007586E /* OHHTTPStubs iOS Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "OHHTTPStubs iOS Tests.xctest";
-			remoteRef = A00D364019C6D8220007586E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A00D364319C6D8220007586E /* OHHTTPStubs.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = OHHTTPStubs.framework;
-			remoteRef = A00D364219C6D8220007586E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A00D364519C6D8220007586E /* OHHTTPStubs Mac Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "OHHTTPStubs Mac Tests.xctest";
-			remoteRef = A00D364419C6D8220007586E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A0026E9819C9BFBC004DE0C6 /* Resources */ = {
@@ -637,11 +561,6 @@
 			isa = PBXTargetDependency;
 			target = A095C9551980418C00CD0F4C /* Haneke */;
 			targetProxy = A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */;
-		};
-		A00D364719C6D84A0007586E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "OHHTTPStubs iOS";
-			targetProxy = A00D364619C6D84A0007586E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -814,6 +733,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
+					"$(PROJECT_DIR)/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -834,6 +754,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
+					"$(PROJECT_DIR)/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = HanekeTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
