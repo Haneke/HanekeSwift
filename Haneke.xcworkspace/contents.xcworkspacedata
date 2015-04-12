@@ -7,4 +7,7 @@
    <FileRef
       location = "group:Haneke.playground">
    </FileRef>
+   <FileRef
+      location = "group:HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/OHHTTPStubs.xcodeproj">
+   </FileRef>
 </Workspace>
