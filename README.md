@@ -1,5 +1,7 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
 Haneke is a lightweight *generic* cache for iOS written in Swift 1.2. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch objects from a url:
 
 ```swift
@@ -21,7 +23,7 @@ imageView.hnk_setImageFromURL(url)
 
 _Really._
 
-##Features
+## Features
 
 * Generic cache with out-of-the-box support for `UIImage`, `NSData`, `JSON` and `String`
 * First-level memory cache using `NSCache`
@@ -38,15 +40,22 @@ For images:
 * Zero-config `UIImageView` and `UIButton` extensions to use the cache, optimized for `UITableView` and `UICollectionView` cell reuse
 * Background image resizing and decompression
 
-
-## Requirements
-
-- iOS 8.0+
-- Xcode 6.3
-
 ## Installation
 
-_Haneke is packaged as a Swift framework. Currently this is the simplest way to add it to your app:_
+Using [CocoaPods](http://cocoapods.org/):
+
+```ruby
+use_frameworks!
+pod 'Haneke', :git => 'https://github.com/Haneke/HanekeSwift.git'
+```
+
+Using [Carthage](https://github.com/Carthage/Carthage):
+
+```
+github "Haneke/HanekeSwift"
+```
+
+Manually:
 
 1. Drag `Haneke.xcodeproj` to your project in the _Project Navigator_.
 2. Select your project and then your app target. Open the _Build Phases_ panel.
@@ -54,7 +63,13 @@ _Haneke is packaged as a Swift framework. Currently this is the simplest way to 
 4. Click on the `+` button at the top left of the panel and select _New Copy Files Phase_. Set _Destination_ to _Frameworks_, and add `Haneke.framework`.
 5. `import Haneke` whenever you want to use Haneke.
 
-##Using the cache
+## Requirements
+
+- iOS 8.0+
+- Xcode 6.3
+
+
+## Using the cache
 
 Haneke provides shared caches for `UIImage`, `NSData`, `JSON` and `String`. You can also create your own caches. 
 
@@ -88,7 +103,7 @@ The above call will first attempt to fetch the required JSON from (in order) mem
 
 Further customization can be achieved by using [formats](#formats), [supporting additional types](#supporting-additional-types) or implementing [custom fetchers](#custom-fetchers).
 
-##Extra ♡ for images
+## Extra ♡ for images
 
 Need to cache and display images? Haneke provides convenience methods for `UIImageView` and `UIButton` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
 
@@ -109,7 +124,7 @@ The above lines take care of:
 5. Caching the resulting image.
 6. If needed, evicting the least recently used images in the cache.
 
-##Formats
+## Formats
 
 Formats allow to specify the disk cache size and any transformations to the values before being cached. For example, the `UIImageView` extension uses a format that resizes images to fit or fill the image view as needed.
 
@@ -137,7 +152,7 @@ Formats can also be used from the `UIKit` extensions:
 imageView.hnk_setImageFromURL(url, format: iconFormat)
 ```
 
-##Fetchers
+## Fetchers
 
 The `fetch` functions for urls and paths are actually convenience methods. Under the hood Haneke uses fetcher objects. To illustrate, here's another way of fetching from a url by explictly using a network fetcher:
 
@@ -155,7 +170,7 @@ In the above example the fetcher will be executed only if there is no value asso
 
 Haneke provides two specialized fetchers: `NetworkFetcher<T>` and `DiskFetcher<T>`. You can also implement your own fetchers by subclassing `Fetcher<T>`.
 
-###Custom fetchers
+### Custom fetchers
 
 Through custom fetchers you can fetch original values from other sources than network or disk (e.g., Core Data), or even change how Haneke acceses network or disk (e.g., use [Alamofire](https://github.com/Alamofire/Alamofire) for networking instead of `NSURLSession`). A custom fetcher must subclass `Fetcher<T>` and is responsible for:
 
@@ -165,7 +180,7 @@ Through custom fetchers you can fetch original values from other sources than ne
 
 Fetchers are generic, and the only restriction on their type is that it must implement `DataConvertible`. 
 
-##Supporting additional types
+## Supporting additional types
 
 Haneke can cache any type that can be read and saved as data. This is indicated to Haneke by implementing the protocols `DataConvertible` and `DataRepresentable`.
 
@@ -208,11 +223,11 @@ Then creating a `NSDictionary` cache would be as simple as:
 let cache = Cache<NSDictionary>(name: "dictionaries")
 ```
 
-##Roadmap
+## Roadmap
 
 Haneke Swift is in initial development and its public API should not be considered stable.
 
-##License
+## License
 
  Copyright 2014 Hermes Pique ([@hpique](https://twitter.com/hpique))    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2014 Joan Romano ([@joanromano](https://twitter.com/joanromano))   
