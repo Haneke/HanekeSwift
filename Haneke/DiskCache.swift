@@ -74,18 +74,8 @@ public class DiskCache {
 
     public func removeData(key : String) {
         dispatch_async(cacheQueue, {
-            let fileManager = NSFileManager.defaultManager()
             let path = self.pathForKey(key)
-            let attributesOpt : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
-            var error: NSError? = nil
-            let success = fileManager.removeItemAtPath(path, error:&error)
-            if (success) {
-                if let attributes = attributesOpt {
-                    self.size -= attributes.fileSize()
-                }
-            } else {
-                println("Failed to remove key \(key) with error \(error!)")
-            }
+            self.removeFileAtPath(path)
         })
     }
     
@@ -196,15 +186,23 @@ public class DiskCache {
         var error : NSError?
         let fileManager = NSFileManager.defaultManager()
         if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
-            let modificationDate = attributes.fileModificationDate()
             let fileSize = attributes.fileSize()
             if fileManager.removeItemAtPath(path, error: &error) {
                 self.size -= fileSize
             } else {
                 Log.error("Failed to remove file", error)
             }
+        } else if isNoSuchFileError(error) {
+            Log.debug("File not found", error)
         } else {
             Log.error("Failed to remove file", error)
         }
     }
+}
+
+private func isNoSuchFileError(error : NSError?) -> Bool {
+    if let error = error {
+        return NSCocoaErrorDomain == error.domain && error.code == NSFileReadNoSuchFileError
+    }
+    return false
 }
