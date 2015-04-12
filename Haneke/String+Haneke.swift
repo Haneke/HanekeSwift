@@ -29,7 +29,7 @@ extension String {
             for c in resultEnumerator {
                 MD5String.appendFormat("%02x", c)
             }
-            return MD5String
+            return MD5String as String
         } else {
             return self
         }
@@ -38,7 +38,7 @@ extension String {
     func MD5Filename() -> String {
         let MD5String = self.MD5String()
         let pathExtension = self.pathExtension
-        if countElements(pathExtension) > 0 {
+        if count(pathExtension) > 0 {
             return MD5String.stringByAppendingPathExtension(pathExtension) ?? MD5String
         } else {
             return MD5String

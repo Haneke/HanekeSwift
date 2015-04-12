@@ -27,21 +27,16 @@ extension NSFileManager {
                 if !URL2.getResourceValue(&value2, forKey: property, error: nil) { return false }
 
 
-                if let string1 = value1 as? String {
-                    if let string2 = value2 as? String {
-                        return ascending ? string1 < string2 : string2 < string1
-                    }
+                if let string1 = value1 as? String, let string2 = value2 as? String {
+                    return ascending ? string1 < string2 : string2 < string1
                 }
-                if let date1 = value1 as? NSDate {
-                    if let date2 = value2 as? NSDate {
-                        return ascending ? date1 < date2 : date2 < date1
-                    }
+                
+                if let date1 = value1 as? NSDate, let date2 = value2 as? NSDate {
+                    return ascending ? date1 < date2 : date2 < date1
                 }
 
-                if let number1 = value1 as? NSNumber {
-                    if let number2 = value2 as? NSNumber {
-                        return ascending ? number1 < number2 : number2 < number1
-                    }
+                if let number1 = value1 as? NSNumber, let number2 = value2 as? NSNumber {
+                    return ascending ? number1 < number2 : number2 < number1
                 }
 
                 return false

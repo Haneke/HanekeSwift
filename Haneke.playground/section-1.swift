@@ -1,6 +1,4 @@
 // Open this playground from the Haneke workspace after building the Haneke framework. See: http://stackoverflow.com/a/24049021/143378
-// The playground will compile and offer code completion. Unfortunately, as of Xcode 6.0.1 there appears to be a bug that prevents the playground to execute.
-
 import Haneke
 
 /// Initialize a JSON cache and fetch/cache a JSON response.

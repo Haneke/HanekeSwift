@@ -37,7 +37,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     
     let name : String
     
-    let memoryWarningObserver : NSObjectProtocol!
+    var memoryWarningObserver : NSObjectProtocol!
     
     public init(name : String) {
         self.name = name
@@ -78,12 +78,10 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     public func fetch(#key : String, formatName : String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper {
-                if let result = wrapper.value as? T {
-                    fetch.succeed(result)
-                    diskCache.updateAccessDate(dataFromValue(result, format: format), key: key)
-                    return fetch
-                }
+            if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper, let result = wrapper.value as? T {
+                fetch.succeed(result)
+                diskCache.updateAccessDate(self.dataFromValue(result, format: format), key: key)
+                return fetch
             }
 
             self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: { error in
@@ -264,7 +262,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     // MARK: Convenience fetch
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
-    public func fetch(#key : String, value getValue : @autoclosure () -> T.Result, formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#key : String, @autoclosure(escaping) value getValue : () -> T.Result, formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = SimpleFetcher<T>(key: key, value: getValue)
         return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }
