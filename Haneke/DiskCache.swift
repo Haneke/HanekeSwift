@@ -20,9 +20,9 @@ public class DiskCache {
     
     public let path : String
 
-    public var size : Int = 0
+    public var size : UInt64 = 0
 
-    public var capacity : Int = 0 {
+    public var capacity : UInt64 = 0 {
         didSet {
             dispatch_async(self.cacheQueue, {
                 self.controlCapacity()
@@ -36,7 +36,7 @@ public class DiskCache {
         return cacheQueue
     }()
     
-    public init(path : String, capacity : Int = Int.max) {
+    public init(path : String, capacity : UInt64 = UINT64_MAX) {
         self.path = path
         self.capacity = capacity
         dispatch_async(self.cacheQueue, {
@@ -47,7 +47,11 @@ public class DiskCache {
     
     public func setData(@autoclosure(escaping) getData : () -> NSData?, key : String) {
         dispatch_async(cacheQueue, {
-            self.setDataSync(getData(), key: key)
+            if let data = getData() {
+                self.setDataSync(data, key: key)
+            } else {
+                Log.error("Failed to get data for key \(key)")
+            }
         })
     }
     
@@ -77,7 +81,7 @@ public class DiskCache {
             let success = fileManager.removeItemAtPath(path, error:&error)
             if (success) {
                 if let attributes = attributesOpt {
-                    self.size -= Int(attributes.fileSize())
+                    self.size -= attributes.fileSize()
                 }
             } else {
                 println("Failed to remove key \(key) with error \(error!)")
@@ -109,8 +113,11 @@ public class DiskCache {
             let path = self.pathForKey(key)
             let fileManager = NSFileManager.defaultManager()
             if (!self.updateDiskAccessDateAtPath(path) && !fileManager.fileExistsAtPath(path)){
-                let data = getData()
-                self.setDataSync(data, key: key)
+                if let data = getData() {
+                    self.setDataSync(data, key: key)
+                } else {
+                    Log.error("Failed to get data for key \(key)")
+                }
             }
         })
     }
@@ -133,7 +140,7 @@ public class DiskCache {
             for pathComponent in contents {
                 let path = cachePath.stringByAppendingPathComponent(pathComponent)
                 if let attributes : NSDictionary = fileManager.attributesOfItemAtPath(path, error: &error) {
-                    size += Int(attributes.fileSize())
+                    size += attributes.fileSize()
                 } else {
                     Log.error("Failed to read file size of \(path)", error)
                 }
@@ -158,24 +165,20 @@ public class DiskCache {
         }
     }
     
-    private func setDataSync(data: NSData?, key : String) {
+    private func setDataSync(data: NSData, key : String) {
         let path = self.pathForKey(key)
         var error: NSError?
-        if let data = data {
-            let fileManager = NSFileManager.defaultManager()
-            let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
-            let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
-            if (!success) {
-                Log.error("Failed to write key \(key)", error)
-            }
-            if let attributes = previousAttributes {
-                self.size -= Int(attributes.fileSize())
-            }
-            self.size += data.length
-            self.controlCapacity()
-        } else {
-            Log.error("Failed to get data for key \(key)")
+        let fileManager = NSFileManager.defaultManager()
+        let previousAttributes : NSDictionary? = fileManager.attributesOfItemAtPath(path, error: nil)
+        let success = data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite, error:&error)
+        if (!success) {
+            Log.error("Failed to write key \(key)", error)
         }
+        if let attributes = previousAttributes {
+            self.size -= attributes.fileSize()
+        }
+        self.size += UInt64(data.length)
+        self.controlCapacity()
     }
     
     private func updateDiskAccessDateAtPath(path : String) -> Bool {
@@ -196,7 +199,7 @@ public class DiskCache {
             let modificationDate = attributes.fileModificationDate()
             let fileSize = attributes.fileSize()
             if fileManager.removeItemAtPath(path, error: &error) {
-                self.size -= Int(fileSize)
+                self.size -= fileSize
             } else {
                 Log.error("Failed to remove file", error)
             }

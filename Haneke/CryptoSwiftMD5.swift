@@ -76,8 +76,8 @@ class HashBase {
         tmpMessage.appendBytes([0x80]) // append one bit (UInt8 with one bit) to message
         
         // append "0" bit until message length in bits ≡ 448 (mod 512)
-        var msgLength = tmpMessage.length;
-        var counter = 0;
+        var msgLength = tmpMessage.length
+        var counter = 0
         while msgLength % len != (len - 8) {
             counter++
             msgLength++
@@ -130,14 +130,14 @@ class MD5 : HashBase {
         // Step 2. Append Length a 64-bit representation of lengthInBits
         var lengthInBits = (message.length * 8)
         var lengthBytes = lengthInBits.bytes(64 / 8)
-        tmpMessage.appendBytes(reverse(lengthBytes));
+        tmpMessage.appendBytes(reverse(lengthBytes))
         
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
         var leftMessageBytes = tmpMessage.length
         for (var i = 0; i < tmpMessage.length; i = i + chunkSizeBytes, leftMessageBytes -= chunkSizeBytes) {
             let chunk = tmpMessage.subdataWithRange(NSRange(location: i, length: min(chunkSizeBytes,leftMessageBytes)))
-            let bytes = tmpMessage.bytes;
+            let bytes = tmpMessage.bytes
             
             // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15
             var M:[UInt32] = [UInt32](count: 16, repeatedValue: 0)
@@ -190,12 +190,12 @@ class MD5 : HashBase {
             hh[3] = hh[3] &+ D
         }
         
-        var buf: NSMutableData = NSMutableData();
+        var buf: NSMutableData = NSMutableData()
         hh.map({ (item) -> () in
             var i:UInt32 = item.littleEndian
             buf.appendBytes(&i, length: sizeofValue(i))
         })
         
-        return buf.copy() as! NSData;
+        return buf.copy() as! NSData
     }
 }

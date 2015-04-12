@@ -51,9 +51,9 @@ class DiskCacheTests: XCTestCase {
         
         let sut = DiskCache(path: path)
         
-        dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, Int(expectedSize))
-        })
+        dispatch_sync(sut.cacheQueue) {
+            XCTAssertEqual(sut.size, UInt64(expectedSize))
+        }
     }
     
     func testInitWithTwoFiles() {
@@ -65,9 +65,9 @@ class DiskCacheTests: XCTestCase {
         
         let sut = DiskCache(path: directory)
         
-        dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(sut.size, Int(lengths.reduce(0, combine: +)))
-        })
+        dispatch_sync(sut.cacheQueue) {
+            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, combine: +)))
+        }
     }
     
     func testInitCapacityZeroOneExistingFile() {
@@ -77,10 +77,10 @@ class DiskCacheTests: XCTestCase {
         
         let sut = DiskCache(path: directory, capacity : 0)
         
-        dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(Int(sut.size), 0)
+        dispatch_sync(sut.cacheQueue) {
+            XCTAssertEqual(sut.size, 0)
             XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path))
-        })
+        }
     }
     
     func testInitCapacityZeroTwoExistingFiles() {
@@ -139,13 +139,13 @@ class DiskCacheTests: XCTestCase {
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(self.sut.size, Int(data.length))
-        })
+            XCTAssertEqual(self.sut.size, UInt64(data.length))
+        }
     }
     
     func testSetData_WithKeyIncludingSpecialCharacters() {
@@ -156,13 +156,13 @@ class DiskCacheTests: XCTestCase {
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, Int(data.length))
-        })
+            XCTAssertEqual(sut.size, UInt64(data.length))
+        }
     }
     
     func testSetData_WithLongKey() {
@@ -173,13 +173,13 @@ class DiskCacheTests: XCTestCase {
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, Int(data.length))
-        })
+            XCTAssertEqual(sut.size, UInt64(data.length))
+        }
     }
     
     func testSetDataSizeGreaterThanZero() {
@@ -190,9 +190,9 @@ class DiskCacheTests: XCTestCase {
         
         sut.setData(NSData.dataWithLength(lengths[1]), key: keys[1])
         
-        dispatch_sync(sut.cacheQueue, {
-            XCTAssertEqual(self.sut.size, Int(lengths.reduce(0, combine: +)))
-        })
+        dispatch_sync(sut.cacheQueue) {
+            XCTAssertEqual(self.sut.size, UInt64(lengths.reduce(0, combine: +)))
+        }
     }
     
     func testSetDataReplace() {
@@ -204,13 +204,13 @@ class DiskCacheTests: XCTestCase {
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue, {
+        dispatch_sync(sut.cacheQueue) {
             let fileManager = NSFileManager.defaultManager()
             XCTAssertTrue(fileManager.fileExistsAtPath(path))
             let resultData = NSData(contentsOfFile:path)!
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(self.sut.size, Int(data.length))
-        })
+            XCTAssertEqual(self.sut.size, UInt64(data.length))
+        }
     }
     
     func testSetDataNil() {
@@ -376,7 +376,7 @@ class DiskCacheTests: XCTestCase {
             let fileManager = NSFileManager.defaultManager()
             let path = self.sut.pathForKey(keys[1])
             XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(self.sut.size, Int(datas[0].length))
+            XCTAssertEqual(self.sut.size, UInt64(datas[0].length))
         }
     }
     
