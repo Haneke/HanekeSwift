@@ -38,7 +38,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             if let strongSelf = self {
-                strongSelf.privateFetch(fail, succeed)
+                strongSelf.privateFetch(failure: fail, success: succeed)
             }
         })
     }

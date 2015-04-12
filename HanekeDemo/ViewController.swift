@@ -16,10 +16,10 @@ class ViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionView.registerClass(CollectionViewCell.self, forCellWithReuseIdentifier: CellReuseIdentifier)
+        self.collectionView!.registerClass(CollectionViewCell.self, forCellWithReuseIdentifier: CellReuseIdentifier)
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSizeMake(100, 100)
-        self.collectionView.collectionViewLayout = layout
+        self.collectionView!.collectionViewLayout = layout
         
         self.initializeItemsWithURLs()
     }
@@ -32,7 +32,7 @@ class ViewController: UICollectionViewController {
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let CellIdentifier = "Cell"
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: indexPath) as CollectionViewCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: indexPath) as! CollectionViewCell
         let URLString = self.items[indexPath.row]
         let URL = NSURL(string:URLString)!
         cell.imageView.hnk_setImageFromURL(URL)

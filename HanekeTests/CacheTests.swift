@@ -84,7 +84,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         })
         
-        self.waitForExpectationsWithTimeout(0, nil)
+        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testSet_WithCustomFormat_ExpectAsyncSuccess () {
@@ -103,7 +103,7 @@ class CacheTests: XCTestCase {
         })
         
         XCTAssertFalse(finished, "set completed in main queue")
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testSet_WithInexistingFormat () {
@@ -131,7 +131,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(0, nil)
+        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testFetchOnFailure_WithKey_ExpectAsyncFailure () {
@@ -147,7 +147,7 @@ class CacheTests: XCTestCase {
 
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFetch_AfterClearingMemoryCache_WithKey_ExpectAsyncSuccess () {
@@ -168,7 +168,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
     }
@@ -189,7 +189,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
     }
@@ -210,7 +210,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(0, nil)
+        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testFetch_AfterClearingMemoryCache_WithKeyAndFormatWithoutDiskCapacity_ExpectFailure() {
@@ -229,7 +229,7 @@ class CacheTests: XCTestCase {
                 expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFetch_AfterClearingMemoryCache_WithKeyAndFormatWithDiskCapacity_ExpectSuccess() {
@@ -248,7 +248,7 @@ class CacheTests: XCTestCase {
                 expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFetchOnSuccess_WithSyncFetcher_ExpectAsyncSuccess () {
@@ -263,7 +263,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
     }
@@ -281,7 +281,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
     }
@@ -300,7 +300,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(0, nil)
+        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testFetch_AfterSetAndClearingMemoryCache_WithFetcher_ExpectAsyncSuccess () {
@@ -319,7 +319,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
     }
@@ -340,7 +340,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
     }
@@ -366,7 +366,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
         XCTAssertTrue(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
     }
@@ -388,7 +388,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
-        self.waitForExpectationsWithTimeout(0, nil)
+        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     // MARK: remove
@@ -406,7 +406,7 @@ class CacheTests: XCTestCase {
             XCTFail("expected failure")
             expectation.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testRemove_WithExistingKeyInFormat() {
@@ -424,7 +424,7 @@ class CacheTests: XCTestCase {
             XCTFail("expected failure")
             expectation.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testRemove_WithExistingKeyInAnotherFormat() {
@@ -442,7 +442,7 @@ class CacheTests: XCTestCase {
         }) { _ in
             expectation.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testRemove_WithExistingKeyAndInexistingFormat() {
@@ -458,7 +458,7 @@ class CacheTests: XCTestCase {
         }) { _ in
             expectation.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testRemove_WithInexistingKey() {
@@ -480,7 +480,7 @@ class CacheTests: XCTestCase {
             XCTFail("expected failure")
             expectation.fulfill()
         }
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testRemoveAll_AfterNone() {
@@ -502,7 +502,7 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         XCTAssertFalse(fetch.hasSucceeded)
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testUIApplicationDidReceiveMemoryWarningNotification() {
@@ -513,7 +513,7 @@ class CacheTests: XCTestCase {
         
         NSNotificationCenter.defaultCenter().postNotificationName(UIApplicationDidReceiveMemoryWarningNotification, object: nil)
         
-        waitForExpectationsWithTimeout(0, nil)
+        waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     // MARK: Helpers
@@ -552,7 +552,7 @@ class ImageCacheTests: XCTestCase {
         })
         
         XCTAssertFalse(finished, "set completed in main queue")
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFetchOnSuccess_AfterSet_WithKey_ExpectSyncDecompressedImage () {
@@ -567,10 +567,10 @@ class ImageCacheTests: XCTestCase {
                 expectation.fulfill()
             }
             
-            self.waitForExpectationsWithTimeout(0, nil)
+            self.waitForExpectationsWithTimeout(0, handler: nil)
         })
         
-        self.waitForExpectationsWithTimeout(1, nil)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
 }

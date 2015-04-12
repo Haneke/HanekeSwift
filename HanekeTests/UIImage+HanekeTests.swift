@@ -161,7 +161,7 @@ class UIImage_HanekeTests: XCTestCase {
     func _testDecompressedImageUsingColor(color : UIColor = UIColor.greenColor(), colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB(), alphaInfo :CGImageAlphaInfo, bitsPerComponent : size_t = 8) {
         let size = CGSizeMake(10, 20) // Using rectangle to check if image is rotated
         let bitmapInfo = CGBitmapInfo.ByteOrderDefault | CGBitmapInfo(alphaInfo.rawValue)
-        let context = CGBitmapContextCreate(nil, UInt(size.width), UInt(size.height), bitsPerComponent, 0, colorSpace, bitmapInfo)
+        let context = CGBitmapContextCreate(nil, Int(size.width), Int(size.height), bitsPerComponent, 0, colorSpace, bitmapInfo)
     
         CGContextSetFillColorWithColor(context, color.CGColor)
         CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height))
@@ -179,10 +179,10 @@ class UIImage_HanekeTests: XCTestCase {
         let gradientImage = UIImage.imageGradientFromColor()
         
         // Use TIFF because PNG doesn't store EXIF orientation
-        let exifProperties = [kCGImagePropertyOrientation as NSString : Int(orientation.rawValue)] as NSDictionary
+        let exifProperties = NSDictionary(dictionary: [kCGImagePropertyOrientation: Int(orientation.rawValue)])
         let data = NSMutableData()
         let imageDestinationRef = CGImageDestinationCreateWithData(data as CFMutableDataRef, kUTTypeTIFF, 1, nil)
-        CGImageDestinationAddImage(imageDestinationRef, gradientImage.CGImage, exifProperties)
+        CGImageDestinationAddImage(imageDestinationRef, gradientImage.CGImage, exifProperties as CFDictionaryRef)
         CGImageDestinationFinalize(imageDestinationRef)
         
         let image = UIImage(data:data, scale:UIScreen.mainScreen().scale)!

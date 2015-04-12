@@ -35,7 +35,7 @@ public extension HanekeGlobals {
         
         public struct DefaultFormat {
             
-            public static let DiskCapacity : UInt64 = 10 * 1024 * 1024
+            public static let DiskCapacity : Int = 10 * 1024 * 1024
             public static let CompressionQuality : Float = 0.75
             
         }
