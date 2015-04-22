@@ -46,7 +46,7 @@ Using [CocoaPods](http://cocoapods.org/):
 
 ```ruby
 use_frameworks!
-pod 'Haneke', :git => 'https://github.com/Haneke/HanekeSwift.git'
+pod 'HanekeSwift'
 ```
 
 Using [Carthage](https://github.com/Carthage/Carthage):
