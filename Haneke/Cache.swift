@@ -196,7 +196,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
                 }
             }
         }) { data in
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            dispatch_async(dispatch_get_main_queue(), {
                 var value = T.convertFromData(data)
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
