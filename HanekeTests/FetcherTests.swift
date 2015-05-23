@@ -69,4 +69,41 @@ class FetcherTests: XCTestCase {
         cache.removeAll()
     }
     
+    func testCacheMultiFetch() {
+        let dictionary = ["a" : "1", "b" : "2", "c" : "3"]
+        let setExpectation = self.expectationWithDescription("set values")
+        let getExpectation = self.expectationWithDescription("received result dictionary")
+
+        let cache = Cache<NSData>(name: self.name)
+        let format = Format<NSData>(name: self.name)
+        cache.addFormat(format)
+        
+        var setCount = 0
+        let checkSetDone: (()->()) = {
+            if ++setCount >= dictionary.count {
+                setExpectation.fulfill()
+                let keys = Array(dictionary.keys)
+                cache.fetch(keys: keys, formatName: format.name){
+                    (result:[String : NSData]) in
+                    for (key, value) in dictionary {
+                        let storedValueData = result[key]
+                        XCTAssertNotNil(storedValueData)
+                        let storedValue = NSString(data: storedValueData!, encoding: NSUTF8StringEncoding) as? String
+                        XCTAssertNotNil(storedValue)
+                        XCTAssertEqual(value, storedValue!)
+                    }
+                    getExpectation.fulfill()
+                }
+            }
+        }
+        for (key, val) in dictionary {
+            let valueData = val.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+            cache.set(value: valueData!, key: key, formatName: format.name) {data in
+                checkSetDone()
+            }
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        cache.removeAll()
+    }
+    
 }

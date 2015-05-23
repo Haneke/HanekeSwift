@@ -99,6 +99,29 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return fetch
     }
     
+    public func fetch(#keys : [String], formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<[String:T]>.Succeeder? = nil) -> Fetch<[String:T]> {
+        let mainFetch = Cache.buildMultiFetch(success: succeed)
+        var result = [String:T]()
+        var fetchedCount = 0
+        let gotValue = {(key:String, value:T?) -> () in
+            if let value = value {
+                result[key] = value
+            }
+            if(++fetchedCount >= keys.count) {
+                mainFetch.succeed(result)
+            }
+        }
+        for key in keys {
+            self.fetch(key: key, formatName: formatName, failure:
+                { error in
+                    gotValue(key, nil)
+                }) { result in
+                    gotValue(key, result)
+                }
+        }
+        return mainFetch
+    }
+
     public func fetch(#fetcher : Fetcher<T>, formatName : String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
@@ -259,6 +282,14 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         return fetch
     }
     
+    private class func buildMultiFetch(success succeed : Fetch<[String:T]>.Succeeder? = nil) -> Fetch<[String:T]> {
+        let fetch = Fetch<[String:T]>()
+        if let succeed = succeed {
+            fetch.onSuccess(succeed)
+        }
+        return fetch
+    }
+
     // MARK: Convenience fetch
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
