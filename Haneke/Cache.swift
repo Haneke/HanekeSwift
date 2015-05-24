@@ -78,9 +78,12 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     public func set(#values : [String:T], formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : (([String:T]) -> ())? = nil) {
         let totalCount = values.count
         var setCount = 0
+        var setValues = [String:T]()
         for (key, value) in values {
-            self.set(value: value, key: key, formatName: formatName) { _ in
-                if(++setCount == totalCount) { succeed?(values) }
+            self.set(value: value, key: key, formatName: formatName) {
+                setValue in
+                setValues[key] = setValue
+                if(++setCount == totalCount) { succeed?(setValues) }
             }
         }
     }
