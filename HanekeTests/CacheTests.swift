@@ -116,6 +116,31 @@ class CacheTests: XCTestCase {
         // XCAssertThrows(sut.set(value: image, key: key, formatName : self.name))
     }
     
+    func testMultiSet() {
+        let dictionary:[String:String] = ["a" : "1", "b" : "2", "c" : "3"]
+        var dataDictionary = [String:NSData]()
+        for (key, value) in dictionary {
+            dataDictionary[key] = value.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+        }
+        let sut = self.sut!
+        let format = Format<NSData>(name: self.name)
+        sut.addFormat(format)
+        let expectation = self.expectationWithDescription(self.name)
+        sut.set(values: dataDictionary, formatName:format.name) {
+            setDictionary in
+            XCTAssert(setDictionary == dataDictionary)
+            sut.fetch(key: "c", formatName: format.name) {
+                data in
+                let value = NSString(data: data, encoding: NSUTF8StringEncoding) as? String
+                XCTAssertNotNil(value)
+                XCTAssertEqual(value!, "3")
+                expectation.fulfill()
+            }
+            return
+        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+    
     // MARK: fetch
     
     func testFetchOnSuccess_AfterSet_WithKey_ExpectSyncSuccess () {
