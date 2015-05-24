@@ -75,6 +75,16 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         }
     }
     
+    public func set(#values : [String:T], formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : (([String:T]) -> ())? = nil) {
+        let totalCount = values.count
+        var setCount = 0
+        for (key, value) in values {
+            self.set(value: value, key: key, formatName: formatName) { _ in
+                if(++setCount == totalCount) { succeed?(values) }
+            }
+        }
+    }
+    
     public func fetch(#key : String, formatName : String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
@@ -107,7 +117,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             if let value = value {
                 result[key] = value
             }
-            if(++fetchedCount >= keys.count) {
+            if(++fetchedCount == keys.count) {
                 mainFetch.succeed(result)
             }
         }

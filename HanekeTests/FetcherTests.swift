@@ -71,6 +71,11 @@ class FetcherTests: XCTestCase {
     
     func testCacheMultiFetch() {
         let dictionary = ["a" : "1", "b" : "2", "c" : "3"]
+        var dataDictionary = [String:NSData]()
+        for (key, value) in dictionary {
+            dataDictionary[key] = value.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+        }
+
         let setExpectation = self.expectationWithDescription("set values")
         let getExpectation = self.expectationWithDescription("received result dictionary")
 
@@ -78,28 +83,20 @@ class FetcherTests: XCTestCase {
         let format = Format<NSData>(name: self.name)
         cache.addFormat(format)
         
-        var setCount = 0
-        let checkSetDone: (()->()) = {
-            if ++setCount >= dictionary.count {
-                setExpectation.fulfill()
-                let keys = Array(dictionary.keys)
-                cache.fetch(keys: keys, formatName: format.name){
-                    (result:[String : NSData]) in
-                    for (key, value) in dictionary {
-                        let storedValueData = result[key]
-                        XCTAssertNotNil(storedValueData)
-                        let storedValue = NSString(data: storedValueData!, encoding: NSUTF8StringEncoding) as? String
-                        XCTAssertNotNil(storedValue)
-                        XCTAssertEqual(value, storedValue!)
-                    }
-                    getExpectation.fulfill()
+        cache.set(values: dataDictionary, formatName: format.name) {
+            _ in
+            setExpectation.fulfill()
+            let keys = Array(dictionary.keys)
+            cache.fetch(keys: keys, formatName: format.name){
+                (result:[String : NSData]) in
+                for (key, value) in dictionary {
+                    let storedValueData = result[key]
+                    XCTAssertNotNil(storedValueData)
+                    let storedValue = NSString(data: storedValueData!, encoding: NSUTF8StringEncoding) as? String
+                    XCTAssertNotNil(storedValue)
+                    XCTAssertEqual(value, storedValue!)
                 }
-            }
-        }
-        for (key, val) in dictionary {
-            let valueData = val.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-            cache.set(value: valueData!, key: key, formatName: format.name) {data in
-                checkSetDone()
+                getExpectation.fulfill()
             }
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
