@@ -103,6 +103,33 @@ The above call will first attempt to fetch the required JSON from (in order) mem
 
 Further customization can be achieved by using [formats](#formats), [supporting additional types](#supporting-additional-types) or implementing [custom fetchers](#custom-fetchers).
 
+### Setting and fetching multiple keys
+
+Methods are included to set and fetch multiple keys, and run a callback once all are complete.
+
+To set multiple key/value pairs, pass a dictionary with the keys and values set to the values parameter. The callback will receive the dictionary of set values.
+
+```Swift
+let cache = Shared.stringCache
+let dictionary = ["one":"banana", "two":"apples"]
+cache.set(values: dictionary) {
+    setDictionary in
+    println(setDictionary)
+}
+```
+
+To fetch multiple keys, pass an array of keys. The success callback will be a dictionary of found key/value pairs, keys not found will not be present.
+
+```Swift
+let cache = Shared.stringCache
+let keys = ["one","two","three"]
+cache.fetch(keys: keys) {
+    foundDictionary in
+	//Will not have the key "three" present if it was not set
+    println(foundDictionary)
+}
+```
+
 ## Extra ♡ for images
 
 Need to cache and display images? Haneke provides convenience methods for `UIImageView` and `UIButton` with optimizations for `UITableView` and `UICollectionView` cell reuse. Images will be resized appropriately and cached in a shared cache.
