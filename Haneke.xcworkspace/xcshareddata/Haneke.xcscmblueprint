@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C93564C1AFB8B50FF58188F21182F5D0EEAD1C3F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "38C2A0D4F62B675E8C16C8BC1437C7753846C8AC" : 0,
+    "C93564C1AFB8B50FF58188F21182F5D0EEAD1C3F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "539195F9-F4A9-47D6-9C4C-390177E6FBFD",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "38C2A0D4F62B675E8C16C8BC1437C7753846C8AC" : "HanekeSwift\/HanekeTests\/Submodules\/OHHTTPStubs\/",
+    "C93564C1AFB8B50FF58188F21182F5D0EEAD1C3F" : "HanekeSwift\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Haneke",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 203,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Haneke.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/AliSoftware\/OHHTTPStubs.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "38C2A0D4F62B675E8C16C8BC1437C7753846C8AC"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/meteochu\/HanekeSwift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C93564C1AFB8B50FF58188F21182F5D0EEAD1C3F"
+    }
+  ]
+}

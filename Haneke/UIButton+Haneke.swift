@@ -70,7 +70,7 @@ public extension UIButton {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey, wrapper, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -93,7 +93,7 @@ public extension UIButton {
                 if let strongSelf = self {
                     if strongSelf.hnk_shouldCancelImageForKey(fetcher.key) { return }
                     
-                    strongSelf.hnk_setImage(image, state: state, animated: false, success: succeed)
+                    strongSelf.hnk_setImage(image, state: state, animated: animated, success: succeed)
                 }
         }
         animated = true
@@ -154,8 +154,8 @@ public extension UIButton {
      
         if didSetImage { return }
         
-        if let placeHolder = placeholder {
-            self.setBackgroundImage(placeholder, forState: state)
+        if let pHolder = placeholder {
+            self.setBackgroundImage(pHolder, forState: state)
         }
     }
     
@@ -180,7 +180,7 @@ public extension UIButton {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetBackgroundImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetBackgroundImageFetcherKey, wrapper, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -203,7 +203,7 @@ public extension UIButton {
                 if let strongSelf = self {
                     if strongSelf.hnk_shouldCancelBackgroundImageForKey(fetcher.key) { return }
                     
-                    strongSelf.hnk_setBackgroundImage(image, state: state, animated: false, success: succeed)
+                    strongSelf.hnk_setBackgroundImage(image, state: state, animated: animated, success: succeed)
                 }
         }
         animated = true
