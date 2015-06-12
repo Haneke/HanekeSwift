@@ -21,7 +21,7 @@ extension HanekeGlobals {
     
 }
 
-public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
+public class DiskFetcher<T : DataLiteralConvertable> : Fetcher<T> {
     
     let path : String
     var cancelled = false
@@ -34,7 +34,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             if let strongSelf = self {
@@ -49,7 +49,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func privateFetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    private func privateFetch(failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {
         if self.cancelled {
             return
         }
@@ -67,7 +67,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let value : T.Result? = T.convertFromData(data!)
+        let value = T(data:(data as! T.DataLiteralType))
         
         if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")

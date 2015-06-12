@@ -33,7 +33,7 @@ extension HanekeGlobals {
     
 }
 
-public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentable> {
+public class Cache<T : DataLiteralConvertable> {
     
     let name : String
     
@@ -180,7 +180,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
         if let data = format.convertToData?(value) {
             return data
         }
-        return value.asData()
+        return value.toData()
     }
     
     private func fetchFromDiskCache(diskCache : DiskCache, key : String, memoryCache : NSCache, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
@@ -197,8 +197,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         }) { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                var value = T.convertFromData(data)
-                if let value = value {
+                if let value = T(data:(data as! T.DataLiteralType)) {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
                     dispatch_async(dispatch_get_main_queue(), {
                         succeed(descompressedValue)
@@ -262,7 +261,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     // MARK: Convenience fetch
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
-    public func fetch(#key : String, @autoclosure(escaping) value getValue : () -> T.Result, formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(#key : String, @autoclosure(escaping) value getValue : () -> T, formatName : String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = SimpleFetcher<T>(key: key, value: getValue)
         return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }

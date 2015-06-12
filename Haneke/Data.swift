@@ -8,76 +8,63 @@
 
 import UIKit
 
-// See: http://stackoverflow.com/questions/25922152/not-identical-to-self
-public protocol DataConvertible {
-    typealias Result
+public protocol DataLiteralConvertable {
+    typealias DataLiteralType
     
-    static func convertFromData(data:NSData) -> Result?
+    init?(data:DataLiteralType)
+
+    func toData() -> NSData?
 }
 
-public protocol DataRepresentable {
-    
-    func asData() -> NSData!
-}
+public typealias DataLiteralType = NSData
 
-extension UIImage : DataConvertible, DataRepresentable {
+
+extension UIImage : DataLiteralConvertable {
+    public typealias DataLiteralType = NSData
     
-    public typealias Result = UIImage
-    
-    public class func convertFromData(data:NSData) -> Result? {
-        let image = UIImage(data: data)
-        return image
-    }
-    
-    public func asData() -> NSData! {
+    public func toData() -> NSData? {
         return self.hnk_data()
     }
-    
 }
 
-extension String : DataConvertible, DataRepresentable {
-    
-    public typealias Result = String
-    
-    public static func convertFromData(data:NSData) -> Result? {
-        var string = NSString(data: data, encoding: NSUTF8StringEncoding)
-        return string as? Result
+
+extension String : DataLiteralConvertable {
+
+    public init?(data value: NSData) {
+        var buffer = [UInt8](count:value.length, repeatedValue:0)
+        value.getBytes(&buffer, length:value.length)
+        self.init(bytes:buffer, encoding:NSUTF8StringEncoding)
     }
     
-    public func asData() -> NSData! {
+    public func toData() -> NSData? {
         return self.dataUsingEncoding(NSUTF8StringEncoding)
     }
-    
 }
 
-extension NSData : DataConvertible, DataRepresentable {
+extension NSData : DataLiteralConvertable {
+    public typealias DataLiteralType = NSData
     
-    public typealias Result = NSData
-    
-    public class func convertFromData(data:NSData) -> Result? {
-        return data
-    }
-    
-    public func asData() -> NSData! {
+    public func toData() -> NSData? {
         return self
     }
-    
+
 }
 
-public enum JSON : DataConvertible, DataRepresentable {
-    public typealias Result = JSON
+
+public enum JSON : DataLiteralConvertable {
     
     case Dictionary([String:AnyObject])
     case Array([AnyObject])
     
-    public static func convertFromData(data:NSData) -> Result? {
+    
+    public init?(data value: NSData) {
         var error : NSError?
-        if let object : AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: &error) {
+        if let object : AnyObject = NSJSONSerialization.JSONObjectWithData(value, options: NSJSONReadingOptions.allZeros, error: &error) {
             switch (object) {
             case let dictionary as [String:AnyObject]:
-                return JSON.Dictionary(dictionary)
+                self = .Dictionary(dictionary)
             case let array as [AnyObject]:
-                return JSON.Array(array)
+                self = .Array(array)
             default:
                 return nil
             }
@@ -87,7 +74,7 @@ public enum JSON : DataConvertible, DataRepresentable {
         }
     }
     
-    public func asData() -> NSData! {
+    public func toData() -> NSData? {
         switch (self) {
         case .Dictionary(let dictionary):
             return NSJSONSerialization.dataWithJSONObject(dictionary, options: NSJSONWritingOptions.allZeros, error: nil)
