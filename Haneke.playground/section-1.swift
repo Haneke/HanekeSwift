@@ -22,7 +22,7 @@ func example2() {
 /// Set and fetch data from the shared data cache
 func example3() {
     let cache = Shared.dataCache
-    let data = "SGVscCEgSSdtIHRyYXBwZWQgaW4gYSBCYXNlNjQgc3RyaW5nIQ==".asData()
+    let data = "SGVscCEgSSdtIHRyYXBwZWQgaW4gYSBCYXNlNjQgc3RyaW5nIQ==".toData()!
     
     cache.set(value: data, key: "secret")
     

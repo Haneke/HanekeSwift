@@ -9,7 +9,7 @@
 import UIKit
 
 // See: http://stackoverflow.com/questions/25915306/generic-closure-in-protocol
-public class Fetcher<T : DataConvertible> {
+public class Fetcher<T : DataLiteralConvertable> {
 
     public let key : String
     
@@ -17,21 +17,21 @@ public class Fetcher<T : DataConvertible> {
         self.key = key
     }
     
-    func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {}
+    func fetch(failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {}
     
     func cancelFetch() {}
 }
 
-class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
+class SimpleFetcher<T : DataLiteralConvertable> : Fetcher<T> {
     
-    let getValue : () -> T.Result
+    let getValue : () -> T
     
-    init(key : String, @autoclosure(escaping) value getValue : () -> T.Result) {
+    init(key : String, @autoclosure(escaping) value getValue : () -> T) {
         self.getValue = getValue
         super.init(key: key)
     }
     
-    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {
         let value = getValue()
         succeed(value)
     }

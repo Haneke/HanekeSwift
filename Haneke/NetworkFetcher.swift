@@ -23,7 +23,7 @@ extension HanekeGlobals {
     
 }
 
-public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
+public class NetworkFetcher<T : DataLiteralConvertable> : Fetcher<T> {
     
     let URL : NSURL
     
@@ -42,7 +42,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {
         self.cancelled = false
         self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data : NSData!, response : NSURLResponse!, error : NSError!) -> Void in
             if let strongSelf = self {
@@ -59,7 +59,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {
 
         if cancelled { return }
         
@@ -92,8 +92,8 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             self.failWithCode(.MissingData, localizedDescription: description, failure: fail)
             return
         }
-        
-        let value : T.Result? = T.convertFromData(data)
+        let d = data as! T.DataLiteralType
+        let value : T? = T(data: d)
         if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)

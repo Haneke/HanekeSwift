@@ -15,7 +15,7 @@ class ImageDataTests: XCTestCase {
         let image = UIImage.imageGradientFromColor()
         let data = image.hnk_data()
 
-        let result = UIImage.convertFromData(data)
+        let result = UIImage(data: data)
 
         XCTAssertTrue(image.isEqualPixelByPixel(image))
     }
@@ -24,7 +24,7 @@ class ImageDataTests: XCTestCase {
         let image = UIImage.imageGradientFromColor()
         let data = image.hnk_data()
         
-        let result = image.asData()
+        let result = image.toData()!
         
         XCTAssertEqual(result, data)
     }
@@ -37,7 +37,7 @@ class StringDataTests: XCTestCase {
         let string = self.name
         let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
         
-        let result = String.convertFromData(data)
+        let result = String(data: data)
         
         XCTAssertEqual(result!, string)
     }
@@ -46,7 +46,7 @@ class StringDataTests: XCTestCase {
         let string = self.name
         let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
         
-        let result = string.asData()
+        let result = string.toData()!
         
         XCTAssertEqual(result, data)
     }
@@ -58,15 +58,15 @@ class DataDataTests: XCTestCase {
     func testConvertFromData() {
         let data = NSData.dataWithLength(32)
         
-        let result = NSData.convertFromData(data)
+        let result = NSData(data: data)
         
-        XCTAssertEqual(result!, data)
+        XCTAssertEqual(result, data)
     }
     
     func testAsData() {
         let data = NSData.dataWithLength(32)
         
-        let result = data.asData()
+        let result = data.toData()!
         
         XCTAssertEqual(result, data)
     }
@@ -79,7 +79,7 @@ class JSONDataTests: XCTestCase {
         let json = [self.name]
         let data = NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions.allZeros, error: nil)!
         
-        let result = JSON.convertFromData(data)!
+        let result = JSON(data:data)!
         
         switch result {
         case .Dictionary(_):
@@ -94,7 +94,7 @@ class JSONDataTests: XCTestCase {
         let json = ["test": self.name]
         let data = NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions.allZeros, error: nil)!
         
-        let result = JSON.convertFromData(data)!
+        let result = JSON(data:data)!
         
         switch result {
         case .Dictionary(let object):
@@ -107,7 +107,7 @@ class JSONDataTests: XCTestCase {
     func testConvertFromData_WithInvalidData() {
         let data = NSData.dataWithLength(100)
 
-        let result = JSON.convertFromData(data)
+        let result = JSON(data:data)
         
         XCTAssertTrue(result == nil)
     }
@@ -116,7 +116,7 @@ class JSONDataTests: XCTestCase {
         let object = [self.name]
         let json = JSON.Array(object)
         
-        let result = json.asData()
+        let result = json.toData()!
         
         let data = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: nil)!
         XCTAssertEqual(result, data)
@@ -126,7 +126,7 @@ class JSONDataTests: XCTestCase {
         let object = ["test": self.name]
         let json = JSON.Dictionary(object)
         
-        let result = json.asData()
+        let result = json.toData()!
         
         let data = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: nil)!
         XCTAssertEqual(result, data)

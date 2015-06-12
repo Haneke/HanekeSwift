@@ -549,13 +549,13 @@ class UIImageView_HanekeTests: DiskTestCase {
 
 }
 
-class MockFetcher<T : DataConvertible> : Fetcher<T> {
+class MockFetcher<T : DataLiteralConvertable> : Fetcher<T> {
     
     override init(key: String) {
         super.init(key: key)
     }
     
-    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T) -> ()) {
         let error = errorWithCode(0, description: "test")
         fail(error)
     }
