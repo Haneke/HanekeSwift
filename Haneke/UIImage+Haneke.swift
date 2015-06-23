@@ -71,7 +71,7 @@ extension UIImage {
             let decompressedImageRef = CGBitmapContextCreateImage(context)
             
             let scale = UIScreen.mainScreen().scale
-            let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up)
+            let image = UIImage(CGImage: decompressedImageRef!, scale:scale, orientation:UIImageOrientation.Up)
             
             return image
             

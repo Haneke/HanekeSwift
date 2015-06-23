@@ -140,7 +140,6 @@
 		A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		A0EE773119BFDFA500B315A0 /* FetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetcherTests.swift; sourceTree = "<group>"; };
 		A0FDBF9119AD444500326016 /* Format.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
-		A13DE0581B28CD3F000D3A1D /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		D18894C819C340C5008E9E4C /* CGSize+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+HanekeTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -242,7 +241,6 @@
 		A095C94C1980418C00CD0F4C = {
 			isa = PBXGroup;
 			children = (
-				A13DE0581B28CD3F000D3A1D /* MyPlayground.playground */,
 				A095C9581980418C00CD0F4C /* Haneke */,
 				A095C9651980418C00CD0F4C /* HanekeTests */,
 				A0026E9B19C9BFBC004DE0C6 /* HanekeDemo */,
