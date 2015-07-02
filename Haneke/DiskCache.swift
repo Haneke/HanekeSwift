@@ -72,6 +72,16 @@ public class DiskCache {
         })
     }
 
+    public func containsKey(key : String) -> Bool {
+        var result = false
+        dispatch_sync(cacheQueue) {
+            let path = self.pathForKey(key)
+            let fileManager = NSFileManager.defaultManager()
+            result = fileManager.fileExistsAtPath(path)
+        }
+        return result
+    }
+
     public func removeData(key : String) {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
