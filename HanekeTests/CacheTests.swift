@@ -115,7 +115,49 @@ class CacheTests: XCTestCase {
         // See: http://stackoverflow.com/questions/25529625/testing-assertion-in-swift
         // XCAssertThrows(sut.set(value: image, key: key, formatName : self.name))
     }
-    
+
+    // MARK: level
+
+    func testLevelNone() {
+        let key = self.name
+        let level = sut.getLevel(key: key)
+        XCTAssertEqual(level, CacheLevel.None)
+    }
+
+    func testLevelDiskAfterClearingMemory() {
+        let data = NSData.dataWithLength(0)
+        let key = self.name
+
+        sut.set(value: data, key: key)
+
+        let level = sut.getLevel(key: key)
+        XCTAssertEqual(level, CacheLevel.Memory)
+
+        self.clearMemoryCache()
+
+        let levelAfterClearingMemory = sut.getLevel(key: key)
+        XCTAssertEqual(levelAfterClearingMemory, CacheLevel.Disk)
+    }
+
+    func testLevelAfterDiskCapacityReached() {
+        let data = NSData.dataWithLength(1)
+        let key1 = "key1"
+        let key2 = "key2"
+        let format = Format<NSData>(name: self.name, diskCapacity: 1)
+        sut.addFormat(format)
+
+        sut.set(value: data, key: key1, formatName: self.name)
+        self.clearMemoryCache()
+        let levelAfterClearingMemory = sut.getLevel(key: key1, formatName: self.name)
+
+        sut.set(value: data, key: key2, formatName: self.name)
+        let levelAfterOvercapacity = sut.getLevel(key: key1, formatName: self.name)
+
+        XCTAssertEqual(levelAfterClearingMemory, CacheLevel.Disk)
+        XCTAssertEqual(levelAfterOvercapacity, CacheLevel.None)
+    }
+
+
     // MARK: fetch
     
     func testFetchOnSuccess_AfterSet_WithKey_ExpectSyncSuccess () {

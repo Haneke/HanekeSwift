@@ -33,6 +33,12 @@ extension HanekeGlobals {
     
 }
 
+public enum CacheLevel {
+    case Disk
+    case Memory
+    case None
+}
+
 public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentable> {
     
     let name : String
@@ -120,6 +126,17 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             fetch.succeed(value)
         }
         return fetch
+    }
+
+    public func getLevel(#key : String, formatName : String = HanekeGlobals.Cache.OriginalFormatName ) -> CacheLevel {
+      if let (_, memoryCache, diskCache) = self.formats[formatName] {
+        if (memoryCache.objectForKey(key) != nil) {
+          return CacheLevel.Memory
+        } else if (diskCache.containsKey(key)) {
+          return CacheLevel.Disk
+        }
+      }
+      return CacheLevel.None;
     }
 
     public func remove(#key : String, formatName : String = HanekeGlobals.Cache.OriginalFormatName) {

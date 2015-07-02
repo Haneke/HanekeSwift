@@ -147,7 +147,35 @@ class DiskCacheTests: XCTestCase {
             XCTAssertEqual(self.sut.size, UInt64(data.length))
         }
     }
-    
+
+    func testContainsKey() {
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
+        let key = "key1"
+        let notFoundKey = "key2"
+
+        sut.setData(data, key: key)
+        XCTAssertTrue(self.sut.containsKey(key))
+        XCTAssertFalse(self.sut.containsKey(notFoundKey))
+    }
+
+    func testContainsKeyAfterRemovingFile() {
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
+        let key = self.name
+        let path = sut.pathForKey(key)
+
+        sut.setData(data, key: key)
+        XCTAssertTrue(self.sut.containsKey(key))
+
+        dispatch_sync(sut.cacheQueue) {
+            let fileManager = NSFileManager.defaultManager()
+            var error : NSError?
+            fileManager.removeItemAtPath(path, error: &error)
+            XCTAssertNil(error)
+        }
+
+        XCTAssertFalse(self.sut.containsKey(key))
+    }
+
     func testSetData_WithKeyIncludingSpecialCharacters() {
         let sut = self.sut!
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
