@@ -39,8 +39,6 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
     
     var memoryWarningObserver : NSObjectProtocol!
     
-    private let lock = NSLock()
-    
     public init(name : String) {
         self.name = name
         
@@ -199,9 +197,7 @@ public class Cache<T : DataConvertible where T.Result == T, T : DataRepresentabl
             }
         }) { data in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                self.lock.lock()
                 var value = T.convertFromData(data)
-                self.lock.unlock()
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
                     dispatch_async(dispatch_get_main_queue(), {
