@@ -13,7 +13,7 @@ public class DiskCache {
     public class func basePath() -> String {
         let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
         let hanekePathComponent = HanekeGlobals.Domain
-        let basePath = cachesPath.stringByAppendingPathComponent(hanekePathComponent)
+        let basePath = (cachesPath as NSString).stringByAppendingPathComponent(hanekePathComponent)
         // TODO: Do not recaculate basePath value
         return basePath
     }
@@ -31,7 +31,7 @@ public class DiskCache {
     }
 
     public lazy var cacheQueue : dispatch_queue_t = {
-        let queueName = HanekeGlobals.Domain + "." + self.path.lastPathComponent
+        let queueName = HanekeGlobals.Domain + "." + (self.path as NSString).lastPathComponent
         let cacheQueue = dispatch_queue_create(queueName, nil)
         return cacheQueue
     }()
@@ -89,7 +89,7 @@ public class DiskCache {
             do {
                 let contents = try fileManager.contentsOfDirectoryAtPath(cachePath)
                 for pathComponent in contents {
-                    let path = cachePath.stringByAppendingPathComponent(pathComponent)
+                    let path = (cachePath as NSString).stringByAppendingPathComponent(pathComponent)
                     do {
                         try fileManager.removeItemAtPath(path)
                     } catch {
@@ -120,7 +120,7 @@ public class DiskCache {
     public func pathForKey(key : String) -> String {
         let escapedFilename = key.escapedFilename()
         let filename = escapedFilename.characters.count < Int(NAME_MAX) ? escapedFilename : key.MD5Filename()
-        let keyPath = self.path.stringByAppendingPathComponent(filename)
+        let keyPath = (self.path as NSString).stringByAppendingPathComponent(filename)
         return keyPath
     }
     
@@ -133,7 +133,7 @@ public class DiskCache {
         do {
         let contents =  try fileManager.contentsOfDirectoryAtPath(cachePath)
             for pathComponent in contents {
-                let path = cachePath.stringByAppendingPathComponent(pathComponent)
+                let path = (cachePath as NSString).stringByAppendingPathComponent(pathComponent)
                 do {
                     let attributes : NSDictionary = try fileManager.attributesOfItemAtPath(path)
                     size += attributes.fileSize()

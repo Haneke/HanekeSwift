@@ -117,7 +117,7 @@ public extension UIButton {
     func hnk_shouldCancelImageForKey(key:String) -> Bool {
         if self.hnk_imageFetcher?.key == key { return false }
         
-        Log.debug("Cancelled set image for \(key.lastPathComponent)")
+        Log.debug("Cancelled set image for \((key as NSString).lastPathComponent)")
         return true
     }
     
@@ -226,7 +226,7 @@ public extension UIButton {
     func hnk_shouldCancelBackgroundImageForKey(key:String) -> Bool {
         if self.hnk_backgroundImageFetcher?.key == key { return false }
         
-        Log.debug("Cancelled set background image for \(key.lastPathComponent)")
+        Log.debug("Cancelled set background image for \((key as NSString).lastPathComponent)")
         return true
     }
 }
