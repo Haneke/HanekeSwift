@@ -17,6 +17,10 @@ struct Log {
         case Error = "[ERROR]"
     }
     
+    private static func log(level : Level, @autoclosure _ message: () -> String, _ error : ErrorType? = nil) {
+        log(level, message, error as? NSError)
+    }
+    
     private static func log(level : Level, @autoclosure _ message: () -> String, _ error : NSError? = nil) {
         if let error = error {
             NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error);
@@ -25,14 +29,15 @@ struct Log {
         }
     }
     
-    static func debug(@autoclosure message: () -> String, _ error : NSError? = nil) {
+    static func debug(@autoclosure message: () -> String, _ error : ErrorType? = nil) {
         #if DEBUG
             log(.Debug, message, error)
         #endif
     }
     
-    static func error(@autoclosure message: () -> String, _ error : NSError? = nil) {
+    static func error(@autoclosure message: () -> String, _ error : ErrorType? = nil) {
         log(.Error, message, error)
     }
+    
     
 }

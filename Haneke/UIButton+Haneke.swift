@@ -12,7 +12,7 @@ public extension UIButton {
     
     public var hnk_imageFormat : Format<UIImage> {
         let bounds = self.bounds
-            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
+        assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(Mirror(reflecting: self).description) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
             let contentRect = self.contentRectForBounds(bounds)
             let imageInsets = self.imageEdgeInsets
             let scaleMode = self.contentHorizontalAlignment != UIControlContentHorizontalAlignment.Fill || self.contentVerticalAlignment != UIControlContentVerticalAlignment.Fill ? ImageResizer.ScaleMode.AspectFit : ImageResizer.ScaleMode.Fill
@@ -70,7 +70,7 @@ public extension UIButton {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey, wrapper, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -93,7 +93,7 @@ public extension UIButton {
                 if let strongSelf = self {
                     if strongSelf.hnk_shouldCancelImageForKey(fetcher.key) { return }
                     
-                    strongSelf.hnk_setImage(image, state: state, animated: false, success: succeed)
+                    strongSelf.hnk_setImage(image, state: state, animated: animated, success: succeed)
                 }
         }
         animated = true
@@ -117,7 +117,7 @@ public extension UIButton {
     func hnk_shouldCancelImageForKey(key:String) -> Bool {
         if self.hnk_imageFetcher?.key == key { return false }
         
-        Log.debug("Cancelled set image for \(key.lastPathComponent)")
+        Log.debug("Cancelled set image for \((key as NSString).lastPathComponent)")
         return true
     }
     
@@ -125,7 +125,7 @@ public extension UIButton {
         
     public var hnk_backgroundImageFormat : Format<UIImage> {
         let bounds = self.bounds
-            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(reflect(self).summary) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
+            assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(Mirror(reflecting: self).description) \(__FUNCTION__)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
             let imageSize = self.backgroundRectForBounds(bounds).size
             
             return HanekeGlobals.UIKit.formatWithSize(imageSize, scaleMode: .Fill)
@@ -154,8 +154,8 @@ public extension UIButton {
      
         if didSetImage { return }
         
-        if let placeHolder = placeholder {
-            self.setBackgroundImage(placeholder, forState: state)
+        if let pHolder = placeholder {
+            self.setBackgroundImage(pHolder, forState: state)
         }
     }
     
@@ -180,7 +180,7 @@ public extension UIButton {
             if let fetcher = fetcher {
                 wrapper = ObjectWrapper(value: fetcher)
             }
-            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetBackgroundImageFetcherKey, wrapper, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+            objc_setAssociatedObject(self, &HanekeGlobals.UIKit.SetBackgroundImageFetcherKey, wrapper, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -203,7 +203,7 @@ public extension UIButton {
                 if let strongSelf = self {
                     if strongSelf.hnk_shouldCancelBackgroundImageForKey(fetcher.key) { return }
                     
-                    strongSelf.hnk_setBackgroundImage(image, state: state, animated: false, success: succeed)
+                    strongSelf.hnk_setBackgroundImage(image, state: state, animated: animated, success: succeed)
                 }
         }
         animated = true
@@ -226,7 +226,7 @@ public extension UIButton {
     func hnk_shouldCancelBackgroundImageForKey(key:String) -> Bool {
         if self.hnk_backgroundImageFetcher?.key == key { return false }
         
-        Log.debug("Cancelled set background image for \(key.lastPathComponent)")
+        Log.debug("Cancelled set background image for \((key as NSString).lastPathComponent)")
         return true
     }
 }
