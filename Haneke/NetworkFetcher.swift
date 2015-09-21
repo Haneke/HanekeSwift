@@ -73,14 +73,12 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        // Intentionally avoiding `if let` to continue in golden path style.
-        let httpResponse : NSHTTPURLResponse! = response as? NSHTTPURLResponse
-        if httpResponse == nil {
+        guard let httpResponse = response as? NSHTTPURLResponse else {
             Log.debug("Request \(URL.absoluteString) received unknown response \(response)")
             return
         }
         
-        if httpResponse?.statusCode != 200 {
+        if httpResponse.statusCode != 200 {
             let description = NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
             self.failWithCode(.InvalidStatusCode, localizedDescription: description, failure: fail)
             return
@@ -93,15 +91,14 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let value : T.Result? = T.convertFromData(data)
-        if value == nil {
+        guard let value = T.convertFromData(data) else {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: fail)
             return
         }
 
-        dispatch_async(dispatch_get_main_queue()) { succeed(value!) }
+        dispatch_async(dispatch_get_main_queue()) { succeed(value) }
 
     }
     

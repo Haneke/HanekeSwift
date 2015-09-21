@@ -42,7 +42,7 @@ public extension UIImageView {
         
         self.hnk_fetcher = fetcher
         
-            let didSetImage = self.hnk_fetchImageForFetcher(fetcher, format: format, failure: fail, success: succeed)
+        let didSetImage = self.hnk_fetchImageForFetcher(fetcher, format: format, failure: fail, success: succeed)
         
         if didSetImage { return }
      

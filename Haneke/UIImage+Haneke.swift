@@ -54,29 +54,28 @@ extension UIImage {
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let pixelSize = CGSizeMake(self.size.width * self.scale, self.size.height * self.scale)
-        if let context = CGBitmapContextCreate(nil, Int(ceil(pixelSize.width)), Int(ceil(pixelSize.height)), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo.rawValue) {
-            
-            let imageRect = CGRectMake(0, 0, pixelSize.width, pixelSize.height)
-            UIGraphicsPushContext(context)
-            
-            // Flip coordinate system. See: http://stackoverflow.com/questions/506622/cgcontextdrawimage-draws-image-upside-down-when-passed-uiimage-cgimage
-            CGContextTranslateCTM(context, 0, pixelSize.height)
-            CGContextScaleCTM(context, 1.0, -1.0)
-            
-            // UIImage and drawInRect takes into account image orientation, unlike CGContextDrawImage.
-            self.drawInRect(imageRect)
-            UIGraphicsPopContext()
-            if let decompressedImageRef = CGBitmapContextCreateImage(context) {
-                let scale = UIScreen.mainScreen().scale
-                let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up)
-                return image
-            } else {
-                return self
-            }
-            
-        } else {
+        guard let context = CGBitmapContextCreate(nil, Int(ceil(pixelSize.width)), Int(ceil(pixelSize.height)), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo.rawValue) else {
             return self
         }
+
+        let imageRect = CGRectMake(0, 0, pixelSize.width, pixelSize.height)
+        UIGraphicsPushContext(context)
+        
+        // Flip coordinate system. See: http://stackoverflow.com/questions/506622/cgcontextdrawimage-draws-image-upside-down-when-passed-uiimage-cgimage
+        CGContextTranslateCTM(context, 0, pixelSize.height)
+        CGContextScaleCTM(context, 1.0, -1.0)
+        
+        // UIImage and drawInRect takes into account image orientation, unlike CGContextDrawImage.
+        self.drawInRect(imageRect)
+        UIGraphicsPopContext()
+        
+        guard let decompressedImageRef = CGBitmapContextCreateImage(context) else {
+            return self
+        }
+        
+        let scale = UIScreen.mainScreen().scale
+        let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up)
+        return image
     }
-    
+
 }
