@@ -2,7 +2,7 @@
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-Haneke is a lightweight *generic* cache for iOS written in Swift 1.2. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch objects from a url:
+Haneke is a lightweight *generic* cache for iOS written in Swift 2.0. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch objects from a url:
 
 ```swift
 let cache = Cache<JSON>(name: "github")
