@@ -7,9 +7,9 @@ Haneke is a lightweight *generic* cache for iOS written in Swift 1.2. It's desig
 ```swift
 let cache = Cache<JSON>(name: "github")
 let URL = NSURL(string: "https://api.github.com/users/haneke")!
-    
+
 cache.fetch(URL: URL).onSuccess { JSON in
-   println(JSON.dictionary?["bio"])
+    print(JSON.dictionary?["bio"])
 }
 ```
 
@@ -66,8 +66,7 @@ Manually:
 ## Requirements
 
 - iOS 8.0+
-- Xcode 6.3
-
+- Swift 2.0
 
 ## Using the cache
 
@@ -91,11 +90,10 @@ In most cases the value will not be readily available and will have to be fetche
 
 ```Swift
 let cache = Shared.JSONCache
-let cache = Haneke.sharedJSONCache
 let URL = NSURL(string: "https://api.github.com/users/haneke")!
     
 cache.fetch(URL: URL).onSuccess { JSON in
-   println(JSON.dictionary?["bio"])
+   print(JSON.dictionary?["bio"])
 }
 ```
 
