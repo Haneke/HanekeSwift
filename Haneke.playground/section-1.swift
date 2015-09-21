@@ -7,7 +7,7 @@ func example1() {
     let URL = NSURL(string: "https://api.github.com/users/haneke")!
     
     cache.fetch(URL: URL).onSuccess { JSON in
-        println(JSON.dictionary?["bio"])
+        print(JSON.dictionary?["bio"])
     }
 }
 
@@ -27,6 +27,6 @@ func example3() {
     cache.set(value: data, key: "secret")
     
     cache.fetch(key: "secret").onSuccess { data in
-        println(NSString(data:data, encoding:NSUTF8StringEncoding))
+        print(NSString(data:data, encoding:NSUTF8StringEncoding))
     }
 }

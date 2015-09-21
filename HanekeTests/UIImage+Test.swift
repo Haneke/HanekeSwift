@@ -1,5 +1,5 @@
 //
-//  UIImageExtension.swift
+//  UIImage+Test.swift
 //  Haneke
 //
 //  Created by Oriol Blanc Gimeno on 01/08/14.
@@ -25,7 +25,7 @@ extension UIImage {
         UIGraphicsEndImageContext()
         let provider = CGImageGetDataProvider(drawnImage.CGImage)
         let data = CGDataProviderCopyData(provider)
-        return data
+        return data!
     }
     
     class func imageWithColor(color: UIColor, _ size: CGSize = CGSize(width: 1, height: 1), _ opaque: Bool = true) -> UIImage {
@@ -50,7 +50,7 @@ extension UIImage {
         toColor.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
         let gradientComponents = [r1, g1, b1, a1, r2, g2, b2, a2]
         let gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations)
-        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, size.height), 0)
+        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, size.height), CGGradientDrawingOptions())
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image

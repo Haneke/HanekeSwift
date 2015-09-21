@@ -17,7 +17,7 @@ class ImageDataTests: XCTestCase {
 
         let result = UIImage.convertFromData(data)
 
-        XCTAssertTrue(image.isEqualPixelByPixel(image))
+        XCTAssertTrue(image.isEqualPixelByPixel(result!))
     }
     
     func testAsData() {
@@ -77,7 +77,7 @@ class JSONDataTests: XCTestCase {
     
     func testConvertFromData_WithArrayData() {
         let json = [self.name]
-        let data = NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions.allZeros, error: nil)!
+        let data = try! NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions())
         
         let result = JSON.convertFromData(data)!
         
@@ -85,20 +85,20 @@ class JSONDataTests: XCTestCase {
         case .Dictionary(_):
             XCTFail("expected array")
         case .Array(let object):
-            let resultData = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: nil)!
+            let resultData = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
             XCTAssertEqual(resultData, data)
         }
     }
     
     func testConvertFromData_WithDictionaryData() {
         let json = ["test": self.name]
-        let data = NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions.allZeros, error: nil)!
+        let data = try! NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions())
         
         let result = JSON.convertFromData(data)!
         
         switch result {
         case .Dictionary(let object):
-            let resultData = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: nil)!
+            let resultData = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
         case .Array(_):
             XCTFail("expected dictionary")
         }
@@ -118,7 +118,7 @@ class JSONDataTests: XCTestCase {
         
         let result = json.asData()
         
-        let data = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: nil)!
+        let data = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
         XCTAssertEqual(result, data)
     }
     
@@ -128,16 +128,16 @@ class JSONDataTests: XCTestCase {
         
         let result = json.asData()
         
-        let data = NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions.allZeros, error: nil)!
+        let data = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
         XCTAssertEqual(result, data)
     }
     
     func testAsData_InvalidJSON() {
-        let object = ["test": UIImage.imageWithColor(UIColor.redColor())]
-        let json = JSON.Dictionary(object)
-        
         // TODO: Swift doesn't support XCAssertThrows yet.
         // See: http://stackoverflow.com/questions/25529625/testing-assertion-in-swift
+        
+        // let object = ["test": UIImage.imageWithColor(UIColor.redColor())]
+        // let json = JSON.Dictionary(object)
         // XCAssertThrows(json.asData())
     }
     

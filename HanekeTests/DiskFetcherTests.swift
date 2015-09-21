@@ -30,7 +30,7 @@ class DiskFetcherTests: DiskTestCase {
     
     func testFetchImage_Success() {
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
-        let data = UIImagePNGRepresentation(image)
+        let data = UIImagePNGRepresentation(image)!
         data.writeToFile(sut.path, atomically: true)
         
         let expectation = self.expectationWithDescription(self.name)
@@ -83,7 +83,7 @@ class DiskFetcherTests: DiskTestCase {
 
     func testCancelFetch() {
         let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
-        let data = UIImagePNGRepresentation(image)
+        let data = UIImagePNGRepresentation(image)!
         data.writeToFile(directoryPath, atomically: true)
         sut.fetch(failure: { _ in
             XCTFail("Unexpected failure")
@@ -122,7 +122,7 @@ class DiskFetcherTests: DiskTestCase {
     }
     
     func testCacheFetch_Failure() {
-        let path = self.directoryPath.stringByAppendingPathComponent(self.name)
+        let path = (self.directoryPath as NSString).stringByAppendingPathComponent(self.name)
         let expectation = self.expectationWithDescription(self.name)
         let cache = Cache<NSData>(name: self.name)
         

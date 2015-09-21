@@ -18,7 +18,7 @@ class CollectionViewCell: UICollectionViewCell {
         initHelper()
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initHelper()
     }
@@ -27,7 +27,7 @@ class CollectionViewCell: UICollectionViewCell {
         imageView = UIImageView(frame: self.contentView.bounds)
         imageView.clipsToBounds = true
         imageView.contentMode = .ScaleAspectFill
-        imageView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+        imageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         self.contentView.addSubview(imageView)
     }
     

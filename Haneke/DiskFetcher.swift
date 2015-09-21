@@ -54,11 +54,12 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        var error: NSError?
-        let data = NSData(contentsOfFile: self.path, options: NSDataReadingOptions.allZeros, error: &error)
-        if data == nil {
+        let data : NSData
+        do {
+            data = try NSData(contentsOfFile: self.path, options: NSDataReadingOptions())
+        } catch {
             dispatch_async(dispatch_get_main_queue()) {
-                fail(error)
+                fail(error as NSError)
             }
             return
         }
@@ -67,7 +68,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let value : T.Result? = T.convertFromData(data!)
+        let value : T.Result? = T.convertFromData(data)
         
         if value == nil {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")

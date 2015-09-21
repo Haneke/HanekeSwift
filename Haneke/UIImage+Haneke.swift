@@ -28,7 +28,7 @@ extension UIImage {
         }
     }
     
-    func hnk_data(compressionQuality: Float = 1.0) -> NSData! {
+    func hnk_data(compressionQuality compressionQuality: Float = 1.0) -> NSData! {
         let hasAlpha = self.hnk_hasAlpha()
         let data = hasAlpha ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, CGFloat(compressionQuality))
         return data
@@ -43,8 +43,9 @@ extension UIImage {
         var bitmapInfo = originalBitmapInfo
         switch (alphaInfo) {
         case .None:
-            bitmapInfo &= ~CGBitmapInfo.AlphaInfoMask
-            bitmapInfo |= CGBitmapInfo(CGImageAlphaInfo.NoneSkipFirst.rawValue)
+            let rawBitmapInfoWithoutAlpha = bitmapInfo.rawValue & ~CGBitmapInfo.AlphaInfoMask.rawValue
+            let rawBitmapInfo = rawBitmapInfoWithoutAlpha | CGImageAlphaInfo.NoneSkipFirst.rawValue
+            bitmapInfo = CGBitmapInfo(rawValue: rawBitmapInfo)
         case .PremultipliedFirst, .PremultipliedLast, .NoneSkipFirst, .NoneSkipLast:
             break
         case .Only, .Last, .First: // Unsupported
@@ -53,7 +54,7 @@ extension UIImage {
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let pixelSize = CGSizeMake(self.size.width * self.scale, self.size.height * self.scale)
-        if let context = CGBitmapContextCreate(nil, Int(ceil(pixelSize.width)), Int(ceil(pixelSize.height)), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo) {
+        if let context = CGBitmapContextCreate(nil, Int(ceil(pixelSize.width)), Int(ceil(pixelSize.height)), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo.rawValue) {
             
             let imageRect = CGRectMake(0, 0, pixelSize.width, pixelSize.height)
             UIGraphicsPushContext(context)
@@ -65,12 +66,13 @@ extension UIImage {
             // UIImage and drawInRect takes into account image orientation, unlike CGContextDrawImage.
             self.drawInRect(imageRect)
             UIGraphicsPopContext()
-            let decompressedImageRef = CGBitmapContextCreateImage(context)
-            
-            let scale = UIScreen.mainScreen().scale
-            let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up)
-            
-            return image
+            if let decompressedImageRef = CGBitmapContextCreateImage(context) {
+                let scale = UIScreen.mainScreen().scale
+                let image = UIImage(CGImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.Up)
+                return image
+            } else {
+                return self
+            }
             
         } else {
             return self

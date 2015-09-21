@@ -29,7 +29,7 @@ class NetworkFetcherTests: XCTestCase {
     }
 
     func testKey() {
-        XCTAssertEqual(sut.key, URL.absoluteString!)
+        XCTAssertEqual(sut.key, URL.absoluteString)
     }
     
     func testFetchImage_Success() {
