@@ -12,7 +12,7 @@ import XCTest
 class DiskFetcherTests: DiskTestCase {
     
     var sut : DiskFetcher<UIImage>!
-    var path : String!
+    var path: String!
 
     override func setUp() {
         super.setUp()

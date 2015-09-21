@@ -578,7 +578,7 @@ class FailFetcher<T : DataConvertible> : Fetcher<T> {
     
     var error : NSError!
     
-    override init(key : String) {
+    override init(key: String) {
         super.init(key: key)
     }
     

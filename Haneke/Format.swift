@@ -10,7 +10,7 @@ import UIKit
 
 public struct Format<T> {
     
-    public let name : String
+    public let name: String
     
     public let diskCapacity : UInt64
     
@@ -18,7 +18,7 @@ public struct Format<T> {
     
     public var convertToData : (T -> NSData)?
 
-    public init(name : String, diskCapacity : UInt64 = UINT64_MAX, transform : ((T) -> (T))? = nil) {
+    public init(name: String, diskCapacity : UInt64 = UINT64_MAX, transform: ((T) -> (T))? = nil) {
         self.name = name
         self.diskCapacity = diskCapacity
         self.transform = transform
@@ -40,7 +40,7 @@ public struct Format<T> {
 
 public struct ImageResizer {
     
-    public enum ScaleMode : String {
+    public enum ScaleMode: String {
         case Fill = "fill", AspectFit = "aspectfit", AspectFill = "aspectfill", None = "none"
     }
     
@@ -54,7 +54,7 @@ public struct ImageResizer {
     
     public let compressionQuality : Float
     
-    public init(size : CGSize = CGSizeZero, scaleMode : ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality : Float = 1.0) {
+    public init(size: CGSize = CGSizeZero, scaleMode: ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality: Float = 1.0) {
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling

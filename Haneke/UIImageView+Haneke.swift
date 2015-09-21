@@ -22,12 +22,12 @@ public extension UIImageView {
         self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImage(@autoclosure(escaping) image: () -> UIImage, key : String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImage(@autoclosure(escaping) image: () -> UIImage, key: String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, success: succeed)
     }
     
-    public func hnk_setImageFromFile(path : String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    public func hnk_setImageFromFile(path: String, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((NSError?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = DiskFetcher<UIImage>(path: path)
         self.hnk_setImageFromFetcher(fetcher, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }

@@ -24,7 +24,7 @@ extension UIImage : DataConvertible, DataRepresentable {
     
     public typealias Result = UIImage
     
-    public class func convertFromData(data:NSData) -> Result? {
+    public class func convertFromData(data: NSData) -> Result? {
         let image = UIImage(data: data)
         return image
     }
@@ -39,7 +39,7 @@ extension String : DataConvertible, DataRepresentable {
     
     public typealias Result = String
     
-    public static func convertFromData(data:NSData) -> Result? {
+    public static func convertFromData(data: NSData) -> Result? {
         let string = NSString(data: data, encoding: NSUTF8StringEncoding)
         return string as? Result
     }
@@ -54,7 +54,7 @@ extension NSData : DataConvertible, DataRepresentable {
     
     public typealias Result = NSData
     
-    public class func convertFromData(data:NSData) -> Result? {
+    public class func convertFromData(data: NSData) -> Result? {
         return data
     }
     
@@ -70,7 +70,7 @@ public enum JSON : DataConvertible, DataRepresentable {
     case Dictionary([String:AnyObject])
     case Array([AnyObject])
     
-    public static func convertFromData(data:NSData) -> Result? {
+    public static func convertFromData(data: NSData) -> Result? {
         do {
             let object : AnyObject = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions())
             switch (object) {

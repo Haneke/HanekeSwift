@@ -59,7 +59,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data : NSData!, response : NSURLResponse!, error : NSError!, failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    private func onReceiveData(data: NSData!, response: NSURLResponse!, error: NSError!, failure fail: ((NSError?) -> ()), success succeed: (T.Result) -> ()) {
 
         if cancelled { return }
         
@@ -105,7 +105,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
 
     }
     
-    private func failWithCode(code : HanekeGlobals.NetworkFetcher.ErrorCode, localizedDescription : String, failure fail : ((NSError?) -> ())) {
+    private func failWithCode(code: HanekeGlobals.NetworkFetcher.ErrorCode, localizedDescription: String, failure fail: ((NSError?) -> ())) {
         let error = errorWithCode(code.rawValue, description: localizedDescription)
         Log.debug(localizedDescription, error)
         dispatch_async(dispatch_get_main_queue()) { fail(error) }

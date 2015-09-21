@@ -13,7 +13,7 @@ class DiskCacheTests: XCTestCase {
 
     var sut : DiskCache!
     
-    lazy var diskCachePath : String = {
+    lazy var diskCachePath: String = {
         let diskCachePath =  (DiskCache.basePath() as NSString).stringByAppendingPathComponent(self.name)
         try! NSFileManager.defaultManager().createDirectoryAtPath(diskCachePath, withIntermediateDirectories: true, attributes: nil)
         return diskCachePath
@@ -465,7 +465,7 @@ class DiskCacheTests: XCTestCase {
 
     var dataIndex = 0
     
-    func writeDataWithLength(length : Int, directory : String) -> String {
+    func writeDataWithLength(length : Int, directory: String) -> String {
         let data = NSData.dataWithLength(length)
         let path = (directory as NSString).stringByAppendingPathComponent("\(dataIndex)")
         data.writeToFile(path, atomically: true)

@@ -23,10 +23,10 @@ extension HanekeGlobals {
 
 public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
-    let path : String
+    let path: String
     var cancelled = false
     
-    public init(path : String) {
+    public init(path: String) {
         self.path = path
         let key = path
         super.init(key: key)
@@ -34,7 +34,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    public override func fetch(failure fail: ((NSError?) -> ()), success succeed: (T.Result) -> ()) {
         self.cancelled = false
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
             if let strongSelf = self {
@@ -49,7 +49,7 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func privateFetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    private func privateFetch(failure fail: ((NSError?) -> ()), success succeed: (T.Result) -> ()) {
         if self.cancelled {
             return
         }
