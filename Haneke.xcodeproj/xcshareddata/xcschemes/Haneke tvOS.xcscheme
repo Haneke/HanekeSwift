@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "72881C221BC5B681009A1A30"
-               BuildableName = "Haneke-tvOS.framework"
+               BuildableName = "Haneke.framework"
                BlueprintName = "Haneke-tvOS"
                ReferencedContainer = "container:Haneke.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "72881C221BC5B681009A1A30"
-            BuildableName = "Haneke-tvOS.framework"
+            BuildableName = "Haneke.framework"
             BlueprintName = "Haneke-tvOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "72881C221BC5B681009A1A30"
-            BuildableName = "Haneke-tvOS.framework"
+            BuildableName = "Haneke.framework"
             BlueprintName = "Haneke-tvOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>
