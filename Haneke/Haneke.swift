@@ -12,6 +12,10 @@ public struct HanekeGlobals {
     
     public static let Domain = "io.haneke"
     
+    public static let Queue: dispatch_queue_t = {
+        return dispatch_queue_create("io.haneke.callback_queue",  DISPATCH_QUEUE_SERIAL)
+    }()
+    
 }
 
 public struct Shared {

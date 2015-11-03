@@ -60,13 +60,13 @@ public class DiskCache {
             let path = self.pathForKey(key)
             do {
                 let data = try NSData(contentsOfFile: path, options: NSDataReadingOptions())
-                dispatch_async(dispatch_get_main_queue()) {
+                dispatch_async(HanekeGlobals.Queue) {
                     succeed(data)
                 }
                 self.updateDiskAccessDateAtPath(path)
             } catch {
                 if let block = fail {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    dispatch_async(HanekeGlobals.Queue) {
                         block(error as NSError)
                     }
                 }
