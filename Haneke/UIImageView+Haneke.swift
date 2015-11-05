@@ -47,7 +47,9 @@ public extension UIImageView {
         if didSetImage { return }
      
         if let placeholder = placeholder {
-            self.image = placeholder
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.image = placeholder
+            })
         }
     }
     
@@ -121,10 +123,12 @@ public extension UIImageView {
         if let succeed = succeed {
             succeed(image)
         } else {
-            let duration : NSTimeInterval = animated ? 0.1 : 0
-            UIView.transitionWithView(self, duration: duration, options: .TransitionCrossDissolve, animations: {
-                self.image = image
-            }, completion: nil)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                let duration : NSTimeInterval = animated ? 0.1 : 0
+                UIView.transitionWithView(self, duration: duration, options: .TransitionCrossDissolve, animations: {
+                    self.image = image
+                    }, completion: nil)
+            })
         }
     }
     
