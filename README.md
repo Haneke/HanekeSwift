@@ -25,6 +25,8 @@ _Really._
 
 ## Features
 
+[![Join the chat at https://gitter.im/Haneke/HanekeSwift](https://badges.gitter.im/Haneke/HanekeSwift.svg)](https://gitter.im/Haneke/HanekeSwift?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 * Generic cache with out-of-the-box support for `UIImage`, `NSData`, `JSON` and `String`
 * First-level memory cache using `NSCache`
 * Second-level LRU disk cache using the file system
