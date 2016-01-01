@@ -106,7 +106,7 @@ public class DiskCache {
         dispatch_async(cacheQueue, {
             let path = self.pathForKey(key)
             let fileManager = NSFileManager.defaultManager()
-            if (!self.updateDiskAccessDateAtPath(path) && !fileManager.fileExistsAtPath(path)){
+            if (!(fileManager.fileExistsAtPath(path) && self.updateDiskAccessDateAtPath(path))){
                 if let data = getData() {
                     self.setDataSync(data, key: key)
                 } else {
