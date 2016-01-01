@@ -200,7 +200,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                 let value = T.convertFromData(data)
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
-                    dispatch_async(dispatch_get_main_queue(), {
+                    dispatch_async(HanekeGlobals.Queue, {
                         succeed(descompressedValue)
                         let wrapper = ObjectWrapper(value: descompressedValue)
                         memoryCache.setObject(wrapper, forKey: key)
@@ -233,7 +233,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                     }
                 }
                 
-                dispatch_async(dispatch_get_main_queue()) {
+                dispatch_async(HanekeGlobals.Queue) {
                     succeed(formatted)
                 }
             }
