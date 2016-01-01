@@ -40,6 +40,7 @@ public extension HanekeGlobals {
             
         }
         
+        static var SetImageAnimationDuration = 0.1
         static var SetImageFetcherKey = 0
         static var SetBackgroundImageFetcherKey = 1
     }
