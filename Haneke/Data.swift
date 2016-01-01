@@ -25,7 +25,7 @@ extension UIImage : DataConvertible, DataRepresentable {
     public typealias Result = UIImage
     
     public class func convertFromData(data: NSData) -> Result? {
-        let image = UIImage(data: data)
+        let image = UIImage(data: data, scale:UIScreen.mainScreen().scale)
         return image
     }
     
