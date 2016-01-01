@@ -20,12 +20,21 @@ public protocol DataRepresentable {
     func asData() -> NSData!
 }
 
+private let imageSync = NSLock()
+
 extension UIImage : DataConvertible, DataRepresentable {
     
     public typealias Result = UIImage
+
+    static func safeImageWithData(data:NSData) -> Result? {
+        imageSync.lock()
+        let image = UIImage(data:data)
+        imageSync.unlock()
+        return image
+    }
     
     public class func convertFromData(data: NSData) -> Result? {
-        let image = UIImage(data: data)
+        let image = UIImage.safeImageWithData(data)
         return image
     }
     
