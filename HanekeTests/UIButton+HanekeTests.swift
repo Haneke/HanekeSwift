@@ -32,7 +32,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_imageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .AspectFit, allowUpscaling: false, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: formatSize, scaleMode: .AspectFit, allowUpscaling: false, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
         XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
@@ -120,7 +120,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImageFromFile(fetcher.key)
         
-        XCTAssertTrue(sut.imageForState(.Normal)?.isEqualPixelByPixel(image) == true)
+        XCTAssertTrue(sut.imageForState(.Normal)?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_imageFetcher == nil)
     }
     
@@ -209,7 +209,6 @@ class UIButton_HanekeTests: DiskTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")!
-        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, format: format, success:{resultImage in
@@ -241,7 +240,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImageFromFetcher(fetcher)
         
-        XCTAssertTrue(sut.imageForState(.Normal)?.isEqualPixelByPixel(image) == true)
+        XCTAssertTrue(sut.imageForState(.Normal)?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_imageFetcher == nil)
     }
     
@@ -301,7 +300,7 @@ class UIButton_HanekeTests: DiskTestCase {
     func testBackgroundImageFormat_Default() {
         let formatSize = sut.contentRectForBounds(sut.bounds).size
         let format = sut.hnk_backgroundImageFormat
-        let resizer = ImageResizer(size: sut.bounds.size, scaleMode: .Fill, allowUpscaling: true, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
+        let resizer = ImageResizer(size: formatSize, scaleMode: .Fill, allowUpscaling: true, compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
         let image = UIImage.imageWithColor(UIColor.redColor())
         
         XCTAssertEqual(format.diskCapacity, HanekeGlobals.UIKit.DefaultFormat.DiskCapacity)
@@ -482,7 +481,6 @@ class UIButton_HanekeTests: DiskTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")!
-        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setBackgroundImageFromURL(URL, format: format, success:{resultImage in

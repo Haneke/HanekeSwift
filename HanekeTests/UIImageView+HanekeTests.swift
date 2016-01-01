@@ -21,7 +21,6 @@ class UIImageView_HanekeTests: DiskTestCase {
     override func tearDown() {
         OHHTTPStubs.removeAllStubs()
         
-        let format = sut.hnk_format
         let cache = Shared.imageCache
         cache.removeAll()
         super.tearDown()
@@ -290,7 +289,6 @@ class UIImageView_HanekeTests: DiskTestCase {
     }
     
     func testSetImageFromFetcher_Failure() {
-        let image = UIImage.imageWithColor(UIColor.greenColor())
         let key = self.name
         let fetcher = MockFetcher<UIImage>(key:key)
         let expectation = self.expectationWithDescription(self.name)
@@ -499,7 +497,6 @@ class UIImageView_HanekeTests: DiskTestCase {
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")!
-        let fetcher = NetworkFetcher<UIImage>(URL: URL)
         let expectation = self.expectationWithDescription(self.name)
         
         sut.hnk_setImageFromURL(URL, format: format, success:{resultImage in

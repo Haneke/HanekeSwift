@@ -98,12 +98,12 @@ class JSONDataTests: XCTestCase {
         
         switch result {
         case .Dictionary(let object):
-            let resultData = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
+            try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
         case .Array(_):
             XCTFail("expected dictionary")
         }
     }
-    
+
     func testConvertFromData_WithInvalidData() {
         let data = NSData.dataWithLength(100)
 
