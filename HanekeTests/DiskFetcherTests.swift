@@ -83,11 +83,11 @@ class DiskFetcherTests: DiskTestCase {
     }
 
     func testCancelFetch() {
-        let image = UIImage.imageWithColor(UIColor.greenColor(), CGSizeMake(10, 20))
+        let image = UIImage.imageWithColor(UIColor.greenColor())
         let data = UIImagePNGRepresentation(image)!
         data.writeToFile(directoryPath, atomically: true)
-        sut.fetch(failure: { _ in
-            XCTFail("Unexpected failure")
+        sut.fetch(failure: { error in
+            XCTFail("Unexpected failure with error \(error)")
         }) { _ in
             XCTFail("Unexpected success")
         }

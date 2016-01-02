@@ -59,6 +59,9 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             data = try NSData(contentsOfFile: self.path, options: NSDataReadingOptions())
         } catch {
             dispatch_async(dispatch_get_main_queue()) {
+                if self.cancelled {
+                    return
+                }
                 fail(error as NSError)
             }
             return
