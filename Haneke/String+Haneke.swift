@@ -9,14 +9,12 @@
 import Foundation
 
 extension String {
-
+    
     func escapedFilename() -> String {
-        let originalString = self as NSString as CFString
-        let charactersToLeaveUnescaped = " \\" as NSString as CFString // TODO: Add more characters that are valid in paths but not in URLs
-        let legalURLCharactersToBeEscaped = "/:" as NSString as CFString
-        let encoding = CFStringBuiltInEncodings.UTF8.rawValue
-        let escapedPath = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, originalString, charactersToLeaveUnescaped, legalURLCharactersToBeEscaped, encoding)
-        return escapedPath as NSString as String
+        return [ "\0":"%00", ":":"%3A", "/":"%2F" ]
+            .reduce(self.componentsSeparatedByString("%").joinWithSeparator("%25")) {
+                str, m in str.componentsSeparatedByString(m.0).joinWithSeparator(m.1)
+        }
     }
     
     func MD5String() -> String {
