@@ -245,7 +245,8 @@ class DiskCacheTests: XCTestCase {
             expectation.fulfill()
             XCTAssertEqual($0, data)
         })
-        
+
+        dispatch_sync(sut.cacheQueue) {}
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -260,7 +261,8 @@ class DiskCacheTests: XCTestCase {
             XCTFail("Expected failure")
             expectation.fulfill()
         }
-        
+
+        dispatch_sync(sut.cacheQueue) {}
         self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
@@ -297,18 +299,16 @@ class DiskCacheTests: XCTestCase {
             expectation.fulfill()
             XCTAssertEqual($0, data)
         })
-        
-        dispatch_sync(sut.cacheQueue) {
-            self.waitForExpectationsWithTimeout(0, handler: nil)
-            
-            let attributes = try! fileManager.attributesOfItemAtPath(path)
-            let accessDate = attributes[NSFileModificationDate] as! NSDate
-            let now = NSDate()
-            let interval = accessDate.timeIntervalSinceDate(now)
-            XCTAssertEqualWithAccuracy(interval, 0, accuracy: 1)
-        }
+
+        dispatch_sync(sut.cacheQueue) {}
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+
+        let attributes = try! fileManager.attributesOfItemAtPath(path)
+        let accessDate = attributes[NSFileModificationDate] as! NSDate
+        let interval = accessDate.timeIntervalSinceDate(now)
+        XCTAssertEqualWithAccuracy(interval, 0, accuracy: 1)
     }
-    
+
     func testUpdateAccessDateFileInDisk() {
         let now = NSDate()
         let data = NSData.dataWithLength(10)
