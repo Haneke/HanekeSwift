@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C9E04E198C03F80083574B /* UIImage+Test.swift */; };
+		63387B981C37728500E3800E /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63387B971C37728500E3800E /* OHHTTPStubs.framework */; };
 		87BCE4721C37551C0040B92C /* AsyncFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4711C37551C0040B92C /* AsyncFetcher.swift */; };
 		87BCE4741C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */; };
 		87BCE4771C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4761C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift */; };
@@ -43,7 +44,6 @@
 		A06EE28019B18C7800572D17 /* String+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE27F19B18C7800572D17 /* String+Haneke.swift */; };
 		A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE28119B18FE600572D17 /* String+HanekeTests.swift */; };
 		A0720DEA19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
-		A079D3071ADADBD100B18540 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */; };
 		A095C95C1980418C00CD0F4C /* Haneke.h in Headers */ = {isa = PBXBuildFile; fileRef = A095C95B1980418C00CD0F4C /* Haneke.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A095C973198041D100CD0F4C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
 		A095C975198045D200CD0F4C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* CacheTests.swift */; };
@@ -62,6 +62,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		63387B951C3770A100E3800E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A095C9551980418C00CD0F4C;
+			remoteInfo = Haneke;
+		};
 		A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
@@ -74,6 +81,7 @@
 /* Begin PBXFileReference section */
 		36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Swift.swift"; sourceTree = "<group>"; };
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
+		63387B971C37728500E3800E /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OHHTTPStubs.framework; path = Carthage/Build/iOS/OHHTTPStubs.framework; sourceTree = SOURCE_ROOT; };
 		87BCE4711C37551C0040B92C /* AsyncFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncFetcher.swift; sourceTree = "<group>"; };
 		87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+Haneke.swift"; sourceTree = "<group>"; };
 		87BCE4761C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+HanekeTests.swift"; sourceTree = "<group>"; };
@@ -93,7 +101,6 @@
 		A00D360119C355C30007586E /* NetworkFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
 		A00D360319C36E680007586E /* NSURLResponse+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLResponse+Haneke.swift"; sourceTree = "<group>"; };
 		A00D364819C6D8870007586E /* NetworkFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcherTests.swift; sourceTree = "<group>"; };
-		A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HanekeTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A00D364F19C6E1050007586E /* NSURLResponse+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLResponse+HanekeTests.swift"; sourceTree = "<group>"; };
 		A00D365419C6E9BE0007586E /* XCTestCase+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Test.swift"; sourceTree = "<group>"; };
 		A01E148219D7FA54000247ED /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
@@ -109,7 +116,6 @@
 		A06EE27F19B18C7800572D17 /* String+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Haneke.swift"; sourceTree = "<group>"; };
 		A06EE28119B18FE600572D17 /* String+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HanekeTests.swift"; sourceTree = "<group>"; };
 		A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoSwiftMD5.swift; sourceTree = "<group>"; };
-		A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OHHTTPStubs.framework; path = "../../../../../../../../workspace/HanekeSwift/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos/OHHTTPStubs.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C9561980418C00CD0F4C /* Haneke.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Haneke.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C95A1980418C00CD0F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A095C95B1980418C00CD0F4C /* Haneke.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Haneke.h; sourceTree = "<group>"; };
@@ -152,7 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				87BCE4791C3767880040B92C /* Haneke.framework in Frameworks */,
-				A079D3071ADADBD100B18540 /* OHHTTPStubs.framework in Frameworks */,
+				63387B981C37728500E3800E /* OHHTTPStubs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,7 +229,7 @@
 		A079D3081ADADC2200B18540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */,
+				63387B971C37728500E3800E /* OHHTTPStubs.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -291,7 +297,6 @@
 				A01E148819D7FEF7000247ED /* FetchTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
 				A079D3081ADADC2200B18540 /* Frameworks */,
-				A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */,
 				A03F7E7F19BF60040002511F /* HanekeTests.swift */,
 				A00D364819C6D8870007586E /* NetworkFetcherTests.swift */,
 				A095C9661980418C00CD0F4C /* Supporting Files */,
@@ -391,10 +396,12 @@
 				A095C95D1980418C00CD0F4C /* Sources */,
 				A095C95E1980418C00CD0F4C /* Frameworks */,
 				A095C95F1980418C00CD0F4C /* Resources */,
+				63387B991C37760000E3800E /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				63387B961C3770A100E3800E /* PBXTargetDependency */,
 			);
 			name = HanekeTests;
 			productName = HanekeTests;
@@ -470,6 +477,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		63387B991C37760000E3800E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/OHHTTPStubs.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A0026E9619C9BFBC004DE0C6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -540,6 +564,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		63387B961C3770A100E3800E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A095C9551980418C00CD0F4C /* Haneke */;
+			targetProxy = 63387B951C3770A100E3800E /* PBXContainerItemProxy */;
+		};
 		A0026EC119C9C02A004DE0C6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A095C9551980418C00CD0F4C /* Haneke */;
@@ -724,7 +753,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
-					"$(PROJECT_DIR)/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -747,7 +776,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
-					"$(PROJECT_DIR)/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = HanekeTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
