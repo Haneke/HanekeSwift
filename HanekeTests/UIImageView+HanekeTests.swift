@@ -233,6 +233,24 @@ class UIImageView_HanekeTests: DiskTestCase {
         XCTAssertTrue(sut.image?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_fetcher == nil)
     }
+
+    func testSetImageFromFetcher_Hit_Animated() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let fetcher = AsyncFetcher<UIImage>(key: key, value: image)
+        let expectedImage = sut.hnk_format.apply(image)
+
+        sut.hnk_setImageFromFetcher(fetcher)
+        XCTAssertTrue(sut.hnk_fetcher === fetcher)
+        XCTAssertNil(sut.image)
+
+        self.wait(1) {
+            return self.sut.image != nil
+        }
+
+        XCTAssertTrue(sut.image?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertNil(sut.hnk_fetcher)
+    }
     
     func testSetImageFromFetcher_ImageSet_MemoryMiss() {
         let previousImage = UIImage.imageWithColor(UIColor.redColor())

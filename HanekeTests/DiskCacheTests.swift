@@ -246,9 +246,7 @@ class DiskCacheTests: XCTestCase {
             XCTAssertEqual($0, data)
         })
         
-        dispatch_sync(sut.cacheQueue) {
-            self.waitForExpectationsWithTimeout(0, handler: nil)
-        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFetchData_Inexisting() {
@@ -263,9 +261,7 @@ class DiskCacheTests: XCTestCase {
             expectation.fulfill()
         }
         
-        dispatch_sync(sut.cacheQueue) {
-            self.waitForExpectationsWithTimeout(0, handler: nil)
-        }
+        self.waitForExpectationsWithTimeout(1, handler: nil)
     }
     
     func testFetchData_Inexisting_NilFailureBlock() {
@@ -279,6 +275,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testFetchData_UpdateAccessDate() {
+        let now = NSDate()
         let data = NSData.dataWithLength(19)
         let key = self.name
         sut.setData(data, key : key)
@@ -293,7 +290,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue) {
             let attributes = try! fileManager.attributesOfItemAtPath(path)
             let accessDate = attributes[NSFileModificationDate] as! NSDate
-            XCTAssertEqual(accessDate, NSDate.distantPast())
+            XCTAssertTrue(accessDate.laterDate(now).isEqualToDate(now))
         }
         
         sut.fetchData(key: key, success: {
@@ -313,6 +310,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testUpdateAccessDateFileInDisk() {
+        let now = NSDate()
         let data = NSData.dataWithLength(10)
         let key = self.name
         sut.setData(data, key : key)
@@ -326,7 +324,7 @@ class DiskCacheTests: XCTestCase {
         dispatch_sync(sut.cacheQueue) {
             let attributes = try! fileManager.attributesOfItemAtPath(path)
             let accessDate = attributes[NSFileModificationDate] as! NSDate
-            XCTAssertEqual(accessDate, NSDate.distantPast())
+            XCTAssertTrue(accessDate.laterDate(now).isEqualToDate(now))
         }
         
         sut.updateAccessDate(data, key: key)
