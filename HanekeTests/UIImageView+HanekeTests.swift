@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import OHHTTPStubs
 
 class UIImageView_HanekeTests: DiskTestCase {
 
@@ -437,7 +438,7 @@ class UIImageView_HanekeTests: DiskTestCase {
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
-                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+                return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")!
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
@@ -460,7 +461,7 @@ class UIImageView_HanekeTests: DiskTestCase {
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
-                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil).responseTime(0.1)
+                return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil).responseTime(0.1)
         })
         let URL1 = NSURL(string: "http://haneke.io/1.png")!
         sut.contentMode = .Center // No resizing
@@ -512,7 +513,7 @@ class UIImageView_HanekeTests: DiskTestCase {
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
-                return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+                return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let URL = NSURL(string: "http://haneke.io")!
         let expectation = self.expectationWithDescription(self.name)
