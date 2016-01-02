@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import OHHTTPStubs
 @testable import Haneke
 
 class NetworkFetcherTests: XCTestCase {
@@ -39,7 +40,7 @@ class NetworkFetcherTests: XCTestCase {
             return true
         }, withStubResponse: { _ in
             let data = UIImagePNGRepresentation(image)
-            return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+            return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let expectation = self.expectationWithDescription(self.name)
         
@@ -129,7 +130,7 @@ class NetworkFetcherTests: XCTestCase {
             return true
         }, withStubResponse: { _ in
             let data = UIImagePNGRepresentation(image)
-            return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+            return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         sut.fetch(failure: {_ in
             XCTFail("unexpected failure")
@@ -158,7 +159,7 @@ class NetworkFetcherTests: XCTestCase {
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
-                return OHHTTPStubsResponse(data: data, statusCode: statusCode, headers:nil)
+                return OHHTTPStubsResponse(data: data!, statusCode: statusCode, headers:nil)
         })
         let expectation = self.expectationWithDescription(self.name)
         sut.cancelFetch()
