@@ -62,6 +62,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		63387B951C3770A100E3800E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A095C9551980418C00CD0F4C;
+			remoteInfo = Haneke;
+		};
 		A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
@@ -395,6 +402,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				63387B961C3770A100E3800E /* PBXTargetDependency */,
 			);
 			name = HanekeTests;
 			productName = HanekeTests;
@@ -540,6 +548,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		63387B961C3770A100E3800E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A095C9551980418C00CD0F4C /* Haneke */;
+			targetProxy = 63387B951C3770A100E3800E /* PBXContainerItemProxy */;
+		};
 		A0026EC119C9C02A004DE0C6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A095C9551980418C00CD0F4C /* Haneke */;
