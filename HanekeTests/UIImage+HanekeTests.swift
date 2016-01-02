@@ -10,6 +10,7 @@ import UIKit
 import XCTest
 import ImageIO
 import MobileCoreServices
+@testable import Haneke
 
 enum ExifOrientation : UInt32 {
     case Up = 1

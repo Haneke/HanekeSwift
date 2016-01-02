@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import XCTest
+@testable import Haneke
 
 class CacheTests: XCTestCase {
     

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+@testable import Haneke
 
 class AsyncFetcher<T : DataConvertible> : Fetcher<T> {
 

@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+@testable import Haneke
 
 class UIButton_HanekeTests: DiskTestCase {
     

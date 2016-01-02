@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import Haneke
 
 class NSFileManager_HanekeTests: DiskTestCase {
     
