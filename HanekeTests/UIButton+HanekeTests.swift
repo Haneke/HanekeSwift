@@ -220,6 +220,24 @@ class UIButton_HanekeTests: DiskTestCase {
     }
     
     // MARK: setImageFromFetcher
+
+    func testSetImageFromFetcher_Hit_Animated_UIControlStateSelected() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let fetcher = AsyncFetcher<UIImage>(key: key, value: image)
+        let expectedImage = sut.hnk_imageFormat.apply(image)
+
+        sut.hnk_setImageFromFetcher(fetcher, state: .Selected)
+        XCTAssertTrue(sut.hnk_imageFetcher === fetcher)
+        XCTAssertNil(sut.imageForState(.Selected))
+
+        self.wait(1) {
+            return self.sut.imageForState(.Selected) != nil
+        }
+
+        XCTAssertTrue(sut.imageForState(.Selected)?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertNil(sut.hnk_imageFetcher)
+    }
     
     func testSetImageFromFetcher_MemoryMiss_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
@@ -492,6 +510,24 @@ class UIButton_HanekeTests: DiskTestCase {
     }
     
     // MARK: setBackgroundImageFromFetcher
+
+    func testSetBackgroundImageFromFetcher_Hit_Animated_UIControlStateSelected() {
+        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let key = self.name
+        let fetcher = AsyncFetcher<UIImage>(key: key, value: image)
+        let expectedImage = sut.hnk_backgroundImageFormat.apply(image)
+
+        sut.hnk_setBackgroundImageFromFetcher(fetcher, state: .Selected)
+        XCTAssertTrue(sut.hnk_backgroundImageFetcher === fetcher)
+        XCTAssertNil(sut.backgroundImageForState(.Selected))
+
+        self.wait(1) {
+            return self.sut.backgroundImageForState(.Selected) != nil
+        }
+
+        XCTAssertTrue(sut.backgroundImageForState(.Selected)?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertNil(sut.hnk_backgroundImageFetcher)
+    }
     
     func testSetBackgroundImageFromFetcher_MemoryMiss_UIControlStateSelected() {
         let image = UIImage.imageWithColor(UIColor.greenColor())
