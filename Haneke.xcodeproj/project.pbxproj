@@ -11,6 +11,9 @@
 		36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C9E04E198C03F80083574B /* UIImage+Test.swift */; };
 		87BCE4721C37551C0040B92C /* AsyncFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4711C37551C0040B92C /* AsyncFetcher.swift */; };
+		87BCE4741C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */; };
+		87BCE4771C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4761C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift */; };
+		87BCE4781C37663A0040B92C /* NSHTTPURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */; };
 		8C0D39C119CF4BE000452BC4 /* DiskFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */; };
 		8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
 		8C0D39C719CF4D2D00452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
@@ -91,6 +94,8 @@
 		36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Swift.swift"; sourceTree = "<group>"; };
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
 		87BCE4711C37551C0040B92C /* AsyncFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncFetcher.swift; sourceTree = "<group>"; };
+		87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+Haneke.swift"; sourceTree = "<group>"; };
+		87BCE4761C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSHTTPURLResponse+HanekeTests.swift"; sourceTree = "<group>"; };
 		8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcherTests.swift; sourceTree = "<group>"; };
 		8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcher.swift; sourceTree = "<group>"; };
 		8C12904A19EE5B040002B336 /* UIView+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Haneke.swift"; sourceTree = "<group>"; };
@@ -201,6 +206,7 @@
 				A06EE28119B18FE600572D17 /* String+HanekeTests.swift */,
 				A0D7D6881997C4C4000CAF46 /* UIImage+HanekeTests.swift */,
 				A00D364F19C6E1050007586E /* NSURLResponse+HanekeTests.swift */,
+				87BCE4761C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -329,6 +335,7 @@
 				A06EE27F19B18C7800572D17 /* String+Haneke.swift */,
 				A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */,
 				A00D360319C36E680007586E /* NSURLResponse+Haneke.swift */,
+				87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -507,6 +514,7 @@
 				A0E8BFDC19CCAE1D00A4E2B0 /* Data.swift in Sources */,
 				36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */,
 				A03F7E8219BF94AA0002511F /* Fetcher.swift in Sources */,
+				87BCE4741C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift in Sources */,
 				A095C973198041D100CD0F4C /* Cache.swift in Sources */,
 				A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */,
 				8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */,
@@ -544,10 +552,12 @@
 				8C12904F19EE64EB0002B336 /* UIView+Haneke.swift in Sources */,
 				A0E8BFDD19CCAE1D00A4E2B0 /* Data.swift in Sources */,
 				A00D365519C6E9BE0007586E /* XCTestCase+Test.swift in Sources */,
+				87BCE4771C3764000040B92C /* NSHTTPURLResponse+HanekeTests.swift in Sources */,
 				A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */,
 				A06EE27519AE1A6A00572D17 /* FormatTests.swift in Sources */,
 				8CD6E2A319E3481900F44FCF /* UIButton+Haneke.swift in Sources */,
 				A05F58FA19CCB1DA0009EBDE /* DataTests.swift in Sources */,
+				87BCE4781C37663A0040B92C /* NSHTTPURLResponse+Haneke.swift in Sources */,
 				36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */,
 				A01E148419D7FA54000247ED /* Fetch.swift in Sources */,
 				87BCE4721C37551C0040B92C /* AsyncFetcher.swift in Sources */,
