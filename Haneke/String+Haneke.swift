@@ -9,10 +9,11 @@
 import Foundation
 
 extension String {
-
+    
     func escapedFilename() -> String {
-        return [ "%":"%25", "\0":"%00", ":":"%3A", "/":"%2F" ].reduce(self) {
-            str, m in str.componentsSeparatedByString(m.0).joinWithSeparator(m.1)
+        return [ "\0":"%00", ":":"%3A", "/":"%2F" ]
+            .reduce(self.componentsSeparatedByString("%").joinWithSeparator("%25")) {
+                str, m in str.componentsSeparatedByString(m.0).joinWithSeparator(m.1)
         }
     }
     
