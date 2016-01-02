@@ -10,6 +10,8 @@
 		36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36BB64F619BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C9E04E198C03F80083574B /* UIImage+Test.swift */; };
+		63603A4C1C375D6B00424132 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
+		63603A4E1C375DDC00424132 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63603A4D1C375DDC00424132 /* OHHTTPStubs.framework */; };
 		8C0D39C119CF4BE000452BC4 /* DiskFetcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */; };
 		8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
 		8C0D39C719CF4D2D00452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
@@ -52,7 +54,6 @@
 		A06EE28419B195B300572D17 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
 		A0720DEA19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
 		A0720DEB19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
-		A079D3071ADADBD100B18540 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */; };
 		A095C95C1980418C00CD0F4C /* Haneke.h in Headers */ = {isa = PBXBuildFile; fileRef = A095C95B1980418C00CD0F4C /* Haneke.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A095C973198041D100CD0F4C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
 		A095C975198045D200CD0F4C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* CacheTests.swift */; };
@@ -63,7 +64,6 @@
 		A0C6BA3C19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3B19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift */; };
 		A0C6BA3D19ACA216007111E9 /* NSFileManager+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3919AC0D1E007111E9 /* NSFileManager+Haneke.swift */; };
 		A0C6BA3F19ACA3C4007111E9 /* DiskTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3E19ACA3C4007111E9 /* DiskTestCase.swift */; };
-		A0D7D64D1994E1EF000CAF46 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
 		A0D7D68119978F9A000CAF46 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D68019978F9A000CAF46 /* DiskCache.swift */; };
 		A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
 		A0D7D6861997B57A000CAF46 /* DiskCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6851997B57A000CAF46 /* DiskCacheTests.swift */; };
@@ -89,6 +89,7 @@
 /* Begin PBXFileReference section */
 		36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Swift.swift"; sourceTree = "<group>"; };
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
+		63603A4D1C375DDC00424132 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OHHTTPStubs.framework; path = Carthage/Build/iOS/OHHTTPStubs.framework; sourceTree = SOURCE_ROOT; };
 		8C0D39C019CF4BE000452BC4 /* DiskFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcherTests.swift; sourceTree = "<group>"; };
 		8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskFetcher.swift; sourceTree = "<group>"; };
 		8C12904A19EE5B040002B336 /* UIView+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Haneke.swift"; sourceTree = "<group>"; };
@@ -105,7 +106,6 @@
 		A00D360119C355C30007586E /* NetworkFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
 		A00D360319C36E680007586E /* NSURLResponse+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLResponse+Haneke.swift"; sourceTree = "<group>"; };
 		A00D364819C6D8870007586E /* NetworkFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcherTests.swift; sourceTree = "<group>"; };
-		A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HanekeTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A00D364F19C6E1050007586E /* NSURLResponse+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLResponse+HanekeTests.swift"; sourceTree = "<group>"; };
 		A00D365419C6E9BE0007586E /* XCTestCase+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Test.swift"; sourceTree = "<group>"; };
 		A01E148219D7FA54000247ED /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
@@ -121,7 +121,6 @@
 		A06EE27F19B18C7800572D17 /* String+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Haneke.swift"; sourceTree = "<group>"; };
 		A06EE28119B18FE600572D17 /* String+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+HanekeTests.swift"; sourceTree = "<group>"; };
 		A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoSwiftMD5.swift; sourceTree = "<group>"; };
-		A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OHHTTPStubs.framework; path = "../../../../../../../../workspace/HanekeSwift/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos/OHHTTPStubs.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C9561980418C00CD0F4C /* Haneke.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Haneke.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C95A1980418C00CD0F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A095C95B1980418C00CD0F4C /* Haneke.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Haneke.h; sourceTree = "<group>"; };
@@ -163,7 +162,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A079D3071ADADBD100B18540 /* OHHTTPStubs.framework in Frameworks */,
+				63603A4E1C375DDC00424132 /* OHHTTPStubs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,7 +232,7 @@
 		A079D3081ADADC2200B18540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A079D3061ADADBD100B18540 /* OHHTTPStubs.framework */,
+				63603A4D1C375DDC00424132 /* OHHTTPStubs.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -301,7 +300,6 @@
 				A01E148819D7FEF7000247ED /* FetchTests.swift */,
 				A06EE27419AE1A6A00572D17 /* FormatTests.swift */,
 				A079D3081ADADC2200B18540 /* Frameworks */,
-				A00D364B19C6DB360007586E /* HanekeTests-Bridging-Header.h */,
 				A03F7E7F19BF60040002511F /* HanekeTests.swift */,
 				A00D364819C6D8870007586E /* NetworkFetcherTests.swift */,
 				A095C9661980418C00CD0F4C /* Supporting Files */,
@@ -529,7 +527,6 @@
 				A09B13B719C91B1E009CC339 /* UIImageView+Haneke.swift in Sources */,
 				A0C6BA3C19ACA1A5007111E9 /* NSFileManager+HanekeTests.swift in Sources */,
 				8C0D39C719CF4D2D00452BC4 /* DiskFetcher.swift in Sources */,
-				A0D7D64D1994E1EF000CAF46 /* Cache.swift in Sources */,
 				A03F7E8019BF60040002511F /* HanekeTests.swift in Sources */,
 				A06EE28419B195B300572D17 /* UIImage+Haneke.swift in Sources */,
 				A0D7D6861997B57A000CAF46 /* DiskCacheTests.swift in Sources */,
@@ -539,6 +536,7 @@
 				A00D365119C6E1100007586E /* NSURLResponse+Haneke.swift in Sources */,
 				8C0D39C119CF4BE000452BC4 /* DiskFetcherTests.swift in Sources */,
 				8C12904F19EE64EB0002B336 /* UIView+Haneke.swift in Sources */,
+				63603A4C1C375D6B00424132 /* Cache.swift in Sources */,
 				A0E8BFDD19CCAE1D00A4E2B0 /* Data.swift in Sources */,
 				A00D365519C6E9BE0007586E /* XCTestCase+Test.swift in Sources */,
 				A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */,
@@ -747,7 +745,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
-					"$(PROJECT_DIR)/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -757,7 +755,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "HanekeTests/HanekeTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -769,13 +767,13 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
-					"$(PROJECT_DIR)/HanekeTests/Submodules/OHHTTPStubs/OHHTTPStubs/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = HanekeTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "HanekeTests/HanekeTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
 		};
