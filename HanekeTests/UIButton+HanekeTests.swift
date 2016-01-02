@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import OHHTTPStubs
 
 class UIButton_HanekeTests: DiskTestCase {
     

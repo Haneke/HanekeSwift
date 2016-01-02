@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import OHHTTPStubs
 
 class NetworkFetcherTests: XCTestCase {
 
@@ -38,7 +39,7 @@ class NetworkFetcherTests: XCTestCase {
             return true
         }, withStubResponse: { _ in
             let data = UIImagePNGRepresentation(image)
-            return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
+            return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let expectation = self.expectationWithDescription(self.name)
         
