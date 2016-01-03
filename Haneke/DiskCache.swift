@@ -81,7 +81,7 @@ public class DiskCache {
         })
     }
     
-    public func removeAllData() {
+    public func removeAllData(completion: (() -> ())? = nil) {
         let fileManager = NSFileManager.defaultManager()
         let cachePath = self.path
         dispatch_async(cacheQueue, {
@@ -98,6 +98,11 @@ public class DiskCache {
                 self.calculateSize()
             } catch {
                 Log.error("Failed to list directory", error as NSError)
+            }
+            if let completion = completion {
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion()
+                }
             }
         })
     }
