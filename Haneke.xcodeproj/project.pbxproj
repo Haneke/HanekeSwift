@@ -371,9 +371,9 @@
 			productReference = A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A095C9551980418C00CD0F4C /* Haneke */ = {
+		A095C9551980418C00CD0F4C /* Haneke-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A095C96C1980418C00CD0F4C /* Build configuration list for PBXNativeTarget "Haneke" */;
+			buildConfigurationList = A095C96C1980418C00CD0F4C /* Build configuration list for PBXNativeTarget "Haneke-iOS" */;
 			buildPhases = (
 				A095C9511980418C00CD0F4C /* Sources */,
 				A095C9521980418C00CD0F4C /* Frameworks */,
@@ -384,7 +384,7 @@
 			);
 			dependencies = (
 			);
-			name = Haneke;
+			name = "Haneke-iOS";
 			productName = Haneke;
 			productReference = A095C9561980418C00CD0F4C /* Haneke.framework */;
 			productType = "com.apple.product-type.framework";
@@ -443,7 +443,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A095C9551980418C00CD0F4C /* Haneke */,
+				A095C9551980418C00CD0F4C /* Haneke-iOS */,
 				A095C9601980418C00CD0F4C /* HanekeTests */,
 				A0026E9919C9BFBC004DE0C6 /* HanekeDemo */,
 			);
@@ -566,12 +566,12 @@
 /* Begin PBXTargetDependency section */
 		63387B961C3770A100E3800E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A095C9551980418C00CD0F4C /* Haneke */;
+			target = A095C9551980418C00CD0F4C /* Haneke-iOS */;
 			targetProxy = 63387B951C3770A100E3800E /* PBXContainerItemProxy */;
 		};
 		A0026EC119C9C02A004DE0C6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A095C9551980418C00CD0F4C /* Haneke */;
+			target = A095C9551980418C00CD0F4C /* Haneke-iOS */;
 			targetProxy = A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -720,8 +720,8 @@
 				INFOPLIST_FILE = Haneke/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.haneke.Haneke;
+				PRODUCT_NAME = Haneke;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -739,8 +739,8 @@
 				INFOPLIST_FILE = Haneke/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.haneke.Haneke;
+				PRODUCT_NAME = Haneke;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -807,7 +807,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A095C96C1980418C00CD0F4C /* Build configuration list for PBXNativeTarget "Haneke" */ = {
+		A095C96C1980418C00CD0F4C /* Build configuration list for PBXNativeTarget "Haneke-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A095C96D1980418C00CD0F4C /* Debug */,
