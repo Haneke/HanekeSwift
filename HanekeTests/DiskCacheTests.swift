@@ -26,7 +26,13 @@ class DiskCacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        sut.removeAllData()
+        var completed = false
+        sut.removeAllData() {
+            completed = true
+        }
+        self.wait(5) {
+            return completed
+        }
         try! NSFileManager.defaultManager().removeItemAtPath(diskCachePath)
         super.tearDown()
     }
@@ -413,7 +419,23 @@ class DiskCacheTests: XCTestCase {
             XCTAssertEqual(Int(self.sut.size), 0)
         }
     }
-    
+
+    func testRemoveAllData_Completion_Filled() {
+        let key = self.name
+        let data = NSData.dataWithLength(12)
+        sut.setData(data, key: key)
+        let expectation = self.expectationWithDescription(self.name)
+
+        var completed = false
+        sut.removeAllData {
+            completed = true
+            expectation.fulfill()
+        }
+
+        XCTAssertFalse(completed)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+
     func testRemoveAllData_Empty() {
         let key = self.name
         let path = sut.pathForKey(key)

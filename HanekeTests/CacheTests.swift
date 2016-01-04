@@ -21,7 +21,13 @@ class CacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        sut.removeAll()
+        var completed = false
+        sut.removeAll {
+            completed = true
+        }
+        self.wait(5) {
+            return completed
+        }
         super.tearDown()
     }
     
@@ -482,6 +488,35 @@ class CacheTests: XCTestCase {
             expectation.fulfill()
         }
         self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+
+    func testRemoveAll_Completion() {
+        let key = self.name
+        sut.set(value: NSData.dataWithLength(18), key: key)
+        let expectation = self.expectationWithDescription("removeAll")
+        var completed = false
+        sut.removeAll {
+            completed = true
+            expectation.fulfill()
+        }
+
+        XCTAssertFalse(completed)
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+    }
+
+    func testRemoveAll_WhenDataAlreadyPresentInCachePath() {
+        let path = (sut.cachePath as NSString).stringByAppendingPathComponent("test")
+        let data = NSData.dataWithLength(1)
+        data.writeToFile(path, atomically: true)
+        XCTAssertTrue(NSFileManager.defaultManager().fileExistsAtPath(path))
+
+        let expectation = self.expectationWithDescription("removeAll")
+        sut.removeAll {
+            expectation.fulfill()
+        }
+
+        self.waitForExpectationsWithTimeout(1, handler: nil)
+        XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path))
     }
     
     func testRemoveAll_AfterNone() {
