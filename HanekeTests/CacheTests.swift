@@ -21,7 +21,13 @@ class CacheTests: XCTestCase {
     }
     
     override func tearDown() {
-        sut.removeAll()
+        var completed = false
+        sut.removeAll {
+            completed = true
+        }
+        self.wait(5) {
+            return completed
+        }
         super.tearDown()
     }
     
