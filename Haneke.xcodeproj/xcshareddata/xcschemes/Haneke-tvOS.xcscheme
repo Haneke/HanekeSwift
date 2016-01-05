@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6393C5DA1C3B229200EB1FD8"
-               BuildableName = "Haneke-tvOS.framework"
+               BuildableName = "Haneke.framework"
                BlueprintName = "Haneke-tvOS"
                ReferencedContainer = "container:Haneke.xcodeproj">
             </BuildableReference>
@@ -28,7 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A095C9601980418C00CD0F4C"
+               BuildableName = "HanekeTests.xctest"
+               BlueprintName = "HanekeTests"
+               ReferencedContainer = "container:Haneke.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "6393C5DA1C3B229200EB1FD8"
+            BuildableName = "Haneke.framework"
+            BlueprintName = "Haneke-tvOS"
+            ReferencedContainer = "container:Haneke.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -46,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6393C5DA1C3B229200EB1FD8"
-            BuildableName = "Haneke-tvOS.framework"
+            BuildableName = "Haneke.framework"
             BlueprintName = "Haneke-tvOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>
@@ -64,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6393C5DA1C3B229200EB1FD8"
-            BuildableName = "Haneke-tvOS.framework"
+            BuildableName = "Haneke.framework"
             BlueprintName = "Haneke-tvOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>

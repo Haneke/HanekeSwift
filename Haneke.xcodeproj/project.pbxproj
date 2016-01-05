@@ -90,6 +90,13 @@
 			remoteGlobalIDString = A095C9551980418C00CD0F4C;
 			remoteInfo = Haneke;
 		};
+		63D936441C3B4335003337F5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6393C5DA1C3B229200EB1FD8;
+			remoteInfo = "Haneke-tvOS";
+		};
 		A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
@@ -459,6 +466,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				63D936451C3B4335003337F5 /* PBXTargetDependency */,
 				63387B961C3770A100E3800E /* PBXTargetDependency */,
 			);
 			name = HanekeTests;
@@ -661,6 +669,11 @@
 			isa = PBXTargetDependency;
 			target = A095C9551980418C00CD0F4C /* Haneke-iOS */;
 			targetProxy = 63387B951C3770A100E3800E /* PBXContainerItemProxy */;
+		};
+		63D936451C3B4335003337F5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6393C5DA1C3B229200EB1FD8 /* Haneke-tvOS */;
+			targetProxy = 63D936441C3B4335003337F5 /* PBXContainerItemProxy */;
 		};
 		A0026EC119C9C02A004DE0C6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
