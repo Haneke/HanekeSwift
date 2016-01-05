@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A095C9551980418C00CD0F4C"
                BuildableName = "Haneke.framework"
-               BlueprintName = "Haneke"
+               BlueprintName = "Haneke-iOS"
                ReferencedContainer = "container:Haneke.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -59,7 +59,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A095C9551980418C00CD0F4C"
             BuildableName = "Haneke.framework"
-            BlueprintName = "Haneke"
+            BlueprintName = "Haneke-iOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -81,7 +81,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A095C9551980418C00CD0F4C"
             BuildableName = "Haneke.framework"
-            BlueprintName = "Haneke"
+            BlueprintName = "Haneke-iOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -99,7 +99,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A095C9551980418C00CD0F4C"
             BuildableName = "Haneke.framework"
-            BlueprintName = "Haneke"
+            BlueprintName = "Haneke-iOS"
             ReferencedContainer = "container:Haneke.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
