@@ -178,7 +178,7 @@ public class DiskCache {
         }
         
         if let attributes = previousAttributes {
-            self.size -= attributes.fileSize()
+            substractSize(attributes.fileSize())
         }
         self.size += UInt64(data.length)
         self.controlCapacity()
@@ -203,7 +203,7 @@ public class DiskCache {
             let fileSize = attributes.fileSize()
             do {
                 try fileManager.removeItemAtPath(path)
-                self.size -= fileSize
+                substractSize(fileSize)
             } catch {
                 Log.error("Failed to remove file", error as NSError)
             }
@@ -214,6 +214,15 @@ public class DiskCache {
             } else {
                 Log.error("Failed to remove file", castedError)
             }
+        }
+    }
+
+    private func substractSize(size : UInt64) {
+        if (self.size >= size) {
+            self.size -= size
+        } else {
+            Log.error("Disk cache size (\(self.size)) is smaller than size to substract (\(size))")
+            self.size = 0
         }
     }
 }
