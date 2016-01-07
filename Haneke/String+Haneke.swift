@@ -35,7 +35,10 @@ extension String {
     
     func MD5Filename() -> String {
         let MD5String = self.MD5String()
+
+        // NSString.pathExtension alone could return a query string, which can lead to very long filenames.
         let pathExtension = NSURL(string: self)?.pathExtension ?? (self as NSString).pathExtension
+
         if pathExtension.characters.count > 0 {
             return (MD5String as NSString).stringByAppendingPathExtension(pathExtension) ?? MD5String
         } else {
