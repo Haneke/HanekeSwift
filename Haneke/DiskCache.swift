@@ -218,7 +218,7 @@ public class DiskCache {
     }
 
     private func substractSize(size : UInt64) {
-        if (self.size > size) {
+        if (self.size >= size) {
             self.size -= size
         } else {
             Log.error("Disk cache size (\(self.size)) is smaller than size to substract (\(size))")
