@@ -129,7 +129,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         }
     }
     
-    public func removeAllForKey(key key: String) {
+    public func removeAllForKey(key: String) {
         let group = dispatch_group_create()
         for (_, (_, memoryCache, diskCache)) in self.formats {
             memoryCache.removeObjectForKey(key)
