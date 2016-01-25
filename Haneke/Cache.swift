@@ -131,15 +131,11 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     
     public func removeAllForKey(key key: String) {
         let group = dispatch_group_create()
-        var counter = 0
         for (_, (_, memoryCache, diskCache)) in self.formats {
             memoryCache.removeObjectForKey(key)
             dispatch_group_enter(group)
             diskCache.removeData(key) {
-                counter++
-                if counter == self.formats.count {
-                    dispatch_group_leave(group)
-                }
+                dispatch_group_leave(group)
             }
         }
         
