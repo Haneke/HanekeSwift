@@ -81,6 +81,18 @@ public class DiskCache {
         })
     }
     
+    public func removeData(key: String, completion: (() -> ())? = nil) {
+        dispatch_async(cacheQueue, {
+            let path = self.pathForKey(key)
+            self.removeFileAtPath(path)
+            if let completion = completion {
+                dispatch_async(dispatch_get_main_queue()) {
+                    completion()
+                }
+            }
+        })
+    }
+    
     public func removeAllData(completion: (() -> ())? = nil) {
         let fileManager = NSFileManager.defaultManager()
         let cachePath = self.path

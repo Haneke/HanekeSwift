@@ -129,6 +129,55 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         }
     }
     
+    public func removeAllForKey(key key: String) {
+        let group = dispatch_group_create()
+        var counter = 0
+        for (_, (_, memoryCache, diskCache)) in self.formats {
+            memoryCache.removeObjectForKey(key)
+            dispatch_group_enter(group)
+            diskCache.removeData(key) {
+                counter++
+                if counter == self.formats.count {
+                    dispatch_group_leave(group)
+                }
+            }
+        }
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(60 * NSEC_PER_SEC))
+            if dispatch_group_wait(group, timeout) != 0 {
+                Log.error("removeData timed out waiting for disk caches")
+            }
+            let fileManager = NSFileManager.defaultManager()
+            let cachePath = self.cachePath
+            do {
+                let formatDirsNames = try fileManager.contentsOfDirectoryAtPath(cachePath)
+                for formatDirName in formatDirsNames {
+                    let formatPath = (cachePath as NSString).stringByAppendingPathComponent(formatDirName)
+                    var isDirectory: ObjCBool = false
+                    fileManager.fileExistsAtPath(formatPath, isDirectory: &isDirectory)
+                    if isDirectory.boolValue {
+                        let filenames = try fileManager.contentsOfDirectoryAtPath(formatPath)
+                        for filename in filenames {
+                            if key == filename {
+                                do{
+                                    let filePath = (formatPath as NSString).stringByAppendingPathComponent(filename)
+                                    Log.debug("Removing cache file: \(filePath)")
+                                    try fileManager.removeItemAtPath(filePath)
+                                }
+                                catch let error as NSError {
+                                    Log.error("Failed to delete cached file with key \(key)", error as NSError)
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch {
+                Log.error("Failed to list directory",error as NSError)
+            }
+        }
+    }
+    
     public func removeAll(completion: (() -> ())? = nil) {
         let group = dispatch_group_create();
         for (_, (_, memoryCache, diskCache)) in self.formats {
