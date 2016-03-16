@@ -26,10 +26,29 @@ extension HanekeGlobals {
 public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     let URL : NSURL
+    var URLRequest : NSMutableURLRequest?
     
-    public init(URL : NSURL) {
+    public init(URL : NSURL,headerField:Dictionary<String,String>? = nil) {
         self.URL = URL
 
+        if(headerField != nil){
+            self.URLRequest = NSMutableURLRequest(URL: URL)
+            //self.HeaderField = headerField
+            let hKyes = headerField!.keys
+            let hValues = headerField!.values
+            
+            print(hKyes.first!)
+            print(hValues.first!)
+            
+            for (hKey, hValue) in headerField!
+            {
+                self.URLRequest!.addValue(hValue, forHTTPHeaderField: hKey)
+            }
+            
+            print(self.URLRequest)
+        }
+
+        
         let key =  URL.absoluteString
         super.init(key: key)
     }
