@@ -33,7 +33,14 @@ extension HanekeGlobals {
     
 }
 
-public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable> {
+public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable>:AltCache<T, DiskCache, NSCache>{
+
+    public override init(name: String) {
+        super.init(name: name)
+    }
+}
+
+public class AltCache<T: DataConvertible, DiskCacheT, MemoryCacheT where T.Result == T, T : DataRepresentable, DiskCacheT: DiskCache, MemoryCacheT: NSCache> {
     
     let name: String
     
@@ -167,20 +174,20 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     
     // MARK: Formats
 
-    var formats : [String : (Format<T>, NSCache, DiskCache)] = [:]
+    var formats : [String : (Format<T>, MemoryCacheT, DiskCacheT)] = [:]
     
     public func addFormat(format : Format<T>) {
         let name = format.name
         let formatPath = self.formatPath(formatName: name)
-        let memoryCache = NSCache()
-        let diskCache = DiskCache(path: formatPath, capacity : format.diskCapacity)
+        let memoryCache = MemoryCacheT()
+        let diskCache = DiskCacheT(path: formatPath, capacity : format.diskCapacity)
         self.formats[name] = (format, memoryCache, diskCache)
     }
     
     // MARK: Internal
     
     lazy var cachePath: String = {
-        let basePath = DiskCache.basePath()
+        let basePath = DiskCacheT.basePath()
         let cachePath = (basePath as NSString).stringByAppendingPathComponent(self.name)
         return cachePath
     }()
@@ -204,7 +211,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         return value.asData()
     }
     
-    private func fetchFromDiskCache(diskCache : DiskCache, key: String, memoryCache : NSCache, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
+    private func fetchFromDiskCache(diskCache : DiskCacheT, key: String, memoryCache : MemoryCacheT, failure fail : ((NSError?) -> ())?, success succeed : (T) -> ()) {
         diskCache.fetchData(key: key, failure: { error in
             if let block = fail {
                 if (error?.code == NSFileReadNoSuchFileError) {
