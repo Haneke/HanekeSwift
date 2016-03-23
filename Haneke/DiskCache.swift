@@ -8,14 +8,18 @@
 
 import Foundation
 
+private var privateBasePath: String = {
+    let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]
+    let hanekePathComponent = HanekeGlobals.Domain
+    let basePath = (cachesPath as NSString).stringByAppendingPathComponent(hanekePathComponent)
+    return basePath
+}()
+
 public class DiskCache {
     
     public class func basePath() -> String {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]
-        let hanekePathComponent = HanekeGlobals.Domain
-        let basePath = (cachesPath as NSString).stringByAppendingPathComponent(hanekePathComponent)
-        // TODO: Do not recaculate basePath value
-        return basePath
+        // this will caculate only once
+        return privateBasePath
     }
     
     public let path: String
