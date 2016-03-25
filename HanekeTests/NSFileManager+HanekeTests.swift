@@ -25,7 +25,7 @@ class NSFileManager_HanekeTests: DiskTestCase {
         var count = 0
         
         sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: NSURLNameKey, ascending: true) { (_ : NSURL, index : Int, inout stop : Bool) -> Void in
-            count++
+            count += 1
             stop = true
         }
         
