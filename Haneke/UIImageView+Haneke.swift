@@ -12,7 +12,7 @@ public extension UIImageView {
     
     public var hnk_format : Format<UIImage> {
         let viewSize = self.bounds.size
-            assert(viewSize.width > 0 && viewSize.height > 0, "[\(Mirror(reflecting: self).description) \(__FUNCTION__)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
+            assert(viewSize.width > 0 && viewSize.height > 0, "[\(Mirror(reflecting: self).description) \(#function)]: UImageView size is zero. Set its frame, call sizeToFit or force layout first.")
             let scaleMode = self.hnk_scaleMode
             return HanekeGlobals.UIKit.formatWithSize(viewSize, scaleMode: scaleMode)
     }

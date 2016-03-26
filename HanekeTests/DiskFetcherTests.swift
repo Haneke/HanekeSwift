@@ -34,7 +34,7 @@ class DiskFetcherTests: DiskTestCase {
         let data = UIImagePNGRepresentation(image)!
         data.writeToFile(sut.path, atomically: true)
         
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: { _ in
             XCTFail("Expected to succeed")
@@ -49,7 +49,7 @@ class DiskFetcherTests: DiskTestCase {
     }
     
     func testFetchImage_Failure_NSFileReadNoSuchFileError() {
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.code, NSFileReadNoSuchFileError)
@@ -67,7 +67,7 @@ class DiskFetcherTests: DiskTestCase {
         let data = NSData()
         data.writeToFile(sut.path, atomically: true)
         
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
@@ -106,8 +106,8 @@ class DiskFetcherTests: DiskTestCase {
     func testCacheFetch_Success() {
         let data = NSData.dataWithLength(1)
         let path = self.writeData(data)
-        let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(name: self.name)
+        let expectation = self.expectationWithDescription(self.name!)
+        let cache = Cache<NSData>(name: self.name!)
         
         cache.fetch(path: path, failure: {_ in
             XCTFail("expected success")
@@ -123,9 +123,9 @@ class DiskFetcherTests: DiskTestCase {
     }
     
     func testCacheFetch_Failure() {
-        let path = (self.directoryPath as NSString).stringByAppendingPathComponent(self.name)
-        let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(name: self.name)
+        let path = (self.directoryPath as NSString).stringByAppendingPathComponent(self.name!)
+        let expectation = self.expectationWithDescription(self.name!)
+        let cache = Cache<NSData>(name: self.name!)
         
         cache.fetch(path: path, failure: {_ in
             expectation.fulfill()
@@ -142,9 +142,9 @@ class DiskFetcherTests: DiskTestCase {
     func testCacheFetch_WithFormat() {
         let data = NSData.dataWithLength(1)
         let path = self.writeData(data)
-        let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(name: self.name)
-        let format = Format<NSData>(name: self.name)
+        let expectation = self.expectationWithDescription(self.name!)
+        let cache = Cache<NSData>(name: self.name!)
+        let format = Format<NSData>(name: self.name!)
         cache.addFormat(format)
         
         cache.fetch(path: path, formatName: format.name, failure: {_ in

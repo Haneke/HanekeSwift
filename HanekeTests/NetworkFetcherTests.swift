@@ -42,7 +42,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = UIImagePNGRepresentation(image)
             return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: { _ in
             XCTFail("expected success")
@@ -87,7 +87,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = NSData()
             return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
@@ -109,7 +109,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = NSData.dataWithLength(100)
             return OHHTTPStubsResponse(data: data, statusCode: 200, headers:["Content-Length":String(data.length * 2)])
         })
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
@@ -161,7 +161,7 @@ class NetworkFetcherTests: XCTestCase {
                 let data = UIImagePNGRepresentation(image)
                 return OHHTTPStubsResponse(data: data!, statusCode: statusCode, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         sut.cancelFetch()
 
         sut.fetch(failure: { _ in
@@ -183,7 +183,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = NSData.dataWithLength(100)
             return OHHTTPStubsResponse(data: data, statusCode: statusCode, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
+        let expectation = self.expectationWithDescription(self.name!)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
@@ -207,8 +207,8 @@ class NetworkFetcherTests: XCTestCase {
             }, withStubResponse: { _ in
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(name: self.name)
+        let expectation = self.expectationWithDescription(self.name!)
+        let cache = Cache<NSData>(name: self.name!)
 
         cache.fetch(URL: URL, failure: {_ in
             XCTFail("expected success")
@@ -230,8 +230,8 @@ class NetworkFetcherTests: XCTestCase {
             }, withStubResponse: { _ in
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(name: self.name)
+        let expectation = self.expectationWithDescription(self.name!)
+        let cache = Cache<NSData>(name: self.name!)
         
         cache.fetch(URL: URL, failure: {_ in
             expectation.fulfill()
@@ -252,9 +252,9 @@ class NetworkFetcherTests: XCTestCase {
             }, withStubResponse: { _ in
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
-        let expectation = self.expectationWithDescription(self.name)
-        let cache = Cache<NSData>(name: self.name)
-        let format = Format<NSData>(name: self.name)
+        let expectation = self.expectationWithDescription(self.name!)
+        let cache = Cache<NSData>(name: self.name!)
+        let format = Format<NSData>(name: self.name!)
         cache.addFormat(format)
 
         cache.fetch(URL: URL, formatName: format.name, failure: {_ in
