@@ -157,6 +157,16 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         }
     }
 
+    // MARK: Size
+
+    public var size: UInt64 {
+        var size: UInt64 = 0
+        for (_, (_, _, diskCache)) in self.formats {
+            dispatch_sync(diskCache.cacheQueue) { size += diskCache.size }
+        }
+        return size
+    }
+
     // MARK: Notifications
     
     func onMemoryWarning() {

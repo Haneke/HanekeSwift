@@ -37,6 +37,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertNotNil(sut.memoryWarningObserver)
         XCTAssertEqual(name, sut.name)
+        XCTAssertEqual(Int(sut.size), 0)
     }
     
     func testDeinit() {
@@ -76,6 +77,47 @@ class CacheTests: XCTestCase {
         let format = Format<NSData>(name: self.name)
         
         sut.addFormat(format)
+    }
+
+    // size
+
+    func testSize_WithOneFormat() {
+        let data = NSData.dataWithLength(6)
+        let key = self.name
+        let format = Format<NSData>(name: self.name)
+        sut.addFormat(format)
+
+        var finished = false
+        sut.set(value: data, key: key, formatName : format.name, success: { _ in
+            finished = true
+        })
+
+        XCTAssert(finished, "set completed not in main queue")
+        XCTAssertEqual(sut.size, UInt64(data.length))
+    }
+
+    func testSize_WithTwoFormats() {
+        let lengths = [4, 7]
+        let formats = (0..<lengths.count).map { (index: Int) -> Format<NSData> in
+            let formatName = self.name + String(index)
+            return Format<NSData>(name: formatName)
+        }
+        formats.forEach(sut.addFormat)
+        let lenghtsByFormats = zip(lengths, formats)
+
+        lenghtsByFormats.forEach { (length: Int, format: Format<NSData>) in
+            let data = NSData.dataWithLength(length)
+            let key = self.name
+
+            var finished = false
+            sut.set(value: data, key: key, formatName : format.name, success: { _ in
+                finished = true
+            })
+
+            XCTAssert(finished, "set completed not in main queue")
+        }
+
+        XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, combine: +)))
     }
 
     // MARK: set
