@@ -78,8 +78,8 @@ class HashBase {
         var msgLength = tmpMessage.length
         var counter = 0
         while msgLength % len != (len - 8) {
-            counter++
-            msgLength++
+            counter += 1
+            msgLength += 1
         }
         let bufZeros = UnsafeMutablePointer<UInt8>(calloc(counter, sizeof(UInt8)))
         tmpMessage.appendBytes(bufZeros, length: counter)
@@ -134,7 +134,13 @@ class MD5 : HashBase {
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
         var leftMessageBytes = tmpMessage.length
-        for (var i = 0; i < tmpMessage.length; i = i + chunkSizeBytes, leftMessageBytes -= chunkSizeBytes) {
+        var i = 0
+        while i < tmpMessage.length {
+            defer {
+                i = i + chunkSizeBytes
+                leftMessageBytes -= chunkSizeBytes
+            }
+
             let chunk = tmpMessage.subdataWithRange(NSRange(location: i, length: min(chunkSizeBytes,leftMessageBytes)))
             
             // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15

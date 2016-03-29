@@ -12,7 +12,7 @@ class DiskTestCase : XCTestCase {
  
     lazy var directoryPath: String = {
         let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]
-        let directoryPath = (documentsPath as NSString).stringByAppendingPathComponent(self.name)
+        let directoryPath = (documentsPath as NSString).stringByAppendingPathComponent(self.name!)
         return directoryPath
     }()
     
@@ -41,7 +41,7 @@ class DiskTestCase : XCTestCase {
     
     func uniquePath() -> String {
         let path = (self.directoryPath as NSString).stringByAppendingPathComponent("\(dataIndex)")
-        dataIndex++
+        dataIndex += 1
         return path
     }
     
