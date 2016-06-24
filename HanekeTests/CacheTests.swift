@@ -84,11 +84,11 @@ class CacheTests: XCTestCase {
     func testSize_WithOneFormat() {
         let data = NSData.dataWithLength(6)
         let key = self.name
-        let format = Format<NSData>(name: self.name)
+        let format = Format<NSData>(name: self.name!)
         sut.addFormat(format)
 
         var finished = false
-        sut.set(value: data, key: key, formatName : format.name, success: { _ in
+        sut.set(value: data, key: key!, formatName : format.name, success: { _ in
             finished = true
         })
 
@@ -99,7 +99,7 @@ class CacheTests: XCTestCase {
     func testSize_WithTwoFormats() {
         let lengths = [4, 7]
         let formats = (0..<lengths.count).map { (index: Int) -> Format<NSData> in
-            let formatName = self.name + String(index)
+            let formatName = self.name! + String(index)
             return Format<NSData>(name: formatName)
         }
         formats.forEach(sut.addFormat)
@@ -110,7 +110,7 @@ class CacheTests: XCTestCase {
             let key = self.name
 
             var finished = false
-            sut.set(value: data, key: key, formatName : format.name, success: { _ in
+            sut.set(value: data, key: key!, formatName : format.name, success: { _ in
                 finished = true
             })
 

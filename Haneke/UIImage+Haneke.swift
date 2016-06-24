@@ -15,11 +15,11 @@ extension UIImage {
         drawInRect(CGRectMake(0, 0, toSize.width, toSize.height))
         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return resizedImage
+        return resizedImage!
     }
 
     func hnk_hasAlpha() -> Bool {
-        let alpha = CGImageGetAlphaInfo(self.CGImage)
+        let alpha = CGImageGetAlphaInfo(self.CGImage!)
         switch alpha {
         case .First, .Last, .PremultipliedFirst, .PremultipliedLast, .Only:
             return true
@@ -36,8 +36,8 @@ extension UIImage {
     
     func hnk_decompressedImage() -> UIImage! {
         let originalImageRef = self.CGImage
-        let originalBitmapInfo = CGImageGetBitmapInfo(originalImageRef)
-        let alphaInfo = CGImageGetAlphaInfo(originalImageRef)
+        let originalBitmapInfo = CGImageGetBitmapInfo(originalImageRef!)
+        let alphaInfo = CGImageGetAlphaInfo(originalImageRef!)
         
         // See: http://stackoverflow.com/questions/23723564/which-cgimagealphainfo-should-we-use
         var bitmapInfo = originalBitmapInfo
@@ -54,7 +54,7 @@ extension UIImage {
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let pixelSize = CGSizeMake(self.size.width * self.scale, self.size.height * self.scale)
-        guard let context = CGBitmapContextCreate(nil, Int(ceil(pixelSize.width)), Int(ceil(pixelSize.height)), CGImageGetBitsPerComponent(originalImageRef), 0, colorSpace, bitmapInfo.rawValue) else {
+        guard let context = CGBitmapContextCreate(nil, Int(ceil(pixelSize.width)), Int(ceil(pixelSize.height)), CGImageGetBitsPerComponent(originalImageRef!), 0, colorSpace, bitmapInfo.rawValue) else {
             return self
         }
 

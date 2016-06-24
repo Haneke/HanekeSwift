@@ -98,7 +98,7 @@ class UIImage_HanekeTests: XCTestCase {
     func testDecompressedImage_Gray_AlphaNone() {
         let color = UIColor.grayColor()
         let colorSpaceRef = CGColorSpaceCreateDeviceGray()
-        self._testDecompressedImageUsingColor(color, colorSpace: colorSpaceRef!, alphaInfo: .None)
+        self._testDecompressedImageUsingColor(color, colorSpace: colorSpaceRef, alphaInfo: .None)
     }
     
     func testDecompressedImage_OrientationUp() {
@@ -159,14 +159,14 @@ class UIImage_HanekeTests: XCTestCase {
     
     // MARK: Helpers
     
-    func _testDecompressedImageUsingColor(color : UIColor = UIColor.greenColor(), colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB()!, alphaInfo :CGImageAlphaInfo, bitsPerComponent : size_t = 8) {
+    func _testDecompressedImageUsingColor(color : UIColor = UIColor.greenColor(), colorSpace: CGColorSpaceRef = CGColorSpaceCreateDeviceRGB(), alphaInfo :CGImageAlphaInfo, bitsPerComponent : size_t = 8) {
         let size = CGSizeMake(10, 20) // Using rectangle to check if image is rotated
         let bitmapInfo = CGBitmapInfo.ByteOrderDefault.rawValue | alphaInfo.rawValue
         let context = CGBitmapContextCreate(nil, Int(size.width), Int(size.height), bitsPerComponent, 0, colorSpace, bitmapInfo)
     
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height))
-        let imageRef = CGBitmapContextCreateImage(context)!
+        CGContextSetFillColorWithColor(context!, color.CGColor)
+        CGContextFillRect(context!, CGRectMake(0, 0, size.width, size.height))
+        let imageRef = CGBitmapContextCreateImage(context!)!
     
         let image = UIImage(CGImage: imageRef, scale:UIScreen.mainScreen().scale, orientation:.Up)
         let decompressedImage = image.hnk_decompressedImage()
