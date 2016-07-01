@@ -8,6 +8,12 @@
 
 import UIKit
 
+public class Haneke {
+    
+    public static var httpHeaders: [String: String]?
+    
+}
+
 public struct HanekeGlobals {
     
     public static let Domain = "io.haneke"
