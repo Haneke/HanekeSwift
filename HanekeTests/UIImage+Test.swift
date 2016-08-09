@@ -23,19 +23,19 @@ extension UIImage {
         self.drawInRect(CGRect(x: 0, y: 0, width: pixelSize.width, height: pixelSize.height))
         let drawnImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        let provider = CGImageGetDataProvider(drawnImage.CGImage)
-        let data = CGDataProviderCopyData(provider)
+        let provider = CGImageGetDataProvider(drawnImage!.CGImage!)
+        let data = CGDataProviderCopyData(provider!)
         return data!
     }
     
     class func imageWithColor(color: UIColor, _ size: CGSize = CGSize(width: 1, height: 1), _ opaque: Bool = true) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, opaque, 0)
         let context = UIGraphicsGetCurrentContext()
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, CGRectMake(0, 0, size.width, size.height))
+        CGContextSetFillColorWithColor(context!, color.CGColor)
+        CGContextFillRect(context!, CGRectMake(0, 0, size.width, size.height))
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
     
     class func imageGradientFromColor(fromColor : UIColor = UIColor.redColor(), toColor : UIColor = UIColor.greenColor(), size : CGSize = CGSizeMake(10, 20)) -> UIImage {
@@ -50,10 +50,10 @@ extension UIImage {
         toColor.getRed(&r2, green: &g2, blue: &b2, alpha: &a2)
         let gradientComponents = [r1, g1, b1, a1, r2, g2, b2, a2]
         let gradient = CGGradientCreateWithColorComponents (colorspace, gradientComponents, gradientLocations, gradientNumberOfLocations)
-        CGContextDrawLinearGradient(context, gradient, CGPointMake(0, 0), CGPointMake(0, size.height), CGGradientDrawingOptions())
+        CGContextDrawLinearGradient(context!, gradient!, CGPointMake(0, 0), CGPointMake(0, size.height), CGGradientDrawingOptions())
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return image
+        return image!
     }
     
 }
