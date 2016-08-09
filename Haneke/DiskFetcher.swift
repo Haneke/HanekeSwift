@@ -36,11 +36,12 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     public override func fetch(failure fail: ((NSError?) -> ()), success succeed: (T.Result) -> ()) {
         self.cancelled = false
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self] in
+
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async { [weak self] in
             if let strongSelf = self {
                 strongSelf.privateFetch(failure: fail, success: succeed)
             }
-        })
+        }
     }
     
     public override func cancelFetch() {
@@ -56,9 +57,9 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         
         let data : NSData
         do {
-            data = try NSData(contentsOfFile: self.path, options: NSDataReadingOptions())
+            data = try NSData(contentsOfFile: self.path, options: NSData.ReadingOptions())
         } catch {
-            dispatch_async(dispatch_get_main_queue()) {
+             DispatchQueue.main.async{
                 if self.cancelled {
                     return
                 }
@@ -71,21 +72,21 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        guard let value : T.Result = T.convertFromData(data) else {
+        guard let value : T.Result = T.convertFromData(data: data) else {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
             let description = String(format:localizedFormat, self.path)
-            let error = errorWithCode(HanekeGlobals.DiskFetcher.ErrorCode.InvalidData.rawValue, description: description)
-            dispatch_async(dispatch_get_main_queue()) {
+            let error = errorWithCode(code: HanekeGlobals.DiskFetcher.ErrorCode.InvalidData.rawValue, description: description)
+            DispatchQueue.main.async {
                 fail(error)
             }
             return
         }
         
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async  {
             if self.cancelled {
                 return
             }
             succeed(value)
-        })
+        }
     }
 }

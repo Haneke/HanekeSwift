@@ -10,7 +10,7 @@ import UIKit
 
 // See: http://stackoverflow.com/questions/25922152/not-identical-to-self
 public protocol DataConvertible {
-    associatedtype Result
+    typealias Result
     
     static func convertFromData(data:NSData) -> Result?
 }
@@ -29,21 +29,19 @@ extension UIImage : DataConvertible, DataRepresentable {
     // HACK: UIImage data initializer is no longer thread safe. See: https://github.com/AFNetworking/AFNetworking/issues/2572#issuecomment-115854482
     static func safeImageWithData(data:NSData) -> Result? {
         imageSync.lock()
-        let image = UIImage(data:data, scale: scale)
+        let image = UIImage(data:data as Data)
         imageSync.unlock()
         return image
     }
     
     public class func convertFromData(data: NSData) -> Result? {
-        let image = UIImage.safeImageWithData(data)
+        let image = UIImage.safeImageWithData(data: data)
         return image
     }
     
     public func asData() -> NSData! {
         return self.hnk_data()
     }
-    
-    private static let scale = UIScreen.mainScreen().scale
     
 }
 
@@ -52,12 +50,12 @@ extension String : DataConvertible, DataRepresentable {
     public typealias Result = String
     
     public static func convertFromData(data: NSData) -> Result? {
-        let string = NSString(data: data, encoding: NSUTF8StringEncoding)
+        let string = NSString(data: data as Data, encoding: String.Encoding.utf8.rawValue)
         return string as? Result
     }
     
     public func asData() -> NSData! {
-        return self.dataUsingEncoding(NSUTF8StringEncoding)
+        return self.data(using: String.Encoding.utf8)
     }
     
 }
@@ -84,7 +82,7 @@ public enum JSON : DataConvertible, DataRepresentable {
     
     public static func convertFromData(data: NSData) -> Result? {
         do {
-            let object : AnyObject = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions())
+            let object : AnyObject = try JSONSerialization.jsonObject(with: data as Data, options: JSONSerialization.ReadingOptions())
             switch (object) {
             case let dictionary as [String:AnyObject]:
                 return JSON.Dictionary(dictionary)
@@ -94,7 +92,7 @@ public enum JSON : DataConvertible, DataRepresentable {
                 return nil
             }
         } catch {
-            Log.error("Invalid JSON data", error as NSError)
+            Log.error(message: "Invalid JSON data", error: error as NSError)
             return nil
         }
     }
@@ -102,9 +100,9 @@ public enum JSON : DataConvertible, DataRepresentable {
     public func asData() -> NSData! {
         switch (self) {
         case .Dictionary(let dictionary):
-            return try? NSJSONSerialization.dataWithJSONObject(dictionary, options: NSJSONWritingOptions())
+            return try? JSONSerialization.data(withJSONObject: dictionary, options: JSONSerialization.WritingOptions())
         case .Array(let array):
-            return try? NSJSONSerialization.dataWithJSONObject(array, options: NSJSONWritingOptions())
+            return try? JSONSerialization.data(withJSONObject: array, options: JSONSerialization.WritingOptions())
         }
     }
     
