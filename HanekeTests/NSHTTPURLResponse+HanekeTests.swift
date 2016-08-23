@@ -9,8 +9,8 @@
 import XCTest
 @testable import Haneke
 
-func responseWithStatusCode(statusCode : Int) -> NSHTTPURLResponse {
-    return NSHTTPURLResponse(URL: NSURL(string: "http://haneke.io")!, statusCode: statusCode, HTTPVersion: "HTTP/1.1", headerFields: nil)!
+func responseWithStatusCode(_ statusCode : Int) -> HTTPURLResponse {
+    return HTTPURLResponse(url: URL(string: "http://haneke.io")!, statusCode: statusCode, httpVersion: "HTTP/1.1", headerFields: nil)!
 }
 
 class NSHTTPURLResponse_HanekeTests: XCTestCase {

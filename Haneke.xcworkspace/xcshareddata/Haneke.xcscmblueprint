@@ -10,7 +10,7 @@
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D9D86AAE-952B-48A9-A2AB-D2832C98D4A1",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "38C2A0D4F62B675E8C16C8BC1437C7753846C8AC" : "HanekeSwiftHanekeTests\/Submodules\/OHHTTPStubs",
-    "C93564C1AFB8B50FF58188F21182F5D0EEAD1C3F" : "HanekeSwift"
+    "C93564C1AFB8B50FF58188F21182F5D0EEAD1C3F" : "HanekeSwift\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Haneke",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,

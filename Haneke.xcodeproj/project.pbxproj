@@ -22,7 +22,7 @@
 		6393C5E51C3B229200EB1FD8 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		6393C5E61C3B229200EB1FD8 /* Fetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F7E8119BF94AA0002511F /* Fetcher.swift */; };
 		6393C5E71C3B229200EB1FD8 /* NSHTTPURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BCE4731C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift */; };
-		6393C5E81C3B229200EB1FD8 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
+		6393C5E81C3B229200EB1FD8 /* HanekeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* HanekeCache.swift */; };
 		6393C5E91C3B229200EB1FD8 /* UIImage+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D7D6831997B2EC000CAF46 /* UIImage+Haneke.swift */; };
 		6393C5EA1C3B229200EB1FD8 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
 		6393C5EB1C3B229200EB1FD8 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0985E5B1A10810500691636 /* Log.swift */; };
@@ -66,7 +66,7 @@
 		A06EE28219B18FE600572D17 /* String+HanekeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06EE28119B18FE600572D17 /* String+HanekeTests.swift */; };
 		A0720DEA19EF2AB2000FEE83 /* CryptoSwiftMD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0720DE919EF2AB2000FEE83 /* CryptoSwiftMD5.swift */; };
 		A095C95C1980418C00CD0F4C /* Haneke.h in Headers */ = {isa = PBXBuildFile; fileRef = A095C95B1980418C00CD0F4C /* Haneke.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A095C973198041D100CD0F4C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* Cache.swift */; };
+		A095C973198041D100CD0F4C /* HanekeCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C972198041D100CD0F4C /* HanekeCache.swift */; };
 		A095C975198045D200CD0F4C /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A095C974198045D200CD0F4C /* CacheTests.swift */; };
 		A0985E5C1A10810500691636 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0985E5B1A10810500691636 /* Log.swift */; };
 		A0C6BA3A19AC0D1E007111E9 /* NSFileManager+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C6BA3919AC0D1E007111E9 /* NSFileManager+Haneke.swift */; };
@@ -151,7 +151,7 @@
 		A095C95B1980418C00CD0F4C /* Haneke.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Haneke.h; sourceTree = "<group>"; };
 		A095C9611980418C00CD0F4C /* HanekeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HanekeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A095C9671980418C00CD0F4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A095C972198041D100CD0F4C /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		A095C972198041D100CD0F4C /* HanekeCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HanekeCache.swift; sourceTree = "<group>"; };
 		A095C974198045D200CD0F4C /* CacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
 		A0985E5B1A10810500691636 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A0C6BA3919AC0D1E007111E9 /* NSFileManager+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+Haneke.swift"; sourceTree = "<group>"; };
@@ -295,7 +295,7 @@
 		A095C9581980418C00CD0F4C /* Haneke */ = {
 			isa = PBXGroup;
 			children = (
-				A095C972198041D100CD0F4C /* Cache.swift */,
+				A095C972198041D100CD0F4C /* HanekeCache.swift */,
 				A0720DE519EF2A73000FEE83 /* CryptoSwift */,
 				A0E8BFDB19CCAE1D00A4E2B0 /* Data.swift */,
 				A0D7D68019978F9A000CAF46 /* DiskCache.swift */,
@@ -484,14 +484,19 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Haneke;
 				TargetAttributes = {
+					6393C5DA1C3B229200EB1FD8 = {
+						LastSwiftMigration = 0800;
+					};
 					A0026E9919C9BFBC004DE0C6 = {
 						CreatedOnToolsVersion = 6.0;
 					};
 					A095C9551980418C00CD0F4C = {
 						CreatedOnToolsVersion = 6.0;
+						LastSwiftMigration = 0800;
 					};
 					A095C9601980418C00CD0F4C = {
 						CreatedOnToolsVersion = 6.0;
+						LastSwiftMigration = 0800;
 						TestTargetID = A095C9551980418C00CD0F4C;
 					};
 				};
@@ -585,7 +590,7 @@
 				6393C5E51C3B229200EB1FD8 /* CGSize+Swift.swift in Sources */,
 				6393C5E61C3B229200EB1FD8 /* Fetcher.swift in Sources */,
 				6393C5E71C3B229200EB1FD8 /* NSHTTPURLResponse+Haneke.swift in Sources */,
-				6393C5E81C3B229200EB1FD8 /* Cache.swift in Sources */,
+				6393C5E81C3B229200EB1FD8 /* HanekeCache.swift in Sources */,
 				6393C5E91C3B229200EB1FD8 /* UIImage+Haneke.swift in Sources */,
 				6393C5EA1C3B229200EB1FD8 /* DiskFetcher.swift in Sources */,
 				6393C5EB1C3B229200EB1FD8 /* Log.swift in Sources */,
@@ -622,7 +627,7 @@
 				36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */,
 				A03F7E8219BF94AA0002511F /* Fetcher.swift in Sources */,
 				87BCE4741C37632A0040B92C /* NSHTTPURLResponse+Haneke.swift in Sources */,
-				A095C973198041D100CD0F4C /* Cache.swift in Sources */,
+				A095C973198041D100CD0F4C /* HanekeCache.swift in Sources */,
 				A0D7D6841997B2EC000CAF46 /* UIImage+Haneke.swift in Sources */,
 				8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */,
 				A0985E5C1A10810500691636 /* Log.swift in Sources */,
@@ -719,6 +724,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -740,6 +746,7 @@
 				PRODUCT_NAME = Haneke;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -873,6 +880,7 @@
 				PRODUCT_NAME = Haneke;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -891,6 +899,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.haneke.Haneke;
 				PRODUCT_NAME = Haneke;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -913,6 +922,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HanekeTests/HanekeTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -930,6 +940,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HanekeTests/HanekeTests-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

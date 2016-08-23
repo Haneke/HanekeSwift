@@ -16,40 +16,40 @@ public struct HanekeGlobals {
 
 public struct Shared {
     
-    public static var imageCache : Cache<UIImage> {
+    public static var imageCache : HanekeCache<UIImage> {
         struct Static {
             static let name = "shared-images"
-            static let cache = Cache<UIImage>(name: name)
+            static let cache = HanekeCache<UIImage>(name: name)
         }
         return Static.cache
     }
     
-    public static var dataCache : Cache<NSData> {
+    public static var dataCache : HanekeCache<Data> {
         struct Static {
             static let name = "shared-data"
-            static let cache = Cache<NSData>(name: name)
+            static let cache = HanekeCache<Data>(name: name)
         }
         return Static.cache
     }
     
-    public static var stringCache : Cache<String> {
+    public static var stringCache : HanekeCache<String> {
         struct Static {
             static let name = "shared-strings"
-            static let cache = Cache<String>(name: name)
+            static let cache = HanekeCache<String>(name: name)
         }
         return Static.cache
     }
     
-    public static var JSONCache : Cache<JSON> {
+    public static var JSONCache : HanekeCache<JSON> {
         struct Static {
             static let name = "shared-json"
-            static let cache = Cache<JSON>(name: name)
+            static let cache = HanekeCache<JSON>(name: name)
         }
         return Static.cache
     }
 }
 
-func errorWithCode(code: Int, description: String) -> NSError {
+func errorWithCode(_ code: Int, description: String) -> Error {
     let userInfo = [NSLocalizedDescriptionKey: description]
-    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo)
+    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo) as Error
 }

@@ -36,7 +36,7 @@ class StringDataTests: XCTestCase {
     
     func testConvertFromData() {
         let string = self.name!
-        let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
+        let data = string.data(using: String.Encoding.utf8)!
         
         let result = String.convertFromData(data)
         
@@ -45,7 +45,7 @@ class StringDataTests: XCTestCase {
     
     func testAsData() {
         let string = self.name!
-        let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
+        let data = string.data(using: String.Encoding.utf8)!
         
         let result = string.asData()
         
@@ -57,15 +57,15 @@ class StringDataTests: XCTestCase {
 class DataDataTests: XCTestCase {
     
     func testConvertFromData() {
-        let data = NSData.dataWithLength(32)
+        let data = Data.dataWithLength(32)
         
-        let result = NSData.convertFromData(data)
+        let result = Data.convertFromData(data)
         
         XCTAssertEqual(result!, data)
     }
     
     func testAsData() {
-        let data = NSData.dataWithLength(32)
+        let data = Data.dataWithLength(32)
         
         let result = data.asData()
         
@@ -78,7 +78,7 @@ class JSONDataTests: XCTestCase {
     
     func testConvertFromData_WithArrayData() {
         let json = [self.name!]
-        let data = try! NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions())
+        let data = try! JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions())
         
         let result = JSON.convertFromData(data)!
         
@@ -86,27 +86,27 @@ class JSONDataTests: XCTestCase {
         case .Dictionary(_):
             XCTFail("expected array")
         case .Array(let object):
-            let resultData = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
+            let resultData = try! JSONSerialization.data(withJSONObject: object, options: JSONSerialization.WritingOptions())
             XCTAssertEqual(resultData, data)
         }
     }
     
     func testConvertFromData_WithDictionaryData() {
         let json = ["test": self.name!]
-        let data = try! NSJSONSerialization.dataWithJSONObject(json, options: NSJSONWritingOptions())
+        let data = try! JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions())
         
         let result = JSON.convertFromData(data)!
         
         switch result {
         case .Dictionary(let object):
-            try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
+            try! JSONSerialization.data(withJSONObject: object, options: JSONSerialization.WritingOptions())
         case .Array(_):
             XCTFail("expected dictionary")
         }
     }
 
     func testConvertFromData_WithInvalidData() {
-        let data = NSData.dataWithLength(100)
+        let data = Data.dataWithLength(100)
 
         let result = JSON.convertFromData(data)
         
@@ -119,7 +119,7 @@ class JSONDataTests: XCTestCase {
         
         let result = json.asData()
         
-        let data = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
+        let data = try! JSONSerialization.data(withJSONObject: object, options: JSONSerialization.WritingOptions())
         XCTAssertEqual(result, data)
     }
     
@@ -129,7 +129,7 @@ class JSONDataTests: XCTestCase {
         
         let result = json.asData()
         
-        let data = try! NSJSONSerialization.dataWithJSONObject(object, options: NSJSONWritingOptions())
+        let data = try! JSONSerialization.data(withJSONObject: object, options: JSONSerialization.WritingOptions())
         XCTAssertEqual(result, data)
     }
     

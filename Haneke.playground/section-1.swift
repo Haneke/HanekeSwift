@@ -3,7 +3,7 @@ import Haneke
 
 /// Initialize a JSON cache and fetch/cache a JSON response.
 func example1() {
-    let cache = Cache<JSON>(name: "github")
+    let cache = HanekeCache<JSON>(name: "github")
     let URL = NSURL(string: "https://api.github.com/users/haneke")!
     
     cache.fetch(URL: URL).onSuccess { JSON in
