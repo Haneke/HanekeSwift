@@ -34,7 +34,7 @@ class ViewController: UICollectionViewController {
         let CellIdentifier = "Cell"
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: indexPath) as! CollectionViewCell
         let URLString = self.items[indexPath.row]
-        let URL = NSURL(string:URLString)!
+        let URL = URL(string:URLString)!
         cell.imageView.hnk_setImageFromURL(URL)
         return cell
     }

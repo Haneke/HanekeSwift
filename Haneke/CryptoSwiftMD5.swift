@@ -24,7 +24,7 @@ Permission is granted to anyone to use this software for any purpose,including c
 import Foundation
 
 /** array of bytes, little-endian representation */
-func arrayOfBytes<T>(value:T, length:Int? = nil) -> Array<UInt8> {
+func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
     let totalBytes = length ?? MemoryLayout<T>.size
     
     let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
@@ -61,7 +61,7 @@ extension NSMutableData {
 
 struct BytesSequence: Sequence {
     let chunkSize: Int
-    let data: Array<UInt8>
+    let data: [UInt8]
     
     func makeIterator() -> AnyIterator<ArraySlice<UInt8>> {
         var offset:Int = 0
@@ -77,14 +77,14 @@ struct BytesSequence: Sequence {
 class HashBase {
     
     static let size:Int = 16 // 128 / 8
-    let message: Array<UInt8>
+    let message: [UInt8]
     
-    init (_ message: Array<UInt8>) {
+    init (_ message: [UInt8]) {
         self.message = message
     }
     
     /** Common part for hash calculation. Prepare header data. */
-    func prepare(_ len:Int) -> Array<UInt8> {
+    func prepare(_ len:Int) -> [UInt8] {
         var tmpMessage = message
         
         // Step 1. Append Padding Bits
@@ -108,8 +108,8 @@ func rotateLeft(v: UInt32, n: UInt32) -> UInt32 {
     return ((v << n) & 0xFFFFFFFF) | (v >> (32 - n))
 }
 
-func sliceToUInt32Array(_ slice: ArraySlice<UInt8>) -> Array<UInt32> {
-    var result = Array<UInt32>()
+func sliceToUInt32Array(_ slice: ArraySlice<UInt8>) -> [UInt32] {
+    var result = [UInt32]()
     result.reserveCapacity(16)
     for idx in stride(from: slice.startIndex, to: slice.endIndex, by: MemoryLayout<UInt32>.size) {
         let val1:UInt32 = (UInt32(slice[idx.advanced(by: 3)]) << 24)
@@ -126,13 +126,13 @@ class MD5 : HashBase {
     
     
     /** specifies the per-round shift amounts */
-    private let s: Array<UInt32> = [7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
+    private let s: [UInt32] = [7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
                                     5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,  5,  9, 14, 20,
                                     4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
                                     6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21]
     
     /** binary integer part of the sines of integers (Radians) */
-    private let k: Array<UInt32> = [0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,
+    private let k: [UInt32] = [0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,
                                     0xf57c0faf,0x4787c62a,0xa8304613,0xfd469501,
                                     0x698098d8,0x8b44f7af,0xffff5bb1,0x895cd7be,
                                     0x6b901122,0xfd987193,0xa679438e,0x49b40821,
@@ -149,9 +149,9 @@ class MD5 : HashBase {
                                     0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1,
                                     0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391]
     
-    private let h:Array<UInt32> = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
+    private let h: [UInt32] = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
     
-    func calculate() -> Array<UInt8> {
+    func calculate() -> [UInt8] {
         var tmpMessage = prepare(64)
         tmpMessage.reserveCapacity(tmpMessage.count + 4)
         
@@ -216,7 +216,7 @@ class MD5 : HashBase {
             hh[3] = hh[3] &+ D
         }
         
-        var result = Array<UInt8>()
+        var result = [UInt8]()
         result.reserveCapacity(hh.count / 4)
         
         hh.forEach {
