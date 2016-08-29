@@ -10,14 +10,14 @@ import UIKit
 
 // See: http://stackoverflow.com/questions/25922152/not-identical-to-self
 public protocol DataConvertible {
-    typealias Result
+    associatedtype Result
     
     static func convertFromData(data:NSData) -> Result?
 }
 
 public protocol DataRepresentable {
     
-    func asData() -> NSData!
+    func asData() -> Data!
 }
 
 private let imageSync = NSLock()
@@ -39,7 +39,7 @@ extension UIImage : DataConvertible, DataRepresentable {
         return image
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         return self.hnk_data()
     }
     
@@ -54,21 +54,21 @@ extension String : DataConvertible, DataRepresentable {
         return string as? Result
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         return self.data(using: String.Encoding.utf8)
     }
     
 }
 
-extension NSData : DataConvertible, DataRepresentable {
+extension Data : DataConvertible, DataRepresentable {
     
-    public typealias Result = NSData
+    public typealias Result = Data
     
-    public class func convertFromData(data: NSData) -> Result? {
-        return data
+    public static func convertFromData(data: NSData) -> Result? {
+        return data as Result
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         return self
     }
     
@@ -82,7 +82,7 @@ public enum JSON : DataConvertible, DataRepresentable {
     
     public static func convertFromData(data: NSData) -> Result? {
         do {
-            let object : AnyObject = try JSONSerialization.jsonObject(with: data as Data, options: JSONSerialization.ReadingOptions())
+            let object = try JSONSerialization.jsonObject(with: data as Data, options: JSONSerialization.ReadingOptions())
             switch (object) {
             case let dictionary as [String:AnyObject]:
                 return JSON.Dictionary(dictionary)
@@ -97,7 +97,7 @@ public enum JSON : DataConvertible, DataRepresentable {
         }
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         switch (self) {
         case .Dictionary(let dictionary):
             return try? JSONSerialization.data(withJSONObject: dictionary, options: JSONSerialization.WritingOptions())

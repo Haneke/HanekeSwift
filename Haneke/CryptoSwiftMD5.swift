@@ -25,15 +25,18 @@ import Foundation
 
 /** array of bytes, little-endian representation */
 func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
-    let totalBytes = length ?? (sizeofValue(value) * 8)
+    let totalBytes = length ?? (MemoryLayout<T>.size * 8)
     
     let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
     valuePointer.pointee = value
     
-    let bytesPointer = UnsafeMutablePointer<UInt8>(valuePointer)
+    
+    let bytesPointer = UnsafeMutablePointer<UInt8>.init(mutating: valuePointer as? UnsafeMutablePointer<UInt8>)
+
+//    let resultBytes = UnsafeMutablePointer<CUnsignedChar>.ini
     var bytes = [UInt8](repeating: 0, count: totalBytes)
-    for j in 0..<min(sizeof(T),totalBytes) {
-        bytes[totalBytes - 1 - j] = (bytesPointer + j).pointee
+    for j in 0..<min(MemoryLayout<T>.size,totalBytes) {
+        bytes[totalBytes - 1 - j] = (bytesPointer! + j).pointee
     }
     
     valuePointer.deinitialize()
@@ -44,7 +47,7 @@ func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
 
 extension Int {
     /** Array of bytes with optional padding (little-endian) */
-    public func bytes(totalBytes: Int = sizeof(Int)) -> [UInt8] {
+    public func bytes(totalBytes: Int = MemoryLayout<Int>.size) -> [UInt8] {
         return arrayOfBytes(value: self, length: totalBytes)
     }
     
@@ -111,7 +114,7 @@ func rotateLeft(v: UInt32, n: UInt32) -> UInt32 {
 func sliceToUInt32Array(_ slice: ArraySlice<UInt8>) -> Array<UInt32> {
     var result = Array<UInt32>()
     result.reserveCapacity(16)
-    for idx in stride(from: slice.startIndex, to: slice.endIndex, by: sizeof(UInt32.self)) {
+    for idx in stride(from: slice.startIndex, to: slice.endIndex, by: MemoryLayout<UInt32>.size) {
         let val1:UInt32 = (UInt32(slice[idx.advanced(by: 3)]) << 24)
         let val2:UInt32 = (UInt32(slice[idx.advanced(by: 2)]) << 16)
         let val3:UInt32 = (UInt32(slice[idx.advanced(by: 1)]) << 8)

@@ -49,7 +49,7 @@ extension FileManager {
             
             for (i, v) in sortedContents.enumerated() {
                 var stop : Bool = false
-                block(v, i, &stop)
+                block(v as NSURL, i, &stop)
                 if stop { break }
             }
             

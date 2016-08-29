@@ -16,7 +16,7 @@ extension String {
         let legalURLCharactersToBeEscaped = "/:" as NSString as CFString
         let encoding = CFStringBuiltInEncodings.UTF8.rawValue
         let escapedPath = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, originalString, charactersToLeaveUnescaped, legalURLCharactersToBeEscaped, encoding)!
-        let escapedPathNSString = escapedPath as NSString
+        var escapedPathNSString = escapedPath as NSString
         return escapedPathNSString as String 
     }
     
@@ -27,7 +27,7 @@ extension String {
 
         let MD5Calculator = MD5(Array(data))
         let MD5Data = MD5Calculator.calculate()
-        let resultBytes = UnsafeMutablePointer<CUnsignedChar>(MD5Data)
+        let resultBytes = UnsafeMutablePointer<CUnsignedChar>(mutating: MD5Data)
         let resultEnumerator = UnsafeBufferPointer<CUnsignedChar>(start: resultBytes, count: MD5Data.count)
         let MD5String = NSMutableString()
         for c in resultEnumerator {

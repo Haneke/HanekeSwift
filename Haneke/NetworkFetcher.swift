@@ -42,11 +42,11 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
+    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : @escaping (T.Result) -> ()) {
         self.cancelled = false
         self.task = self.session.dataTask(with: self.URL as URL) {[weak self] (data, response, error) -> Void in
             if let strongSelf = self {
-                strongSelf.onReceiveData(data: data, response: response, error: error, failure: fail, success: succeed)
+                strongSelf.onReceiveData(data: data as NSData!, response: response, error: error as NSError!, failure: fail, success: succeed)
             }
         }
         self.task?.resume()
@@ -59,7 +59,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data: NSData!, response: URLResponse!, error: NSError!, failure fail: ((NSError?) -> ()), success succeed: (T.Result) -> ()) {
+    private func onReceiveData(data: NSData!, response: URLResponse!, error: NSError!, failure fail: ((NSError?) -> ()), success succeed: @escaping (T.Result) -> ()) {
 
         if cancelled { return }
         
@@ -73,7 +73,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        if let httpResponse = response as? HTTPURLResponse where !httpResponse.hnk_isValidStatusCode() {
+        if let httpResponse = response as? HTTPURLResponse , !httpResponse.hnk_isValidStatusCode() {
             let description = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
             self.failWithCode(code: .InvalidStatusCode, localizedDescription: description, failure: fail)
             return

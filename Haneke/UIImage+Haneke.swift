@@ -28,7 +28,7 @@ extension UIImage {
         }
     }
     
-    func hnk_data(compressionQuality: Float = 1.0) -> NSData! {
+    func hnk_data(compressionQuality: Float = 1.0) -> Data! {
         let hasAlpha = self.hnk_hasAlpha()
         let data = hasAlpha ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, CGFloat(compressionQuality))
         return data

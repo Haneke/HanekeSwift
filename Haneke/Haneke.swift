@@ -24,13 +24,15 @@ public struct Shared {
         return Static.cache
     }
     
-    public static var dataCache : Cache<NSData> {
+
+    public static var dataCache : Cache<Data> {
         struct Static {
             static let name = "shared-data"
-            static let cache = Cache<NSData>(name: name)
+            static let cache = Cache<Data>(name: name)
         }
         return Static.cache
     }
+    
     
     public static var stringCache : Cache<String> {
         struct Static {
