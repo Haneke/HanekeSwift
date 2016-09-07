@@ -31,7 +31,7 @@ open class Fetch<T> {
     
     public init() {}
     
-    open func onSuccess(_ onSuccess: Succeeder) -> Self {
+    open func onSuccess(_ onSuccess: @escaping Succeeder) -> Self {
         self.onSuccess = onSuccess
         switch self.state {
         case FetchState.success(let wrapper):
@@ -42,7 +42,7 @@ open class Fetch<T> {
         return self
     }
     
-    open func onFailure(_ onFailure: Failer) -> Self {
+    open func onFailure(_ onFailure: @escaping Failer) -> Self {
         self.onFailure = onFailure
         switch self.state {
         case FetchState.failure(let error):

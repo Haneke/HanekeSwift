@@ -35,7 +35,7 @@ open class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     // MARK: Fetcher
     
     
-    open override func fetch(failure fail: ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
+    open override func fetch(failure fail: @escaping ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
         self.cancelled = false
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async(execute: { [weak self] in
             if let strongSelf = self {
@@ -50,7 +50,7 @@ open class DiskFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    fileprivate func privateFetch(failure fail: ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
+    fileprivate func privateFetch(failure fail: @escaping ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
         if self.cancelled {
             return
         }

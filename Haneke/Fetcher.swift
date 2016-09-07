@@ -17,7 +17,7 @@ open class Fetcher<T : DataConvertible> {
         self.key = key
     }
     
-    open func fetch(failure fail: ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {}
+    open func fetch(failure fail: @escaping ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {}
     
     open func cancelFetch() {}
 }
@@ -31,7 +31,7 @@ class SimpleFetcher<T : DataConvertible> : Fetcher<T> {
         super.init(key: key)
     }
     
-    override func fetch(failure fail: ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
+    override func fetch(failure fail: @escaping ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
         let value = getValue()
         succeed(value)
     }
