@@ -33,8 +33,8 @@ extension HanekeGlobals {
     
 }
 
-// In order to not conflict with upcoming `Cache` naming convention for Swift3, name changed to HanekeCache
-open class HanekeCache<T: DataConvertible> where T.Result == T, T : DataRepresentable {
+// In order to not conflict with upcoming `Cache` naming convention for Swift3, name changed to Cache
+open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable {
     
     let name: String
     
@@ -77,7 +77,7 @@ open class HanekeCache<T: DataConvertible> where T.Result == T, T : DataRepresen
     }
     
     open func fetch(key: String, formatName: String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetch = HanekeCache.buildFetch(failure: fail, success: succeed)
+        let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.object(forKey: key as AnyObject) as? ObjectWrapper, let result = wrapper.hnk_value as? T {
                 fetch.succeed(result)
@@ -102,7 +102,7 @@ open class HanekeCache<T: DataConvertible> where T.Result == T, T : DataRepresen
     
     open func fetch(fetcher : Fetcher<T>, formatName: String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
-        let fetch = HanekeCache.buildFetch(failure: fail, success: succeed)
+        let fetch = Cache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
             if (error as? NSError)?.code == HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue {
                 fetch.fail(error)

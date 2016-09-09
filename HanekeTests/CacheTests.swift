@@ -1,5 +1,5 @@
 //
-//  HanekeCacheTests.swift
+//  CacheTests.swift
 //  Haneke
 //
 //  Created by Luis Ascorbe on 23/07/14.
@@ -11,13 +11,13 @@ import UIKit
 import XCTest
 @testable import Haneke
 
-class HanekeCacheTests: XCTestCase {
+class CacheTests: XCTestCase {
     
-    var sut : HanekeCache<Data>!
+    var sut : Cache<Data>!
     
     override func setUp() {
         super.setUp()
-        sut = HanekeCache<Data>(name: self.name!)
+        sut = Cache<Data>(name: self.name!)
     }
     
     override func tearDown() {
@@ -33,7 +33,7 @@ class HanekeCacheTests: XCTestCase {
     
     func testInit() {
         let name = "name"
-        let sut = HanekeCache<Data>(name: name)
+        let sut = Cache<Data>(name: name)
         
         XCTAssertNotNil(sut.memoryWarningObserver)
         XCTAssertEqual(name, sut.name)
@@ -41,21 +41,21 @@ class HanekeCacheTests: XCTestCase {
     }
     
     func testDeinit() {
-        weak var _ = HanekeCache<UIImage>(name: self.name!)
+        weak var _ = Cache<UIImage>(name: self.name!)
     }
     
-    // MARK: HanekeCachePath
+    // MARK: CachePath
     
-    func testHanekeCachePath() {
-        let expectedHanekeCachePath = (DiskHanekeCache.basePath() as NSString).appendingPathComponent(sut.name)
-        XCTAssertEqual(sut.HanekeCachePath, expectedHanekeCachePath)
+    func testCachePath() {
+        let expectedCachePath = (DiskCache.basePath() as NSString).appendingPathComponent(sut.name)
+        XCTAssertEqual(sut.CachePath, expectedCachePath)
     }
     
     // MARK: formatPath
     
     func testFormatPath() {
         let formatName = self.name!
-        let expectedFormatPath = (sut.HanekeCachePath as NSString).appendingPathComponent(formatName)
+        let expectedFormatPath = (sut.CachePath as NSString).appendingPathComponent(formatName)
         
         let formatPath = sut.formatPath(formatName: formatName)
         
@@ -64,7 +64,7 @@ class HanekeCacheTests: XCTestCase {
     
     func testFormatPath_WithEmptyName() {
         let formatName = ""
-        let expectedFormatPath = (sut.HanekeCachePath as NSString).appendingPathComponent(formatName)
+        let expectedFormatPath = (sut.CachePath as NSString).appendingPathComponent(formatName)
         
         let formatPath = sut.formatPath(formatName: formatName)
         
@@ -123,7 +123,7 @@ class HanekeCacheTests: XCTestCase {
     // MARK: set
     
     func testSet_WithIdentityFormat_ExpectSyncSuccess() {
-        let sut = HanekeCache<Data>(name: self.name!)
+        let sut = Cache<Data>(name: self.name!)
         let data = Data.dataWithLength(5)
         let key = self.name!
         let expectation = self.expectation(description: self.name!)
@@ -189,7 +189,7 @@ class HanekeCacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key).onFailure { error in
             XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!.code, HanekeGlobals.HanekeCache.ErrorCode.objectNotFound.rawValue)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }
@@ -199,12 +199,12 @@ class HanekeCacheTests: XCTestCase {
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
-    func testFetch_AfterClearingMemoryHanekeCache_WithKey_ExpectAsyncSuccess () {
+    func testFetch_AfterClearingMemoryCache_WithKey_ExpectAsyncSuccess () {
         let data = Data.dataWithLength(9)
         let key = self.name!
         let expectation = self.expectation(description: key)
         sut.set(value: data, key: key)
-        self.clearMemoryHanekeCache()
+        self.clearMemoryCache()
         
         let fetch = sut.fetch(key: key, failure: { _ in
             XCTFail("expected success")
@@ -228,7 +228,7 @@ class HanekeCacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key, failure : { error in
             XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!.code, HanekeGlobals.HanekeCache.ErrorCode.objectNotFound.rawValue)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -249,7 +249,7 @@ class HanekeCacheTests: XCTestCase {
         
         let fetch = sut.fetch(key: key, formatName: key, failure : { error in
             XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!.code, HanekeGlobals.HanekeCache.ErrorCode.formatNotFound.rawValue)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -262,14 +262,14 @@ class HanekeCacheTests: XCTestCase {
         self.waitForExpectations(timeout: 0, handler: nil)
     }
     
-    func testFetch_AfterClearingMemoryHanekeCache_WithKeyAndFormatWithoutDiskCapacity_ExpectFailure() {
+    func testFetch_AfterClearingMemoryCache_WithKeyAndFormatWithoutDiskCapacity_ExpectFailure() {
         let key = self.name!
         let data = Data.dataWithLength(8)
         let format = Format<Data>(name: key, diskCapacity: 0)
         sut.addFormat(format)
         let expectation = self.expectation(description: "fetch image")
         sut.set(value: data, key: key, formatName: format.name)
-        self.clearMemoryHanekeCache()
+        self.clearMemoryCache()
         
         sut.fetch(key: key, formatName: format.name, failure: {_ in
             expectation.fulfill()
@@ -281,14 +281,14 @@ class HanekeCacheTests: XCTestCase {
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
-    func testFetch_AfterClearingMemoryHanekeCache_WithKeyAndFormatWithDiskCapacity_ExpectSuccess() {
+    func testFetch_AfterClearingMemoryCache_WithKeyAndFormatWithDiskCapacity_ExpectSuccess() {
         let key = self.name!
         let data = Data.dataWithLength(9)
         let format = Format<Data>(name: key)
         sut.addFormat(format)
         let expectation = self.expectation(description: key)
         sut.set(value: data, key: key, formatName: format.name)
-        self.clearMemoryHanekeCache()
+        self.clearMemoryCache()
         
         self.sut.fetch(key: key, formatName: format.name, failure : { _ in
             XCTFail("expected success")
@@ -352,13 +352,13 @@ class HanekeCacheTests: XCTestCase {
         self.waitForExpectations(timeout: 0, handler: nil)
     }
     
-    func testFetch_AfterSetAndClearingMemoryHanekeCache_WithFetcher_ExpectAsyncSuccess () {
+    func testFetch_AfterSetAndClearingMemoryCache_WithFetcher_ExpectAsyncSuccess () {
         let data = Data.dataWithLength(10)
         let key = self.name!
         let fetcher = SimpleFetcher<Data>(key: key, value: data)
         let expectation = self.expectation(description: key)
         sut.set(value: data, key: key)
-        self.clearMemoryHanekeCache()
+        self.clearMemoryCache()
         
         let fetch = sut.fetch(fetcher: fetcher, success: {
             XCTAssertTrue($0 !== data)
@@ -427,7 +427,7 @@ class HanekeCacheTests: XCTestCase {
 
         let fetch = sut.fetch(fetcher: fetcher, formatName: self.name!, failure : { error in
             XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!.code, HanekeGlobals.HanekeCache.ErrorCode.formatNotFound.rawValue)
+            XCTAssertEqual(error!.code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
             XCTAssertNotNil(error!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -546,8 +546,8 @@ class HanekeCacheTests: XCTestCase {
         self.waitForExpectations(timeout: 1, handler: nil)
     }
 
-    func testRemoveAll_WhenDataAlreadyPresentInHanekeCachePath() {
-        let path = (sut.HanekeCachePath as NSString).appendingPathComponent("test")
+    func testRemoveAll_WhenDataAlreadyPresentInCachePath() {
+        let path = (sut.CachePath as NSString).appendingPathComponent("test")
         let data = Data.dataWithLength(1)
         try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
         XCTAssertTrue(FileManager.default.fileExists(atPath: path))
@@ -586,7 +586,7 @@ class HanekeCacheTests: XCTestCase {
     func testUIApplicationDidReceiveMemoryWarningNotification() {
         let expectation = self.expectation(description: "onMemoryWarning")
         
-        let sut = HanekeCacheMock<UIImage>(name: self.name!)
+        let sut = CacheMock<UIImage>(name: self.name!)
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
         NotificationCenter.default.post(name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
@@ -596,18 +596,18 @@ class HanekeCacheTests: XCTestCase {
     
     // MARK: Helpers
     
-    func clearMemoryHanekeCache() {
+    func clearMemoryCache() {
         NotificationCenter.default.post(name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
     }
 }
 
-class ImageHanekeCacheTests: XCTestCase {
+class ImageCacheTests: XCTestCase {
 
-    var sut : HanekeCache<UIImage>!
+    var sut : Cache<UIImage>!
     
     override func setUp() {
         super.setUp()
-        sut = HanekeCache<UIImage>(name: self.name!)
+        sut = Cache<UIImage>(name: self.name!)
     }
     
     override func tearDown() {
@@ -617,7 +617,7 @@ class ImageHanekeCacheTests: XCTestCase {
     
     func testSet_ExpectAsyncDecompressedImage() {
         let key = self.name!
-        sut = HanekeCache<UIImage>(name: key)
+        sut = Cache<UIImage>(name: key)
         let image = UIImage.imageWithColor(UIColor.green)
         let expectation = self.expectation(description: key)
         
@@ -666,7 +666,7 @@ class FailFetcher<T : DataConvertible> : Fetcher<T> {
     
 }
 
-class HanekeCacheMock<T : DataConvertible> : HanekeCache<T> where T.Result == T, T : DataRepresentable {
+class CacheMock<T : DataConvertible> : Cache<T> where T.Result == T, T : DataRepresentable {
     
     var expectation : XCTestExpectation?
     
