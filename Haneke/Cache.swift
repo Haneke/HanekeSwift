@@ -33,7 +33,6 @@ extension HanekeGlobals {
     
 }
 
-// In order to not conflict with upcoming `Cache` naming convention for Swift3, name changed to Cache
 open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable {
     
     let name: String
