@@ -62,7 +62,7 @@ public extension UIButton {
     var hnk_imageFetcher : Fetcher<UIImage>! {
         get {
             let wrapper = objc_getAssociatedObject(self, &HanekeGlobals.UIKit.SetImageFetcherKey) as? ObjectWrapper
-            let fetcher = wrapper?.valueHaneke as? Fetcher<UIImage>
+            let fetcher = wrapper?.h_value as? Fetcher<UIImage>
             return fetcher
         }
         set (fetcher) {
@@ -174,7 +174,7 @@ public extension UIButton {
     var hnk_backgroundImageFetcher : Fetcher<UIImage>! {
         get {
             let wrapper = objc_getAssociatedObject(self, &HanekeGlobals.UIKit.SetBackgroundImageFetcherKey) as? ObjectWrapper
-            let fetcher = wrapper?.valueHaneke as? Fetcher<UIImage>
+            let fetcher = wrapper?.h_value as? Fetcher<UIImage>
             return fetcher
         }
         set (fetcher) {

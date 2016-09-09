@@ -14,9 +14,9 @@ extension HanekeGlobals {
     public struct NetworkFetcher {
 
         public enum ErrorCode : Int {
-            case InvalidData = -400
-            case MissingData = -401
-            case InvalidStatusCode = -402
+            case invalidData = -400
+            case missingData = -401
+            case invalidStatusCode = -402
         }
         
     }
@@ -42,7 +42,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Fetcher
     
-    public override func fetch(failure fail : ((NSError?) -> ()), success succeed : @escaping (T.Result) -> ()) {
+    public override func fetch(failure fail : @escaping ((NSError?) -> ()), success succeed : @escaping (T.Result) -> ()) {
         self.cancelled = false
         self.task = self.session.dataTask(with: self.URL as URL) {[weak self] (data, response, error) -> Void in
             if let strongSelf = self {
@@ -59,7 +59,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data: NSData!, response: URLResponse!, error: NSError!, failure fail: ((NSError?) -> ()), success succeed: @escaping (T.Result) -> ()) {
+    private func onReceiveData(data: NSData!, response: URLResponse!, error: NSError!, failure fail: @escaping ((NSError?) -> ()), success succeed: @escaping (T.Result) -> ()) {
 
         if cancelled { return }
         
@@ -75,21 +75,21 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         
         if let httpResponse = response as? HTTPURLResponse , !httpResponse.hnk_isValidStatusCode() {
             let description = HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-            self.failWithCode(code: .InvalidStatusCode, localizedDescription: description, failure: fail)
+            self.failWithCode(code: .invalidStatusCode, localizedDescription: description, failure: fail)
             return
         }
 
         if !response.hnk_validateLengthOfData(data: data) {
             let localizedFormat = NSLocalizedString("Request expected %ld bytes and received %ld bytes", comment: "Error description")
             let description = String(format:localizedFormat, response.expectedContentLength, data.length)
-            self.failWithCode(code: .MissingData, localizedDescription: description, failure: fail)
+            self.failWithCode(code: .missingData, localizedDescription: description, failure: fail)
             return
         }
         
         guard let value = T.convertFromData(data: data) else {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
             let description = String(format:localizedFormat, URL.absoluteString!)
-            self.failWithCode(code: .InvalidData, localizedDescription: description, failure: fail)
+            self.failWithCode(code: .invalidData, localizedDescription: description, failure: fail)
             return
         }
 
@@ -97,7 +97,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
 
     }
     
-    private func failWithCode(code: HanekeGlobals.NetworkFetcher.ErrorCode, localizedDescription: String, failure fail: ((NSError?) -> ())) {
+    private func failWithCode(code: HanekeGlobals.NetworkFetcher.ErrorCode, localizedDescription: String, failure fail: @escaping ((NSError?) -> ())) {
         let error = errorWithCode(code: code.rawValue, description: localizedDescription)
         Log.debug(message: localizedDescription, error: error)
         DispatchQueue.main.async { fail(error) }

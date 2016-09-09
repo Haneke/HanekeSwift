@@ -9,12 +9,12 @@
 import Foundation
 
 enum FetchState<T> {
-    case Pending
+    case pending
     // Using Wrapper as a workaround for error 'unimplemented IR generation feature non-fixed multi-payload enum layout'
     // See: http://swiftradar.tumblr.com/post/88314603360/swift-fails-to-compile-enum-with-two-data-cases
     // See: http://owensd.io/2014/08/06/fixed-enum-layout.html
-    case Success(Wrapper<T>)
-    case Failure(NSError?)
+    case success(Wrapper<T>)
+    case failure(NSError?)
 }
 
 public class Fetch<T> {
@@ -27,14 +27,14 @@ public class Fetch<T> {
     
     private var onFailure : Failer?
     
-    private var state : FetchState<T> = FetchState.Pending
+    private var state : FetchState<T> = FetchState.pending
     
     public init() {}
     
-    public func onSuccess(onSuccess: Succeeder) -> Self {
+    public func onSuccess(onSuccess: @escaping Succeeder) -> Self {
         self.onSuccess = onSuccess
         switch self.state {
-        case FetchState.Success(let wrapper):
+        case FetchState.success(let wrapper):
             onSuccess(wrapper.value)
         default:
             break
@@ -42,10 +42,10 @@ public class Fetch<T> {
         return self
     }
     
-    public func onFailure(onFailure: Failer) -> Self {
+    public func onFailure(onFailure: @escaping Failer) -> Self {
         self.onFailure = onFailure
         switch self.state {
-        case FetchState.Failure(let error):
+        case FetchState.failure(let error):
             onFailure(error)
         default:
             break
@@ -54,18 +54,18 @@ public class Fetch<T> {
     }
     
     func succeed(value: T) {
-        self.state = FetchState.Success(Wrapper(value))
+        self.state = FetchState.success(Wrapper(value))
         self.onSuccess?(value)
     }
     
     func fail(error: NSError? = nil) {
-        self.state = FetchState.Failure(error)
+        self.state = FetchState.failure(error)
         self.onFailure?(error)
     }
     
     var hasFailed : Bool {
         switch self.state {
-        case FetchState.Failure(_):
+        case FetchState.failure(_):
             return true
         default:
             return false
@@ -74,7 +74,7 @@ public class Fetch<T> {
     
     var hasSucceeded : Bool {
         switch self.state {
-        case FetchState.Success(_):
+        case FetchState.success(_):
             return true
         default:
             return false

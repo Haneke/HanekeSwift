@@ -10,10 +10,10 @@ import UIKit
 
 // Used to add T to NSCache
 class ObjectWrapper : NSObject {
-    let valueHaneke: Any
+    let h_value: Any
     
     init(value: Any) {
-        self.valueHaneke = value
+        self.h_value = value
     }
 }
 
@@ -25,8 +25,8 @@ extension HanekeGlobals {
         public static let OriginalFormatName = "original"
 
         public enum ErrorCode : Int {
-            case ObjectNotFound = -100
-            case FormatNotFound = -101
+            case objectNotFound = -100
+            case formatNotFound = -101
         }
         
     }
@@ -79,7 +79,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     public func fetch(key: String, formatName: String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
-            if let wrapper = memoryCache.object(forKey: key as AnyObject) as? ObjectWrapper, let result = wrapper.valueHaneke as? T {
+            if let wrapper = memoryCache.object(forKey: key as AnyObject) as? ObjectWrapper, let result = wrapper.h_value as? T {
                 fetch.succeed(value: result)
                 var dataFromValue = self.dataFromValue(value: result, format: format)
                 diskCache.updateAccessDate(getData: dataFromValue, key: key)
@@ -95,7 +95,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         } else {
             let localizedFormat = NSLocalizedString("Format %@ not found", comment: "Error description")
             let description = String(format:localizedFormat, formatName)
-            let error = errorWithCode(code: HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue, description: description)
+            let error = errorWithCode(code: HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue, description: description)
             fetch.fail(error: error)
         }
         return fetch
@@ -105,7 +105,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         let key = fetcher.key
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
-            if error?.code == HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue {
+            if error?.code == HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue {
                 fetch.fail(error: error)
             }
             
@@ -191,7 +191,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                 if (error?.code == NSFileReadNoSuchFileError) {
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
-                    let error = errorWithCode(code: HanekeGlobals.Cache.ErrorCode.ObjectNotFound.rawValue, description: description)
+                    let error = errorWithCode(code: HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue, description: description)
                     block(error)
                 } else {
                     block(error)
