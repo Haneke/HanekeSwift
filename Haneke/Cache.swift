@@ -33,7 +33,7 @@ extension HanekeGlobals {
     
 }
 
-public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable> {
+public class HanekeCache<T: DataConvertible where T.Result == T, T : DataRepresentable> {
     
     let name: String
     
@@ -67,7 +67,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                 let wrapper = ObjectWrapper(value: formattedValue)
                 memoryCache.setObject(wrapper, forKey: key as AnyObject)
                 // Value data is sent as @autoclosure to be executed in the disk cache queue.
-                var dataFromValue = self.dataFromValue(value: formattedValue, format: format)
+                let dataFromValue = self.dataFromValue(value: formattedValue, format: format)
                 diskCache.setData(getData: dataFromValue, key: key)
                 succeed?(formattedValue)
             }
@@ -77,11 +77,11 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     }
     
     public func fetch(key: String, formatName: String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetch = Cache.buildFetch(failure: fail, success: succeed)
+        let fetch = HanekeCache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.object(forKey: key as AnyObject) as? ObjectWrapper, let result = wrapper.h_value as? T {
                 fetch.succeed(value: result)
-                var dataFromValue = self.dataFromValue(value: result, format: format)
+                let dataFromValue = self.dataFromValue(value: result, format: format)
                 diskCache.updateAccessDate(getData: dataFromValue, key: key)
                 return fetch
             }
@@ -103,7 +103,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     
     public func fetch(fetcher : Fetcher<T>, formatName: String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
-        let fetch = Cache.buildFetch(failure: fail, success: succeed)
+        let fetch = HanekeCache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
             if error?.code == HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue {
                 fetch.fail(error: error)
