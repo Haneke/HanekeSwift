@@ -46,7 +46,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         self.cancelled = false
         self.task = self.session.dataTask(with: self.URL as URL) {[weak self] (data, response, error) -> Void in
             if let strongSelf = self {
-                strongSelf.onReceiveData(data: data as NSData!, response: response, error: error as NSError!, failure: fail, success: succeed)
+                strongSelf.onReceive(data: data, response: response, error: error as NSError!, failure: fail, success: succeed)
             }
         }
         self.task?.resume()
@@ -59,7 +59,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     // MARK: Private
     
-    private func onReceiveData(data: NSData!, response: URLResponse!, error: NSError!, failure fail: @escaping ((NSError?) -> ()), success succeed: @escaping (T.Result) -> ()) {
+    private func onReceive(data: Data!, response: URLResponse!, error: NSError!, failure fail: @escaping ((NSError?) -> ()), success succeed: @escaping (T.Result) -> ()) {
 
         if cancelled { return }
         
@@ -81,7 +81,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
 
         if !response.hnk_validateLengthOfData(data: data) {
             let localizedFormat = NSLocalizedString("Request expected %ld bytes and received %ld bytes", comment: "Error description")
-            let description = String(format:localizedFormat, response.expectedContentLength, data.length)
+            let description = String(format:localizedFormat, response.expectedContentLength, data.count)
             self.failWithCode(code: .missingData, localizedDescription: description, failure: fail)
             return
         }

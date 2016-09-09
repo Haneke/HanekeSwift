@@ -55,11 +55,11 @@ public class DiskCache {
         })
     }
     
-    public func fetchData(key key: String, failure fail: ((NSError?) -> ())? = nil, success succeed: @escaping(NSData) -> ()) {
+    public func fetchData(key key: String, failure fail: ((NSError?) -> ())? = nil, success succeed: @escaping(Data) -> ()) {
         self.cacheQueue.async {
             let path = self.pathForKey(key: key)
             do {
-                let data = try NSData(contentsOfFile: path, options: NSData.ReadingOptions())
+                let data = try Data(contentsOf: URL(fileURLWithPath: self.path), options: Data.ReadingOptions())
                 DispatchQueue.main.async {
                     succeed(data)
                 }

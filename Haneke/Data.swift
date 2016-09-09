@@ -12,7 +12,7 @@ import UIKit
 public protocol DataConvertible {
     associatedtype Result
     
-    static func convertFromData(data:NSData) -> Result?
+    static func convertFromData(data: Data) -> Result?
 }
 
 public protocol DataRepresentable {
@@ -27,14 +27,14 @@ extension UIImage : DataConvertible, DataRepresentable {
     public typealias Result = UIImage
 
     // HACK: UIImage data initializer is no longer thread safe. See: https://github.com/AFNetworking/AFNetworking/issues/2572#issuecomment-115854482
-    static func safeImageWithData(data:NSData) -> Result? {
+    static func safeImageWithData(data:Data) -> Result? {
         imageSync.lock()
         let image = UIImage(data:data as Data)
         imageSync.unlock()
         return image
     }
     
-    public class func convertFromData(data: NSData) -> Result? {
+    public class func convertFromData(data: Data) -> Result? {
         let image = UIImage.safeImageWithData(data: data)
         return image
     }
@@ -49,7 +49,7 @@ extension String : DataConvertible, DataRepresentable {
     
     public typealias Result = String
     
-    public static func convertFromData(data: NSData) -> Result? {
+    public static func convertFromData(data: Data) -> Result? {
         let string = NSString(data: data as Data, encoding: String.Encoding.utf8.rawValue)
         return string as? Result
     }
@@ -64,7 +64,7 @@ extension Data : DataConvertible, DataRepresentable {
     
     public typealias Result = Data
     
-    public static func convertFromData(data: NSData) -> Result? {
+    public static func convertFromData(data: Data) -> Result? {
         return data as Result
     }
     
@@ -80,7 +80,7 @@ public enum JSON : DataConvertible, DataRepresentable {
     case Dictionary([String:AnyObject])
     case Array([AnyObject])
     
-    public static func convertFromData(data: NSData) -> Result? {
+    public static func convertFromData(data: Data) -> Result? {
         do {
             let object = try JSONSerialization.jsonObject(with: data as Data, options: JSONSerialization.ReadingOptions())
             switch (object) {

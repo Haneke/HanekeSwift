@@ -55,9 +55,9 @@ public class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
         
-        let data : NSData
+        let data : Data
         do {
-            data = try NSData(contentsOfFile: self.path, options: NSData.ReadingOptions())
+            data = try Data(contentsOf: URL(fileURLWithPath: self.path), options: Data.ReadingOptions())
         } catch {
              DispatchQueue.main.async{
                 if self.cancelled {
