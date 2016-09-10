@@ -31,7 +31,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         self.URL = URL
 
         let key =  URL.absoluteString
-        super.init(key: key)
+        super.init(key: key!)
     }
     
     public var session : NSURLSession { return NSURLSession.sharedSession() }
@@ -88,7 +88,7 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         
         guard let value = T.convertFromData(data) else {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at URL %@", comment: "Error description")
-            let description = String(format:localizedFormat, URL.absoluteString)
+            let description = String(format:localizedFormat, URL.absoluteString!)
             self.failWithCode(.InvalidData, localizedDescription: description, failure: fail)
             return
         }
