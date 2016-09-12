@@ -79,7 +79,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.objectForKey(key) as? ObjectWrapper, let result = wrapper.value as? T {
-                fetch.succeed(result)
+                fetch.succeed(result, immediately: true)
                 diskCache.updateAccessDate(self.dataFromValue(result, format: format), key: key)
                 return fetch
             }
@@ -87,7 +87,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
             self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: { error in
                 fetch.fail(error)
             }) { value in
-                fetch.succeed(value)
+                fetch.succeed(value, immediately: true)
             }
 
         } else {
@@ -111,13 +111,13 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                 self.fetchAndSet(fetcher, format: format, failure: {error in
                     fetch.fail(error)
                 }) {value in
-                    fetch.succeed(value)
+                    fetch.succeed(value, immediately: false)    //TODO: check !!!
                 }
             }
             
             // Unreachable code. Formats can't be removed from Cache.
-        }) { value in
-            fetch.succeed(value)
+        }) { value, immediately in
+            fetch.succeed(value, immediately: immediately)
         }
         return fetch
     }
@@ -282,7 +282,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     private class func buildFetch(failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Fetch<T>()
         if let succeed = succeed {
-            fetch.onSuccess(succeed)
+            fetch.onSuccess(succeed, immediately: false)  //TODO: check !!!
         }
         if let fail = fail {
             fetch.onFailure(fail)
