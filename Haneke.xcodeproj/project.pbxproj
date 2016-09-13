@@ -484,14 +484,19 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Haneke;
 				TargetAttributes = {
+					6393C5DA1C3B229200EB1FD8 = {
+						LastSwiftMigration = 0800;
+					};
 					A0026E9919C9BFBC004DE0C6 = {
 						CreatedOnToolsVersion = 6.0;
 					};
 					A095C9551980418C00CD0F4C = {
 						CreatedOnToolsVersion = 6.0;
+						LastSwiftMigration = 0800;
 					};
 					A095C9601980418C00CD0F4C = {
 						CreatedOnToolsVersion = 6.0;
+						LastSwiftMigration = 0800;
 						TestTargetID = A095C9551980418C00CD0F4C;
 					};
 				};
@@ -719,6 +724,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -740,6 +746,7 @@
 				PRODUCT_NAME = Haneke;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
@@ -873,6 +880,7 @@
 				PRODUCT_NAME = Haneke;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -891,6 +899,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.haneke.Haneke;
 				PRODUCT_NAME = Haneke;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -913,6 +922,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HanekeTests/HanekeTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -930,6 +940,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "HanekeTests/HanekeTests-Bridging-Header.h";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
