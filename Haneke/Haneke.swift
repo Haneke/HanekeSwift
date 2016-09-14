@@ -51,7 +51,15 @@ public struct Shared {
     }
 }
 
-func errorWithCode(code: Int, description: String) -> NSError {
-    let userInfo = [NSLocalizedDescriptionKey: description]
-    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo)
+class HanekeError:Error{
+    let code:Int
+    let description:String
+    init(code:Int,description:String){
+        self.code = code
+        self.description = description
+    }
+}
+
+func errorWithCode(code: Int, description: String) -> HanekeError {
+    return HanekeError(code:code,description:description)
 }

@@ -16,7 +16,7 @@ extension String {
         let legalURLCharactersToBeEscaped = "/:" as NSString as CFString
         let encoding = CFStringBuiltInEncodings.UTF8.rawValue
         let escapedPath = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, originalString, charactersToLeaveUnescaped, legalURLCharactersToBeEscaped, encoding)!
-        var escapedPathNSString = escapedPath as NSString
+        let escapedPathNSString = escapedPath as NSString
         return escapedPathNSString as String 
     }
     

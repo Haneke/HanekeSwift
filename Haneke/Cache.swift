@@ -33,7 +33,7 @@ extension HanekeGlobals {
     
 }
 
-public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable> {
+public class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable {
     
     let name: String
     
@@ -67,7 +67,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                 let wrapper = ObjectWrapper(value: formattedValue)
                 memoryCache.setObject(wrapper, forKey: key as AnyObject)
                 // Value data is sent as @autoclosure to be executed in the disk cache queue.
-                var dataFromValue = self.dataFromValue(value: formattedValue, format: format)
+                let dataFromValue = self.dataFromValue(value: formattedValue, format: format)
                 diskCache.setData(getData: dataFromValue, key: key)
                 succeed?(formattedValue)
             }
@@ -81,7 +81,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         if let (format, memoryCache, diskCache) = self.formats[formatName] {
             if let wrapper = memoryCache.object(forKey: key as AnyObject) as? ObjectWrapper, let result = wrapper.valueHaneke as? T {
                 fetch.succeed(value: result)
-                var dataFromValue = self.dataFromValue(value: result, format: format)
+                let dataFromValue = self.dataFromValue(value: result, format: format)
                 diskCache.updateAccessDate(getData: dataFromValue, key: key)
                 return fetch
             }
@@ -105,7 +105,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         let key = fetcher.key
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         self.fetch(key: key, formatName: formatName, failure: { error in
-            if error?.code == HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue {
+            if let error = error as? HanekeError, error.code == HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue {
                 fetch.fail(error: error)
             }
             
@@ -185,10 +185,10 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         return value.asData()
     }
     
-    private func fetchFromDiskCache(diskCache : DiskCache, key: String, memoryCache : NSCache<AnyObject, AnyObject>, failure fail : ((NSError?) -> ())?, success succeed : @escaping (T) -> ()) {
+    private func fetchFromDiskCache(diskCache : DiskCache, key: String, memoryCache : NSCache<AnyObject, AnyObject>, failure fail : ((Error?) -> ())?, success succeed : @escaping (T) -> ()) {
         diskCache.fetchData(key: key, failure: { error in
             if let block = fail {
-                if (error?.code == NSFileReadNoSuchFileError) {
+                if let error = error as? NSError , error.code == NSFileReadNoSuchFileError{
                     let localizedFormat = NSLocalizedString("Object not found for key %@", comment: "Error description")
                     let description = String(format:localizedFormat, key)
                     let error = errorWithCode(code: HanekeGlobals.Cache.ErrorCode.ObjectNotFound.rawValue, description: description)
@@ -212,7 +212,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         }
     }
     
-    private func fetchAndSet(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((NSError?) -> ())?, success succeed : @escaping (T) -> ()) {
+    internal func fetchAndSet(fetcher : Fetcher<T>, format : Format<T>, failure fail : ((Error?) -> ())?, success succeed : @escaping (T) -> ()) {
         fetcher.fetch(failure: { error in
             let _ = fail?(error)
         }) { value in
@@ -251,7 +251,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         return value
     }
     
-    private class func buildFetch(failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    internal class func buildFetch(failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Fetch<T>()
         if let succeed = succeed {
             fetch.onSuccess(onSuccess: succeed)
@@ -265,7 +265,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
     // MARK: Convenience fetch
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
-    public func fetch(key: String, value getValue : @autoclosure(escaping) () -> T.Result, formatName: String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(key: String, value getValue : @autoclosure @escaping () -> T.Result, formatName: String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = SimpleFetcher<T>(key: key, value: getValue)
         return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }
@@ -275,9 +275,103 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }
     
-    public func fetch(URL : NSURL, formatName: String = HanekeGlobals.Cache.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    public func fetch(URL : Foundation.URL, formatName: String = HanekeGlobals.Cache.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = NetworkFetcher<T>(URL: URL)
         return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }
     
 }
+
+
+
+public class BackgroundNetworkFetcher<T : DataConvertible> : NetworkFetcher<T>,URLSessionDataDelegate {
+    
+    lazy var bgSession : URLSession! = ({
+        let sessionConfig = URLSessionConfiguration.background(withIdentifier: "com.say.bgt.\(UUID().uuidString)")
+        //sessionConfig.discretionary = true
+        let session = Foundation.URLSession(configuration: sessionConfig,delegate: self,delegateQueue: nil)
+        return session
+    })()
+    public override var session: Foundation.URLSession{
+        return bgSession
+    }
+    typealias Fail = ((Error?) -> ())
+    typealias Success = ((T.Result) -> ())
+    var tasks = [(task:URLSessionTask,fail: Fail,success: Success)]()
+    public override init(URL : Foundation.URL) {
+        super.init(URL: URL)
+    }
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        for i in 0..<tasks.count{
+            if tasks[i].task == task{
+                let t = tasks.remove(at: i)
+                self.onReceiveData(data: nil, response: task.response, error: error, failure: t.fail, success: t.success)
+                break
+            }
+        }
+        
+    }
+    
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        for i in 0..<tasks.count{
+            if tasks[i].task == dataTask{
+                let t = tasks.remove(at: i)
+                self.onReceiveData(data: data , response: dataTask.response, error: nil, failure: t.fail, success: t.success)
+                break
+            }
+        }
+    }
+    
+    public override func fetch(failure fail : @escaping ((Error?) -> ()), success succeed : @escaping (T.Result) -> ()) {
+        self.cancelled = false
+        
+        
+        self.task = self.session.dataTask(with: self.URL )
+        tasks.append((task:self.task!,fail: fail,success: succeed))
+        
+        
+        self.task?.resume()
+        
+    }
+    
+    
+}
+
+
+
+extension Cache {
+    public func fetchHitAndRun(URL : Foundation.URL, formatName: String = HanekeGlobals.Cache.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetcher = NetworkFetcher<T>(URL: URL)
+        let fetch = Cache.buildFetch(failure: fail, success: succeed)
+        
+        self.fetch(fetcher: fetcher, formatName: formatName, failure: {res in fetch.fail(error: res)}, success: {res in
+            fetch.succeed(value: res)
+            self.fetchSkipCache(URL: URL,formatName: formatName,failure: nil,success: {fetch.succeed(value: $0)})
+        })
+        return fetch
+    }
+    public func fetchSkipCache(URL: Foundation.URL,background: Bool = false,
+                               formatName: String = HanekeGlobals.Cache.OriginalFormatName,
+                               failure fail: Fetch<T>.Failer? = nil,
+                               success succeed: Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetcher = background ? BackgroundNetworkFetcher(URL: URL)  : NetworkFetcher<T>(URL: URL)
+        let fetch = Cache.buildFetch(failure: fail, success: succeed)
+        URLSession.shared.reset {
+            if let (format, _, _) = self.formats[formatName] {
+                self.fetchAndSet(fetcher: fetcher, format: format, failure: {error in
+                    fetch.fail(error: error)
+                }) {value in
+                    fetch.succeed(value: value)
+                }
+            }
+        }
+        return fetch
+    }
+    
+    public func fetch(URL : Foundation.URL,withBackground background: Bool ,formatName: String = HanekeGlobals.Cache.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+        let fetcher = background ? BackgroundNetworkFetcher(URL: URL)  : NetworkFetcher<T>(URL: URL)
+        
+        return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
+    }
+}
+
