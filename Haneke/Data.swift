@@ -77,16 +77,16 @@ extension Data : DataConvertible, DataRepresentable {
 public enum JSON : DataConvertible, DataRepresentable {
     public typealias Result = JSON
     
-    case Dictionary([String:AnyObject])
-    case Array([AnyObject])
+    case Dictionary([String:Any])
+    case Array([Any])
     
     public static func convertFromData(data: Data) -> Result? {
         do {
             let object = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions())
             switch (object) {
-            case let dictionary as [String:AnyObject]:
+            case let dictionary as [String:Any]:
                 return JSON.Dictionary(dictionary)
-            case let array as [AnyObject]:
+            case let array as [Any]:
                 return JSON.Array(array)
             default:
                 return nil
@@ -106,7 +106,7 @@ public enum JSON : DataConvertible, DataRepresentable {
         }
     }
     
-    public var array : [AnyObject]! {
+    public var array : [Any]! {
         switch (self) {
         case .Dictionary(_):
             return nil
@@ -115,7 +115,7 @@ public enum JSON : DataConvertible, DataRepresentable {
         }
     }
     
-    public var dictionary : [String:AnyObject]! {
+    public var dictionary : [String:Any]! {
         switch (self) {
         case .Dictionary(let dictionary):
             return dictionary

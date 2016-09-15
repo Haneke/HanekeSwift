@@ -51,10 +51,14 @@ public struct Shared {
     }
 }
 
-class HanekeError:Error{
-    let code:Int
-    let description:String
+public class HanekeError:Error{
+    public let code:Int
+    public let description:String
+    public var localizedDescription: String{
+        return description
+    }
     init(code:Int,description:String){
+        
         self.code = code
         self.description = description
     }
