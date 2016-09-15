@@ -12,12 +12,12 @@ import UIKit
 public protocol DataConvertible {
     associatedtype Result
     
-    static func convertFromData(data:NSData) -> Result?
+    static func convertFromData(data: Data) -> Result?
 }
 
 public protocol DataRepresentable {
     
-    func asData() -> NSData!
+    func asData() -> Data!
 }
 
 private let imageSync = NSLock()
@@ -27,23 +27,21 @@ extension UIImage : DataConvertible, DataRepresentable {
     public typealias Result = UIImage
 
     // HACK: UIImage data initializer is no longer thread safe. See: https://github.com/AFNetworking/AFNetworking/issues/2572#issuecomment-115854482
-    static func safeImageWithData(data:NSData) -> Result? {
+    static func safeImageWithData(data:Data) -> Result? {
         imageSync.lock()
-        let image = UIImage(data:data, scale: scale)
+        let image = UIImage(data:data as Data)
         imageSync.unlock()
         return image
     }
     
-    public class func convertFromData(data: NSData) -> Result? {
-        let image = UIImage.safeImageWithData(data)
+    public class func convertFromData(data: Data) -> Result? {
+        let image = UIImage.safeImageWithData(data: data)
         return image
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         return self.hnk_data()
     }
-    
-    private static let scale = UIScreen.mainScreen().scale
     
 }
 
@@ -51,26 +49,26 @@ extension String : DataConvertible, DataRepresentable {
     
     public typealias Result = String
     
-    public static func convertFromData(data: NSData) -> Result? {
-        let string = NSString(data: data, encoding: NSUTF8StringEncoding)
+    public static func convertFromData(data: Data) -> Result? {
+        let string = NSString(data: data as Data, encoding: String.Encoding.utf8.rawValue)
         return string as? Result
     }
     
-    public func asData() -> NSData! {
-        return self.dataUsingEncoding(NSUTF8StringEncoding)
+    public func asData() -> Data! {
+        return self.data(using: String.Encoding.utf8)
     }
     
 }
 
-extension NSData : DataConvertible, DataRepresentable {
+extension Data : DataConvertible, DataRepresentable {
     
-    public typealias Result = NSData
+    public typealias Result = Data
     
-    public class func convertFromData(data: NSData) -> Result? {
-        return data
+    public static func convertFromData(data: Data) -> Result? {
+        return data as Result
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         return self
     }
     
@@ -82,9 +80,9 @@ public enum JSON : DataConvertible, DataRepresentable {
     case Dictionary([String:AnyObject])
     case Array([AnyObject])
     
-    public static func convertFromData(data: NSData) -> Result? {
+    public static func convertFromData(data: Data) -> Result? {
         do {
-            let object : AnyObject = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions())
+            let object = try JSONSerialization.jsonObject(with: data as Data, options: JSONSerialization.ReadingOptions())
             switch (object) {
             case let dictionary as [String:AnyObject]:
                 return JSON.Dictionary(dictionary)
@@ -94,17 +92,17 @@ public enum JSON : DataConvertible, DataRepresentable {
                 return nil
             }
         } catch {
-            Log.error("Invalid JSON data", error as NSError)
+            Log.error(message: "Invalid JSON data", error: error as NSError)
             return nil
         }
     }
     
-    public func asData() -> NSData! {
+    public func asData() -> Data! {
         switch (self) {
         case .Dictionary(let dictionary):
-            return try? NSJSONSerialization.dataWithJSONObject(dictionary, options: NSJSONWritingOptions())
+            return try? JSONSerialization.data(withJSONObject: dictionary, options: JSONSerialization.WritingOptions())
         case .Array(let array):
-            return try? NSJSONSerialization.dataWithJSONObject(array, options: NSJSONWritingOptions())
+            return try? JSONSerialization.data(withJSONObject: array, options: JSONSerialization.WritingOptions())
         }
     }
     

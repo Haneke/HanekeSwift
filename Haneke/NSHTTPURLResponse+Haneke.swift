@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension NSHTTPURLResponse {
+extension HTTPURLResponse {
 
     func hnk_isValidStatusCode() -> Bool {
         switch self.statusCode {

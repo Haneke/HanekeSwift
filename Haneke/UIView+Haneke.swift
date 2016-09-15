@@ -25,9 +25,9 @@ public extension HanekeGlobals {
                         scaleMode: scaleMode,
                         allowUpscaling: allowUpscaling,
                         compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
-                    return resizer.resizeImage($0)
+                    return resizer.resizeImage(image: $0)
             }
-            format.convertToData = {(image : UIImage) -> NSData in
+            format.convertToData = {(image : UIImage) -> Data in
                 image.hnk_data(compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)
             }
             return format
