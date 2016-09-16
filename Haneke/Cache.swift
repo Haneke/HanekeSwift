@@ -104,7 +104,7 @@ public class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentabl
     public func fetch(fetcher : Fetcher<T>, formatName: String = HanekeGlobals.Cache.OriginalFormatName, failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let key = fetcher.key
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
-        self.fetch(key: key, formatName: formatName, failure: { error in
+        let _ = self.fetch(key: key, formatName: formatName, failure: { error in
             if let error = error as? HanekeError, error.code == HanekeGlobals.Cache.ErrorCode.FormatNotFound.rawValue {
                 fetch.fail(error: error)
             }
@@ -254,10 +254,10 @@ public class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentabl
     internal class func buildFetch(failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetch = Fetch<T>()
         if let succeed = succeed {
-            fetch.onSuccess(onSuccess: succeed)
+            let _ = fetch.onSuccess(onSuccess: succeed)
         }
         if let fail = fail {
-            fetch.onFailure(onFailure: fail)
+            let _ = fetch.onFailure(onFailure: fail)
         }
         return fetch
     }
@@ -344,9 +344,9 @@ extension Cache {
         let fetcher = NetworkFetcher<T>(URL: URL)
         let fetch = Cache.buildFetch(failure: fail, success: succeed)
         
-        self.fetch(fetcher: fetcher, formatName: formatName, failure: {res in fetch.fail(error: res)}, success: {res in
+        let _ = self.fetch(fetcher: fetcher, formatName: formatName, failure: {res in fetch.fail(error: res)}, success: {res in
             fetch.succeed(value: res)
-            self.fetchSkipCache(URL: URL,formatName: formatName,failure: nil,success: {fetch.succeed(value: $0)})
+            let _ = self.fetchSkipCache(URL: URL,formatName: formatName,failure: nil,success: {fetch.succeed(value: $0)})
         })
         return fetch
     }

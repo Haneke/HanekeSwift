@@ -30,10 +30,8 @@ func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
     let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
     valuePointer.pointee = value
     
-    
     let bytesPointer = UnsafeMutablePointer<UInt8>.init(mutating: valuePointer as? UnsafeMutablePointer<UInt8>)
 
-//    let resultBytes = UnsafeMutablePointer<CUnsignedChar>.ini
     var bytes = [UInt8](repeating: 0, count: totalBytes)
     for j in 0..<min(MemoryLayout<T>.size,totalBytes) {
         bytes[totalBytes - 1 - j] = (bytesPointer! + j).pointee

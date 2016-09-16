@@ -19,7 +19,7 @@ struct Log {
     
     private static func log(level: Level, message: @autoclosure () -> String, error: Error? = nil) {
         if let error = error {
-            NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error as! NSError)
+            NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error as NSError)
         } else {
             NSLog("%@%@ %@", Tag, level.rawValue, message())
         }

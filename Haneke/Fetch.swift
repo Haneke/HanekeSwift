@@ -19,7 +19,7 @@ enum FetchState<T> {
 
 public class Fetch<T> {
     
-    public typealias Succeeder = (T) -> ()
+    public typealias Succeeder = (T) -> Void
     
     public typealias Failer = (Error?) -> ()
     

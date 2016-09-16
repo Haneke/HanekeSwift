@@ -63,7 +63,7 @@ public class DiskCache {
                 DispatchQueue.main.async {
                     succeed(data)
                 }
-                self.updateDiskAccessDateAtPath(path: path)
+                let _ = self.updateDiskAccessDateAtPath(path: path)
             } catch {
                 if let block = fail {
                     DispatchQueue.main.async {
