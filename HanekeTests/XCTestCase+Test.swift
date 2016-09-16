@@ -10,18 +10,18 @@ import XCTest
 
 extension XCTestCase {
     
-    func waitFor(interval : NSTimeInterval) {
-        let date = NSDate(timeIntervalSinceNow: interval)
-        NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: date)
+    func waitFor(_ interval : TimeInterval) {
+        let date = Date(timeIntervalSinceNow: interval)
+        RunLoop.current.run(mode: Mode.defaultRunLoopMode, before: date)
     }
 
-    func wait(timeout : NSTimeInterval, condition: () -> Bool) {
-        let timeoutDate = NSDate(timeIntervalSinceNow: timeout)
+    func wait(_ timeout : TimeInterval, condition: () -> Bool) {
+        let timeoutDate = Date(timeIntervalSinceNow: timeout)
         var success = false
-        while !success && NSDate().laterDate(timeoutDate).isEqualToDate(timeoutDate) {
+        while !success && (Date().laterDate(timeoutDate) == timeoutDate) {
             success = condition()
             if !success {
-                NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: timeoutDate)
+                RunLoop.current.run(mode: Mode.defaultRunLoopMode, before: timeoutDate)
             }
         }
         if !success {
