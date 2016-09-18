@@ -14,14 +14,14 @@ enum FetchState<T> {
     // See: http://swiftradar.tumblr.com/post/88314603360/swift-fails-to-compile-enum-with-two-data-cases
     // See: http://owensd.io/2014/08/06/fixed-enum-layout.html
     case Success(Wrapper<T>)
-    case Failure(NSError?)
+    case Failure(Error?)
 }
 
 public class Fetch<T> {
     
-    public typealias Succeeder = (T) -> ()
+    public typealias Succeeder = (T) -> Void
     
-    public typealias Failer = (NSError?) -> ()
+    public typealias Failer = (Error?) -> ()
     
     private var onSuccess : Succeeder?
     
@@ -31,7 +31,7 @@ public class Fetch<T> {
     
     public init() {}
     
-    public func onSuccess(onSuccess: Succeeder) -> Self {
+    public func onSuccess(onSuccess: @escaping Succeeder) -> Self {
         self.onSuccess = onSuccess
         switch self.state {
         case FetchState.Success(let wrapper):
@@ -42,7 +42,7 @@ public class Fetch<T> {
         return self
     }
     
-    public func onFailure(onFailure: Failer) -> Self {
+    public func onFailure(onFailure: @escaping Failer) -> Self {
         self.onFailure = onFailure
         switch self.state {
         case FetchState.Failure(let error):
@@ -58,7 +58,7 @@ public class Fetch<T> {
         self.onSuccess?(value)
     }
     
-    func fail(error: NSError? = nil) {
+    func fail(error: Error? = nil) {
         self.state = FetchState.Failure(error)
         self.onFailure?(error)
     }

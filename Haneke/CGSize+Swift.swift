@@ -15,8 +15,8 @@ extension CGSize {
         let scaleHeight = size.height / self.height
         let scale = max(scaleWidth, scaleHeight)
 
-        let resultSize = CGSizeMake(self.width * scale, self.height * scale)
-        return CGSizeMake(ceil(resultSize.width), ceil(resultSize.height))
+        let resultSize = CGSize(width: self.width * scale, height: self.height * scale)
+        return CGSize(width: ceil(resultSize.width), height: ceil(resultSize.height))
     }
 
     func hnk_aspectFitSize(size: CGSize) -> CGSize {
@@ -30,6 +30,6 @@ extension CGSize {
         else {
             resultSize.height = size.width / sourceAspect
         }
-        return CGSizeMake(ceil(resultSize.width), ceil(resultSize.height))
+        return CGSize(width: ceil(resultSize.width), height: ceil(resultSize.height))
     }
 }

@@ -17,22 +17,22 @@ struct Log {
         case Error = "[ERROR]"
     }
     
-    private static func log(level: Level, @autoclosure _ message: () -> String, _ error: NSError? = nil) {
+    private static func log(level: Level, message: @autoclosure () -> String, error: Error? = nil) {
         if let error = error {
-            NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error)
+            NSLog("%@%@ %@ with error %@", Tag, level.rawValue, message(), error as NSError)
         } else {
             NSLog("%@%@ %@", Tag, level.rawValue, message())
         }
     }
     
-    static func debug(@autoclosure message: () -> String, _ error: NSError? = nil) {
+    static func debug(message: @autoclosure  () -> String, error: Error? = nil) {
         #if DEBUG
             log(.Debug, message, error)
         #endif
     }
     
-    static func error(@autoclosure message: () -> String, _ error: NSError? = nil) {
-        log(.Error, message, error)
+    static func error(message: @autoclosure  () -> String, error: Error? = nil) {
+        log(level: .Error, message: message, error: error)
     }
     
 }

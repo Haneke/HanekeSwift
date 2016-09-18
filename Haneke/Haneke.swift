@@ -24,13 +24,15 @@ public struct Shared {
         return Static.cache
     }
     
-    public static var dataCache : Cache<NSData> {
+
+    public static var dataCache : Cache<Data> {
         struct Static {
             static let name = "shared-data"
-            static let cache = Cache<NSData>(name: name)
+            static let cache = Cache<Data>(name: name)
         }
         return Static.cache
     }
+    
     
     public static var stringCache : Cache<String> {
         struct Static {
@@ -49,7 +51,19 @@ public struct Shared {
     }
 }
 
-func errorWithCode(code: Int, description: String) -> NSError {
-    let userInfo = [NSLocalizedDescriptionKey: description]
-    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo)
+public class HanekeError:Error{
+    public let code:Int
+    public let description:String
+    public var localizedDescription: String{
+        return description
+    }
+    init(code:Int,description:String){
+        
+        self.code = code
+        self.description = description
+    }
+}
+
+func errorWithCode(code: Int, description: String) -> HanekeError {
+    return HanekeError(code:code,description:description)
 }
