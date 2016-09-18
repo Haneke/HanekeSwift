@@ -70,7 +70,7 @@ Manually:
 ## Requirements
 
 - iOS 8.0+ or tvOS 9.1+
-- Swift 2.0
+- Swift 2.3
 
 ## Using the cache
 
