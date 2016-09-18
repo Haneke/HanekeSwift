@@ -4,7 +4,4 @@
    <FileRef
       location = "container:Haneke.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Haneke.playground">
-   </FileRef>
 </Workspace>
