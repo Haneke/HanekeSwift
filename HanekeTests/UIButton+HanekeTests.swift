@@ -180,7 +180,7 @@ class UIButton_HanekeTests: DiskTestCase {
     }
     
     func testSetImageFromURL_Failure_UIControlStateNormal() {
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = Data.dataWithLength(100)
@@ -191,7 +191,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -204,7 +204,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.red)
         let expectedImage = UIImage.imageWithColor(UIColor.green)
         let format = Format<UIImage>(name: self.name!, diskCapacity: 0) { _ in return expectedImage }
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
@@ -289,10 +289,10 @@ class UIButton_HanekeTests: DiskTestCase {
     
     func testCancelSetImage_AfterSetImage() {
         let URL = Foundation.URL(string: "http://imgs.xkcd.com/comics/election.png")!
-        sut.hnk_setImageFromURL(URL, success: { _ in
-            XCTFail("unexpected success")
-            }, failure: { _ in
-                XCTFail("unexpected failure")
+        sut.hnk_setImageFromURL(URL, failure: { _ in
+            XCTFail("unexpected failure")
+            }, success: { _ in
+                XCTFail("unexpected success")
         })
         
         sut.hnk_cancelSetImage()
@@ -303,10 +303,10 @@ class UIButton_HanekeTests: DiskTestCase {
 
     func testCancelSetImage_AfterSetImage_UIControlStateHighlighted() {
         let URL = Foundation.URL(string: "http://imgs.xkcd.com/comics/election.png")!
-        sut.hnk_setImageFromURL(URL, state: .highlighted, success: { _ in
-            XCTFail("unexpected success")
-            }, failure: { _ in
-                XCTFail("unexpected failure")
+        sut.hnk_setImageFromURL(URL, state: .highlighted, failure: { _ in
+            XCTFail("unexpected failure")
+            }, success: { _ in
+                XCTFail("unexpected success")
         })
         
         sut.hnk_cancelSetImage()
@@ -470,7 +470,7 @@ class UIButton_HanekeTests: DiskTestCase {
     }
 
     func testSetBackgroundImageFromURL_Failure_UIControlStateNormal() {
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = Data.dataWithLength(100)
@@ -481,7 +481,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.hnk_setBackgroundImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -494,7 +494,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.red)
         let expectedImage = UIImage.imageWithColor(UIColor.green)
         let format = Format<UIImage>(name: self.name!, diskCapacity: 0) { _ in return expectedImage }
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
@@ -580,10 +580,10 @@ class UIButton_HanekeTests: DiskTestCase {
     
     func testCancelSetBackgroundImage_AfterSetImage() {
         let URL = Foundation.URL(string: "http://imgs.xkcd.com/comics/election.png")!
-        sut.hnk_setBackgroundImageFromURL(URL, success: { _ in
-            XCTFail("unexpected success")
-            }, failure: { _ in
-                XCTFail("unexpected failure")
+        sut.hnk_setBackgroundImageFromURL(URL, failure: { _ in
+            XCTFail("unexpected failure")
+            }, success: { _ in
+                XCTFail("unexpected success")
         })
         
         sut.hnk_cancelSetBackgroundImage()
@@ -594,10 +594,10 @@ class UIButton_HanekeTests: DiskTestCase {
     
     func testCancelSetBackgroundImage_AfterSetImage_UIControlStateHighlighted() {
         let URL = Foundation.URL(string: "http://imgs.xkcd.com/comics/election.png")!
-        sut.hnk_setBackgroundImageFromURL(URL, state: .highlighted, success: { _ in
-            XCTFail("unexpected success")
-            }, failure: { _ in
-                XCTFail("unexpected failure")
+        sut.hnk_setBackgroundImageFromURL(URL, state: .highlighted, failure: { _ in
+            XCTFail("unexpected failure")
+            }, success: { _ in
+                XCTFail("unexpected success")
         })
         
         sut.hnk_cancelSetBackgroundImage()
