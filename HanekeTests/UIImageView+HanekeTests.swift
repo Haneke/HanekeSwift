@@ -217,7 +217,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let key = self.name!
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         
-        sut.hnk_setImageFromFetcher(fetcher)
+        sut.hnk_setImage(fromFetcher: fetcher)
 
         XCTAssertNil(sut.image)
         XCTAssertTrue(sut.hnk_fetcher === fetcher)
@@ -229,7 +229,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectedImage = setImage(image, key: key)
         
-        sut.hnk_setImageFromFetcher(fetcher)
+        sut.hnk_setImage(fromFetcher: fetcher)
         
         XCTAssertTrue(sut.image?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_fetcher == nil)
@@ -241,7 +241,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let fetcher = AsyncFetcher<UIImage>(key: key, value: image)
         let expectedImage = sut.hnk_format.apply(image)
 
-        sut.hnk_setImageFromFetcher(fetcher)
+        sut.hnk_setImage(fromFetcher: fetcher)
         XCTAssertTrue(sut.hnk_fetcher === fetcher)
         XCTAssertNil(sut.image)
 
@@ -260,7 +260,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         sut.image = previousImage
         
-        sut.hnk_setImageFromFetcher(fetcher)
+        sut.hnk_setImage(fromFetcher: fetcher)
         
         XCTAssertEqual(sut.image!, previousImage)
         XCTAssertTrue(sut.hnk_fetcher === fetcher)
@@ -272,7 +272,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let key = self.name!
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         
-        sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
+        sut.hnk_setImage(fromFetcher: fetcher, placeholder:placeholder)
         
         XCTAssertEqual(sut.image!, placeholder)
         XCTAssertTrue(sut.hnk_fetcher === fetcher)
@@ -285,7 +285,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectedImage = setImage(image, key: key)
         
-        sut.hnk_setImageFromFetcher(fetcher, placeholder:placeholder)
+        sut.hnk_setImage(fromFetcher: fetcher, placeholder:placeholder)
         
         XCTAssertTrue(sut.image?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_fetcher == nil)
@@ -298,7 +298,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         sut.contentMode = .center // No resizing
         let expectation = self.expectation(description: key)
         
-        sut.hnk_setImageFromFetcher(fetcher, success: { resultImage in
+        sut.hnk_setImage(fromFetcher: fetcher, success: { resultImage in
             XCTAssertTrue(resultImage.isEqualPixelByPixel(image))
             expectation.fulfill()
         })
@@ -313,8 +313,8 @@ class UIImageView_HanekeTests: DiskTestCase {
         let fetcher = MockFetcher<UIImage>(key: key)
         let expectation = self.expectation(description: key)
         
-        sut.hnk_setImageFromFetcher(fetcher, failure: {error in
-            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+        sut.hnk_setImage(fromFetcher: fetcher, failure: {error in
+            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -330,12 +330,11 @@ class UIImageView_HanekeTests: DiskTestCase {
         let format = Format<UIImage>(name: key, diskCapacity: 0) { _ in return expectedImage }
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         let expectation = self.expectation(description: key)
-        
-        sut.hnk_setImageFromFetcher(fetcher, format: format, success: { resultImage in
+        sut.hnk_setImage(fromFetcher: fetcher, format: format, success: { resultImage in
             XCTAssertTrue(resultImage.isEqualPixelByPixel(expectedImage))
             expectation.fulfill()
         })
-        
+
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
@@ -435,7 +434,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     
     func testSetImageFromURL_Success() {
         let image = UIImage.imageWithColor(UIColor.green)
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
@@ -458,7 +457,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     
     func testSetImageFromURL_WhenPreviousSetImageFromURL() {
         let image = UIImage.imageWithColor(UIColor.green)
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
@@ -466,10 +465,10 @@ class UIImageView_HanekeTests: DiskTestCase {
         })
         let URL1 = URL(string: "http://haneke.io/1.png")!
         sut.contentMode = .center // No resizing
-        sut.hnk_setImageFromURL(URL1, success:{_ in
-            XCTFail("unexpected success")
-            }, failure:{_ in
+        sut.hnk_setImageFromURL(URL1, failure:{_ in
             XCTFail("unexpected failure")
+            }, success:{_ in
+                XCTFail("unexpected success")
         })
         let URL2 = URL(string: "http://haneke.io/2.png")!
         let fetcher2 = NetworkFetcher<UIImage>(URL: URL2)
@@ -486,7 +485,7 @@ class UIImageView_HanekeTests: DiskTestCase {
     }
     
     func testSetImageFromURL_Failure() {
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = Data.dataWithLength(100)
@@ -497,7 +496,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
             expectation.fulfill()
         })
         
@@ -510,7 +509,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         let image = UIImage.imageWithColor(UIColor.red)
         let expectedImage = UIImage.imageWithColor(UIColor.green)
         let format = Format<UIImage>(name: self.name!, diskCapacity: 0) { _ in return expectedImage }
-        OHHTTPStubs.stubRequestsPassingTest({ _ in
+        OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
                 let data = UIImagePNGRepresentation(image)
@@ -537,10 +536,10 @@ class UIImageView_HanekeTests: DiskTestCase {
     
     func testCancelSetImage_AfterSetImage() {
         let URL = Foundation.URL(string: "http://imgs.xkcd.com/comics/election.png")!
-        sut.hnk_setImageFromURL(URL, success: { _ in
-            XCTFail("unexpected success")
-        }, failure: { _ in
+        sut.hnk_setImageFromURL(URL, failure: { _ in
             XCTFail("unexpected failure")
+            }, success: { _ in
+                XCTFail("unexpected success")
         })
         
         sut.hnk_cancelSetImage()
@@ -572,7 +571,7 @@ class MockFetcher<T : DataConvertible> : Fetcher<T> {
         super.init(key: key)
     }
     
-    override func fetch(failure fail : ((Error?) -> ()), success succeed : (T.Result) -> ()) {
+    func fetch(failure fail : ((Error?) -> ()), success succeed : (T.Result) -> ()) {
         let error = errorWithCode(0, description: "test")
         fail(error)
     }

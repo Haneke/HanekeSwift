@@ -35,7 +35,7 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleNone() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
         let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .None)
         let resizedImage = sut.resizeImage(originalImage)
         
@@ -47,7 +47,7 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleFill() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
         let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode : .Fill)
         let resizedImage = sut.resizeImage(originalImage)
         
@@ -59,7 +59,7 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleAspectFill() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1),  false)
         let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .AspectFill)
         let resizedImage = sut.resizeImage(originalImage)
         
@@ -71,7 +71,7 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleAspectFit() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
         let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .AspectFit)
         let resizedImage = sut.resizeImage(originalImage)
         
@@ -83,7 +83,7 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleAspectFillWithoutUpscaling() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
         let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .AspectFill, allowUpscaling: false)
         let resizedImage = sut.resizeImage(originalImage)
         

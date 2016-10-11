@@ -52,7 +52,7 @@ class DiskFetcherTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.fetch(failure: {
-            XCTAssertEqual($0!.code, NSFileReadNoSuchFileError)
+            XCTAssertEqual($0!._code, NSFileReadNoSuchFileError)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in
@@ -70,8 +70,8 @@ class DiskFetcherTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.fetch(failure: {
-            XCTAssertEqual($0!.domain, HanekeGlobals.Domain)
-            XCTAssertEqual($0!.code, HanekeGlobals.DiskFetcher.ErrorCode.invalidData.rawValue)
+            XCTAssertEqual($0!._domain, HanekeGlobals.Domain)
+            XCTAssertEqual($0!._code, HanekeGlobals.DiskFetcher.ErrorCode.invalidData.rawValue)
             XCTAssertNotNil($0!.localizedDescription)
             expectation.fulfill()
         }) { _ in

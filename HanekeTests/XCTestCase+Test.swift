@@ -12,16 +12,16 @@ extension XCTestCase {
     
     func waitFor(_ interval : TimeInterval) {
         let date = Date(timeIntervalSinceNow: interval)
-        RunLoop.current.run(mode: Mode.defaultRunLoopMode, before: date)
+        RunLoop.current.run(mode: .defaultRunLoopMode, before: date)
     }
 
     func wait(_ timeout : TimeInterval, condition: () -> Bool) {
         let timeoutDate = Date(timeIntervalSinceNow: timeout)
         var success = false
-        while !success && (Date().laterDate(timeoutDate) == timeoutDate) {
+        while !success && (NSDate().laterDate(timeoutDate) == timeoutDate) {
             success = condition()
             if !success {
-                RunLoop.current.run(mode: Mode.defaultRunLoopMode, before: timeoutDate)
+                RunLoop.current.run(mode: .defaultRunLoopMode, before: timeoutDate)
             }
         }
         if !success {

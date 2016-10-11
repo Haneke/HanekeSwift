@@ -13,10 +13,10 @@ class NSFileManager_HanekeTests: DiskTestCase {
     
     func testEnumerateContentsOfDirectoryAtPathEmpty() {
         let sut = FileManager.default
-        
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.nameKey, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
+
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.nameKey.rawValue, ascending: true, usingBlock: { (URL : Foundation.URL, index : Int, _) -> Void in
             XCTFail()
-        }
+            })
     }
     
     func testEnumerateContentsOfDirectoryAtPathStop() {
@@ -24,7 +24,7 @@ class NSFileManager_HanekeTests: DiskTestCase {
         [self.writeDataWithLength(1), self.writeDataWithLength(2)]
         var count = 0
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.nameKey, ascending: true) { (_ : URL, index : Int, stop : inout Bool) -> Void in
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.nameKey.rawValue, ascending: true) { (_ : URL, index : Int, stop : inout Bool) -> Void in
             count += 1
             stop = true
         }
@@ -39,8 +39,8 @@ class NSFileManager_HanekeTests: DiskTestCase {
         var resultPaths : [String] = []
         var indexes : [Int] = []
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.nameKey, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
-            resultPaths.append(URL.path!)
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.nameKey.rawValue, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
+            resultPaths.append(URL.path)
             indexes.append(index)
         }
         
@@ -57,8 +57,8 @@ class NSFileManager_HanekeTests: DiskTestCase {
         var resultPaths : [String] = []
         var indexes : [Int] = []
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.nameKey, ascending: false) { (URL : Foundation.URL, index : Int, _) -> Void in
-            resultPaths.append(URL.path!)
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.nameKey.rawValue, ascending: false) { (URL : Foundation.URL, index : Int, _) -> Void in
+            resultPaths.append(URL.path)
             indexes.append(index)
         }
         
@@ -74,8 +74,8 @@ class NSFileManager_HanekeTests: DiskTestCase {
         let paths = [self.writeDataWithLength(1), self.writeDataWithLength(2)]
         var resultPaths : [String] = []
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.fileSizeKey, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
-            resultPaths.append(URL.path!)
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.fileSizeKey.rawValue, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
+            resultPaths.append(URL.path)
         }
         
         XCTAssertEqual(resultPaths.count, 2)
@@ -88,8 +88,8 @@ class NSFileManager_HanekeTests: DiskTestCase {
         let paths : [String] = [self.writeDataWithLength(1), self.writeDataWithLength(2)].reversed()
         var resultPaths : [String] = []
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.fileSizeKey, ascending: false) { (URL : Foundation.URL, index : Int, _) -> Void in
-            resultPaths.append(URL.path!)
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.fileSizeKey.rawValue, ascending: false) { (URL : Foundation.URL, index : Int, _) -> Void in
+            resultPaths.append(URL.path)
         }
         
         XCTAssertEqual(resultPaths.count, 2)
@@ -104,8 +104,8 @@ class NSFileManager_HanekeTests: DiskTestCase {
         
         var resultPaths : [String] = []
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.contentModificationDateKey, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
-            resultPaths.append(URL.path!)
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.contentModificationDateKey.rawValue, ascending: true) { (URL : Foundation.URL, index : Int, _) -> Void in
+            resultPaths.append(URL.path)
         }
         
         XCTAssertEqual(resultPaths.count, 2)
@@ -119,8 +119,8 @@ class NSFileManager_HanekeTests: DiskTestCase {
         try! sut.setAttributes([FileAttributeKey.modificationDate : Date.distantPast], ofItemAtPath: paths[1])
         var resultPaths : [String] = []
         
-        sut.enumerateContentsOfDirectoryAtPath(self.directoryPath, orderedByProperty: URLResourceKey.contentModificationDateKey, ascending: false) { (URL : Foundation.URL, index : Int, _) -> Void in
-            resultPaths.append(URL.path!)
+        sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.contentModificationDateKey.rawValue, ascending: false) { (URL : Foundation.URL, index : Int, _) -> Void in
+            resultPaths.append(URL.path)
         }
         
         XCTAssertEqual(resultPaths.count, 2)

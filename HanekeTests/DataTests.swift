@@ -16,7 +16,7 @@ class ImageDataTests: XCTestCase {
         let image = UIImage.imageGradientFromColor()
         let data = image.hnk_data()
 
-        let result = UIImage.convertFromData(data)
+        let result = UIImage.convertFromData(data!)
 
         XCTAssertTrue(image.isEqualPixelByPixel(result!))
     }
@@ -115,7 +115,7 @@ class JSONDataTests: XCTestCase {
     
     func testAsData_Array() {
         let object = [self.name!]
-        let json = JSON.Array(object)
+        let json = JSON.Array(object as [AnyObject])
         
         let result = json.asData()
         
@@ -125,7 +125,7 @@ class JSONDataTests: XCTestCase {
     
     func testAsData_Dictionary() {
         let object = ["test": self.name!]
-        let json = JSON.Dictionary(object)
+        let json = JSON.Dictionary(object as [String : AnyObject])
         
         let result = json.asData()
         
@@ -144,7 +144,7 @@ class JSONDataTests: XCTestCase {
     
     func testArray_Array() {
         let object = [self.name!]
-        let json = JSON.Array(object)
+        let json = JSON.Array(object as [AnyObject])
         
         let result = json.array
         
@@ -153,7 +153,7 @@ class JSONDataTests: XCTestCase {
     
     func testArray_Dictionary() {
         let object = ["test": self.name!]
-        let json = JSON.Dictionary(object)
+        let json = JSON.Dictionary(object as [String : AnyObject])
         
         let result = json.array
         
@@ -162,7 +162,7 @@ class JSONDataTests: XCTestCase {
     
     func testDictionary_Array() {
         let object = [self.name!]
-        let json = JSON.Array(object)
+        let json = JSON.Array(object as [AnyObject])
         
         let result = json.dictionary
         
@@ -171,7 +171,7 @@ class JSONDataTests: XCTestCase {
     
     func testDictionary_Dictionary() {
         let object = ["test": self.name!]
-        let json = JSON.Dictionary(object)
+        let json = JSON.Dictionary(object as [String : AnyObject])
         
         let result = json.dictionary
         

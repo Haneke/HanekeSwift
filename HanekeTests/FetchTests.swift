@@ -73,10 +73,10 @@ class FetchTests : XCTestCase {
     }
     
     func testFail_AfterOnFailure() {
-        let error = Error(domain: self.name!, code: 10, userInfo: nil)
+        let error = NSError(domain: self.name!, code: 10, userInfo: nil)
         let expectation = self.expectation(description: self.name!)
         sut.onFailure {
-            XCTAssertEqual($0!, error)
+            XCTAssertEqual($0!.localizedDescription, error.localizedDescription)
             expectation.fulfill()
         }
         
@@ -111,12 +111,12 @@ class FetchTests : XCTestCase {
     }
     
     func testOnFailure_AfterFail() {
-        let error = Error(domain: self.name!, code: 10, userInfo: nil)
+        let error = NSError(domain: self.name!, code: 10, userInfo: nil)
         sut.fail(error)
         let expectation = self.expectation(description: self.name!)
         
         sut.onFailure {
-            XCTAssertEqual($0!, error)
+            XCTAssertEqual($0!.localizedDescription, error.localizedDescription)
             expectation.fulfill()
         }
         

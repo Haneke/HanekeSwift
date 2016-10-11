@@ -26,17 +26,17 @@ enum ExifOrientation : UInt32 {
 class UIImage_HanekeTests: XCTestCase {
 
     func testHasAlphaTrue() {
-        let image = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
         XCTAssertTrue(image.hnk_hasAlpha())
     }
     
     func testHasAlphaFalse() {
-        let image = UIImage.imageWithColor(UIColor.red, true, CGSize(width: 1, height: 1))
+        let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), true)
         XCTAssertFalse(image.hnk_hasAlpha())
     }
     
     func testDataPNG() {
-        let image = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 1, height: 1))
+        let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
         let expectedData = UIImagePNGRepresentation(image)
         
         let data = image.hnk_data()
@@ -45,7 +45,7 @@ class UIImage_HanekeTests: XCTestCase {
     }
     
     func testDataJPEG() {
-        let image = UIImage.imageWithColor(UIColor.red, true, CGSize(width: 1, height: 1))
+        let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), true)
         let expectedData = UIImageJPEGRepresentation(image, 1)
         
         let data = image.hnk_data()
@@ -65,18 +65,18 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
         
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue(decompressedImage.isEqualPixelByPixel(image))
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!)
     }
     
     func testDecompressedImage_UIGraphicsContext_NotOpaque() {
-        let image = UIImage.imageWithColor(UIColor.red, false, CGSize(width: 10, height: 10))
+        let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 10, height: 10), false)
         
         let decompressedImage = image.hnk_decompressedImage()
         
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue(decompressedImage.isEqualPixelByPixel(image))
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!)
     }
-    
+
     func testDecompressedImage_RGBA() {
         let color = UIColor(red:255, green:0, blue:0, alpha:0.5)
         self._testDecompressedImageUsingColor(color, alphaInfo: .premultipliedLast)
@@ -172,7 +172,7 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
     
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue(decompressedImage.isEqualPixelByPixel(image), self.name!)
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name!)
     }
     
     func _testDecompressedImageWithOrientation(_ orientation : ExifOrientation) {
@@ -191,7 +191,7 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
         
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue(decompressedImage.isEqualPixelByPixel(image), self.name!)
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name!)
     }
     
 }
