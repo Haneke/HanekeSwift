@@ -364,7 +364,6 @@ class CacheTests: XCTestCase {
         self.clearMemoryCache()
         
         let fetch = sut.fetch(fetcher: fetcher, success: {
-            XCTAssertTrue($0 != data)
             XCTAssertEqual($0, data)
             expectation.fulfill()
         })
