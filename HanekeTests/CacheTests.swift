@@ -662,8 +662,8 @@ class FailFetcher<T : DataConvertible> : Fetcher<T> {
     override init(key: String) {
         super.init(key: key)
     }
-    
-    func fetch(failure fail : ((Error?) -> ()), success succeed : (T.Result) -> ()) {
+
+    override func fetch(failure fail: @escaping ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
         fail(error)
     }
     
