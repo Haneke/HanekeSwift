@@ -333,7 +333,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-//        self.waitForExpectations(timeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
     }
