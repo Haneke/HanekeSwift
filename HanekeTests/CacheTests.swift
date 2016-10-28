@@ -333,7 +333,7 @@ class CacheTests: XCTestCase {
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-//        self.waitForExpectations(timeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
     }
@@ -364,7 +364,6 @@ class CacheTests: XCTestCase {
         self.clearMemoryCache()
         
         let fetch = sut.fetch(fetcher: fetcher, success: {
-            XCTAssertTrue($0 != data)
             XCTAssertEqual($0, data)
             expectation.fulfill()
         })
@@ -662,8 +661,8 @@ class FailFetcher<T : DataConvertible> : Fetcher<T> {
     override init(key: String) {
         super.init(key: key)
     }
-    
-    func fetch(failure fail : ((Error?) -> ()), success succeed : (T.Result) -> ()) {
+
+    override func fetch(failure fail: @escaping ((Error?) -> ()), success succeed: @escaping (T.Result) -> ()) {
         fail(error)
     }
     
