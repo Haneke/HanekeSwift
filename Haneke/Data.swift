@@ -10,7 +10,7 @@ import UIKit
 
 // See: http://stackoverflow.com/questions/25922152/not-identical-to-self
 public protocol DataConvertible {
-    typealias Result
+    associatedtype Result
     
     static func convertFromData(data:NSData) -> Result?
 }
@@ -29,7 +29,7 @@ extension UIImage : DataConvertible, DataRepresentable {
     // HACK: UIImage data initializer is no longer thread safe. See: https://github.com/AFNetworking/AFNetworking/issues/2572#issuecomment-115854482
     static func safeImageWithData(data:NSData) -> Result? {
         imageSync.lock()
-        let image = UIImage(data:data)
+        let image = UIImage(data:data, scale: scale)
         imageSync.unlock()
         return image
     }
@@ -42,6 +42,8 @@ extension UIImage : DataConvertible, DataRepresentable {
     public func asData() -> NSData! {
         return self.hnk_data()
     }
+    
+    private static let scale = UIScreen.mainScreen().scale
     
 }
 
