@@ -142,7 +142,7 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(60 * NSEC_PER_SEC))
             if dispatch_group_wait(group, timeout) != 0 {
-                Log.error("removeData timed out waiting for disk caches")
+                Log.error("removeAllForKey timed out waiting for disk caches")
             }
             let fileManager = NSFileManager.defaultManager()
             let cachePath = self.cachePath
