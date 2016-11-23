@@ -104,24 +104,24 @@ public extension UIImageView {
                 
                 fail?(error)
             }
-        }) { [weak self] image in
+        }) { [weak self] image, immediately in
             if let strongSelf = self {
                 if strongSelf.hnk_shouldCancelForKey(fetcher.key) { return }
                 
-                strongSelf.hnk_setImage(image, animated: animated, success: succeed)
+                strongSelf.hnk_setImage(image, animated: animated, immediately: immediately, success: succeed)
             }
         }
         animated = true
         return fetch.hasSucceeded
     }
     
-    func hnk_setImage(image : UIImage, animated : Bool, success succeed : ((UIImage) -> ())?) {
+    func hnk_setImage(image : UIImage, animated : Bool, immediately: Bool, success succeed : ((UIImage) -> ())?) {
         self.hnk_fetcher = nil
         
         if let succeed = succeed {
             succeed(image)
         } else if animated {
-            UIView.transitionWithView(self, duration: HanekeGlobals.UIKit.SetImageAnimationDuration, options: .TransitionCrossDissolve, animations: {
+            UIView.transitionWithView(self, duration: immediately ? 0.05 : HanekeGlobals.UIKit.SetImageAnimationDuration, options: .TransitionCrossDissolve, animations: {
                 self.image = image
             }, completion: nil)
         } else {
