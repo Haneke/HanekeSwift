@@ -44,7 +44,10 @@ public class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
     
     public override func fetch(failure fail : ((NSError?) -> ()), success succeed : (T.Result) -> ()) {
         self.cancelled = false
-        self.task = self.session.dataTaskWithURL(self.URL) {[weak self] (data, response, error) -> Void in
+        
+        let request = NSMutableURLRequest(URL: self.URL)
+        Haneke.httpHeaders?.forEach { field, value in request.addValue(value, forHTTPHeaderField: field) }
+        self.task = self.session.dataTaskWithRequest(request) {[weak self] (data, response, error) -> Void in
             if let strongSelf = self {
                 strongSelf.onReceiveData(data, response: response, error: error, failure: fail, success: succeed)
             }
