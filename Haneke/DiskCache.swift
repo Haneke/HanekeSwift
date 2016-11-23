@@ -169,7 +169,13 @@ public class DiskCache {
     private func setDataSync(data: NSData, key: String) {
         let path = self.pathForKey(key)
         let fileManager = NSFileManager.defaultManager()
-        let previousAttributes : NSDictionary? = try? fileManager.attributesOfItemAtPath(path)
+        
+        var previousAttributes : NSDictionary?
+        do {
+            try previousAttributes = fileManager.attributesOfItemAtPath(path)
+        } catch {
+            Log.error("Attributes of item at path not found: \(error)", error as NSError)
+        }
         
         do {
             try data.writeToFile(path, options: NSDataWritingOptions.AtomicWrite)
