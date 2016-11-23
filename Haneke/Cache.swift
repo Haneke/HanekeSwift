@@ -179,7 +179,11 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
 
     public var formats : [String : (Format<T>, NSCache, DiskCache)] = [:]
     
-    public func addFormat(format : Format<T>) {
+    public func addFormat(format : Format<T>, overwrite: Bool = true) {
+        if overwrite == false && self.formats[format.name] != nil {
+            return
+        }
+        
         let name = format.name
         let formatPath = self.formatPath(formatName: name)
         let memoryCache = NSCache()
