@@ -27,6 +27,7 @@ extension HanekeGlobals {
         public enum ErrorCode : Int {
             case ObjectNotFound = -100
             case FormatNotFound = -101
+            case ConvertFromDataFailed = -102
         }
         
     }
@@ -236,6 +237,11 @@ public class Cache<T: DataConvertible where T.Result == T, T : DataRepresentable
                         let wrapper = ObjectWrapper(value: descompressedValue)
                         memoryCache.setObject(wrapper, forKey: key)
                     })
+                } else {
+                    let localizedFormat = NSLocalizedString("convertFromData failed for data at key %@", comment: "Error description")
+                    let description = String(format:localizedFormat, key)
+                    let error = errorWithCode(HanekeGlobals.Cache.ErrorCode.ConvertFromDataFailed.rawValue, description: description)
+                    fail?(error)
                 }
             })
         }
