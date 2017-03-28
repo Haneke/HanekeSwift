@@ -23,6 +23,7 @@ extension HanekeGlobals {
     public struct Cache {
         
         public static let OriginalFormatName = "original"
+        public static let All = "all"
 
         public enum ErrorCode : Int {
             case objectNotFound = -100
@@ -121,16 +122,15 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
         }
         return fetch
     }
-
-    open func remove(key: String) {
-        for (_, (_, memoryCache, diskCache)) in self.formats {
-            memoryCache.removeObject(forKey: key as AnyObject)
-            diskCache.removeData(with: key)
-        }
-    }
     
-    open func remove(key: String, formatName: String) {
-        if let (_, memoryCache, diskCache) = self.formats[formatName] {
+    open func remove(key: String, formatName: String = HanekeGlobals.Cache.OriginalFormatName) {
+        if formatName == HanekeGlobals.Cache.All {
+            for (_, (_, memoryCache, diskCache)) in self.formats {
+                memoryCache.removeObject(forKey: key as AnyObject)
+                diskCache.removeData(with: key)
+            }
+        }
+        else if let (_, memoryCache, diskCache) = self.formats[formatName] {
             memoryCache.removeObject(forKey: key as AnyObject)
             diskCache.removeData(with: key)
         }
