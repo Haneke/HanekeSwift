@@ -53,7 +53,7 @@ extension String : DataConvertible, DataRepresentable {
     
     public static func convertFromData(_ data: Data) -> Result? {
         let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
-        return string as? Result
+        return string as Result?
     }
     
     public func asData() -> Data! {
