@@ -31,7 +31,7 @@ open class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
         self.URL = URL
 
         let key =  URL.absoluteString
-        super.init(key: key!)
+        super.init(key: key)
     }
     
     open var session : URLSession { return URLSession.shared }
