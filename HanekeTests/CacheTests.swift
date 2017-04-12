@@ -129,7 +129,7 @@ class CacheTests: XCTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.set(value: data, key: key, success: {
-            XCTAssertTrue($0 == data)
+            XCTAssertEqual($0, data)
             expectation.fulfill()
         })
         
@@ -146,7 +146,7 @@ class CacheTests: XCTestCase {
         
         var finished = false
         sut.set(value: data, key: key, formatName : format.name, success: {
-            XCTAssertTrue($0 == expectedData)
+            XCTAssertEqual($0, expectedData)
             expectation.fulfill()
             finished = true
         })
@@ -174,7 +174,7 @@ class CacheTests: XCTestCase {
         sut.set(value: data, key: key)
 
         let fetch = sut.fetch(key: key).onSuccess {
-            XCTAssertTrue($0 == data)
+            XCTAssertEqual($0, data)
             expectation.fulfill()
         }
         
@@ -188,9 +188,14 @@ class CacheTests: XCTestCase {
         let expectation = self.expectation(description: key)
         
         let fetch = sut.fetch(key: key).onFailure { error in
-            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!._code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
-            XCTAssertNotNil(error!.localizedDescription)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
+            XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
         }
 
@@ -204,16 +209,12 @@ class CacheTests: XCTestCase {
         let key = self.name!
         let expectation = self.expectation(description: key)
         sut.set(value: data, key: key)
-        dump("name: \(self.name)")
         self.clearMemoryCache()
         
         let fetch = sut.fetch(key: key, failure: { _ in
             XCTFail("expected success")
             expectation.fulfill()
         }, success: {
-//            XCTAssertTrue($0 != data)
-            dump($0)
-            dump(data)
             XCTAssertEqual($0, data)
             expectation.fulfill()
         })
@@ -230,14 +231,19 @@ class CacheTests: XCTestCase {
         let expectation = self.expectation(description: key)
         
         let fetch = sut.fetch(key: key, failure : { error in
-            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!._code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
-            XCTAssertNotNil(error!.localizedDescription)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
+            XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }
+        })
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
@@ -251,14 +257,19 @@ class CacheTests: XCTestCase {
         let expectation = self.expectation(description: key)
         
         let fetch = sut.fetch(key: key, formatName: key, failure : { error in
-            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!._code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
-            XCTAssertNotNil(error!.localizedDescription)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
+            XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }
+        })
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
@@ -276,10 +287,10 @@ class CacheTests: XCTestCase {
         
         sut.fetch(key: key, formatName: format.name, failure: {_ in
             expectation.fulfill()
-            }) { _ in
-                XCTFail("expected failure")
-                expectation.fulfill()
-        }
+        }, success: { _ in
+            XCTFail("expected failure")
+            expectation.fulfill()
+        })
         
         self.waitForExpectations(timeout: 1, handler: nil)
     }
@@ -296,9 +307,9 @@ class CacheTests: XCTestCase {
         self.sut.fetch(key: key, formatName: format.name, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
-            }) { _ in
-                expectation.fulfill()
-        }
+        }, success: { _ in
+            expectation.fulfill()
+        })
         
         self.waitForExpectations(timeout: 1, handler: nil)
     }
@@ -309,7 +320,7 @@ class CacheTests: XCTestCase {
         let expectation = self.expectation(description: self.name!)
         
         let fetch = sut.fetch(fetcher: fetcher).onSuccess {
-            XCTAssertTrue($0 == data)
+            XCTAssertEqual($0, data)
             expectation.fulfill()
         }
         
@@ -327,13 +338,18 @@ class CacheTests: XCTestCase {
         let expectation = self.expectation(description: self.name!)
         
         let fetch = sut.fetch(fetcher: fetcher).onFailure { error in
-            XCTAssertEqual(error!.localizedDescription, fetcher.error.localizedDescription)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.localizedDescription, fetcher.error.localizedDescription)
             expectation.fulfill()
         }
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
-//        self.waitForExpectations(timeout: 1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
     }
@@ -364,7 +380,6 @@ class CacheTests: XCTestCase {
         self.clearMemoryCache()
         
         let fetch = sut.fetch(fetcher: fetcher, success: {
-            XCTAssertTrue($0 != data)
             XCTAssertEqual($0, data)
             expectation.fulfill()
         })
@@ -385,10 +400,10 @@ class CacheTests: XCTestCase {
         let fetch = sut.fetch(fetcher: fetcher, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
-        }) {
-            XCTAssertTrue($0 == data)
+        }, success: {
+            XCTAssertEqual($0, data)
             expectation.fulfill()
-        }
+        })
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
@@ -411,10 +426,10 @@ class CacheTests: XCTestCase {
         let fetch = sut.fetch(fetcher: fetcher, formatName : format.name, failure : { _ in
             XCTFail("expected sucesss")
             expectation.fulfill()
-        }) {
-            XCTAssertTrue($0 == formattedData)
+        }, success: {
+            XCTAssertEqual($0, formattedData)
             expectation.fulfill()
-        }
+        })
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertFalse(fetch.hasFailed)
@@ -429,14 +444,19 @@ class CacheTests: XCTestCase {
         let fetcher = SimpleFetcher<Data>(key: self.name!, value: data)
 
         let fetch = sut.fetch(fetcher: fetcher, formatName: self.name!, failure : { error in
-            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
-            XCTAssertEqual(error!._code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
-            XCTAssertNotNil(error!.localizedDescription)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
+            XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }
+        })
         
         XCTAssertFalse(fetch.hasSucceeded)
         XCTAssertTrue(fetch.hasFailed)
@@ -454,10 +474,10 @@ class CacheTests: XCTestCase {
         
         sut.fetch(key: key, failure : { _ in
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }
+        })
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
@@ -472,10 +492,10 @@ class CacheTests: XCTestCase {
         
         sut.fetch(key: key, formatName: format.name, failure : { _ in
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }
+        })
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
@@ -491,9 +511,9 @@ class CacheTests: XCTestCase {
         sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             expectation.fulfill()
-        }
+        })
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
@@ -507,9 +527,9 @@ class CacheTests: XCTestCase {
         sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             expectation.fulfill()
-        }
+        })
         self.waitForExpectations(timeout: 1, handler: nil)
     }
     
@@ -528,10 +548,10 @@ class CacheTests: XCTestCase {
         
         sut.fetch(key: key, failure : { _ in
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             XCTFail("expected failure")
             expectation.fulfill()
-        }
+        })
         self.waitForExpectations(timeout: 1, handler: nil)
     }
 
@@ -579,9 +599,9 @@ class CacheTests: XCTestCase {
         let fetch = sut.fetch(key: key, failure : { _ in
             XCTFail("expected success")
             expectation.fulfill()
-        }) { _ in
+        }, success: { _ in
             expectation.fulfill()
-        }
+        })
         XCTAssertFalse(fetch.hasSucceeded)
         self.waitForExpectations(timeout: 1, handler: nil)
     }
@@ -663,7 +683,7 @@ class FailFetcher<T : DataConvertible> : Fetcher<T> {
         super.init(key: key)
     }
     
-    func fetch(failure fail : ((Error?) -> ()), success succeed : (T.Result) -> ()) {
+    override func fetch(failure fail : @escaping ((Error?) -> ()), success succeed : @escaping (T.Result) -> ()) {
         fail(error)
     }
     

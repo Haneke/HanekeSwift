@@ -53,7 +53,7 @@ class DiskCacheTests: XCTestCase {
     func testInitWithOneFile() {
         let path = diskCachePath
         let expectedSize = 8
-        self.writeDataWithLength(expectedSize, directory: path)
+        _ = self.writeDataWithLength(expectedSize, directory: path)
         
         let sut = DiskCache(path: path)
         
@@ -65,8 +65,8 @@ class DiskCacheTests: XCTestCase {
     func testInitWithTwoFiles() {
         let directory = diskCachePath
         let lengths = [4, 7]
-        self.writeDataWithLength(lengths[0], directory: directory)
-        self.writeDataWithLength(lengths[1], directory: directory)
+        _ = self.writeDataWithLength(lengths[0], directory: directory)
+        _ = self.writeDataWithLength(lengths[1], directory: directory)
         
         let sut = DiskCache(path: directory)
         
@@ -262,7 +262,12 @@ class DiskCacheTests: XCTestCase {
         let expectation = self.expectation(description: key)
         
         sut.fetchData(key: key, failure : { error in
-            XCTAssertEqual(error!._code, NSFileReadNoSuchFileError)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
             expectation.fulfill()
         }) { data in
             XCTFail("Expected failure")
