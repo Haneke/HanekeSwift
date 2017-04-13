@@ -11,3 +11,5 @@ branches:
     - feature/swift-3
 script:
   - set -o pipefail && xcodebuild -workspace Haneke.xcworkspace -scheme Haneke-iOS -sdk iphonesimulator10.3 -destination 'platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3' build test CODE_SIGNING_REQUIRED=NO | xcpretty --color
+after_success:
+  - sleep 5 # https://github.com/travis-ci/travis-ci/issues/4725
