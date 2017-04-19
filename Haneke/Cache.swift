@@ -149,6 +149,16 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
             } catch {
                 Log.error(message: "Failed to remove path \(path)", error: error)
             }
+            
+            let fileManager = FileManager.default
+            if (!fileManager.fileExists(atPath: path)) {
+                do {
+                    try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+                } catch {
+                    print("error re-creating directory", error as NSError)
+                }
+            }
+            
             if let completion = completion {
                 DispatchQueue.main.async {
                     completion()
