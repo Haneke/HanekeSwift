@@ -34,12 +34,12 @@ class String_HanekeTests: XCTestCase {
     func testMD5Filename() {
         XCTAssertEqual("".MD5Filename(), "".MD5String())
         XCTAssertEqual("test".MD5Filename(), "test".MD5String())
-        XCTAssertEqual("test.png".MD5Filename(), ("test.png".MD5String() as NSString).stringByAppendingPathExtension("png"))
+        XCTAssertEqual("test.png".MD5Filename(), ("test.png".MD5String() as NSString).appendingPathExtension("png"))
     }
 
     func testMD5Filename_QueryString() {
         let sut = "test.png?width=100&height=200"
-        XCTAssertEqual(sut.MD5Filename(), (sut.MD5String() as NSString).stringByAppendingPathExtension("png"))
+        XCTAssertEqual(sut.MD5Filename(), (sut.MD5String() as NSString).appendingPathExtension("png"))
     }
 
 }

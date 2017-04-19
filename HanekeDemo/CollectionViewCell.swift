@@ -26,8 +26,8 @@ class CollectionViewCell: UICollectionViewCell {
     func initHelper() {
         imageView = UIImageView(frame: self.contentView.bounds)
         imageView.clipsToBounds = true
-        imageView.contentMode = .ScaleAspectFill
-        imageView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        imageView.contentMode = .scaleAspectFill
+        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.contentView.addSubview(imageView)
     }
     

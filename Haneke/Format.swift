@@ -16,7 +16,7 @@ public struct Format<T> {
     
     public var transform : ((T) -> (T))?
     
-    public var convertToData : (T -> NSData)?
+    public var convertToData : ((T) -> Data)?
 
     public init(name: String, diskCapacity : UInt64 = UINT64_MAX, transform: ((T) -> (T))? = nil) {
         self.name = name
@@ -24,7 +24,7 @@ public struct Format<T> {
         self.transform = transform
     }
     
-    public func apply(value : T) -> T {
+    public func apply(_ value : T) -> T {
         var transformed = value
         if let transform = self.transform {
             transformed = transform(value)
@@ -54,14 +54,14 @@ public struct ImageResizer {
     
     public let compressionQuality : Float
     
-    public init(size: CGSize = CGSizeZero, scaleMode: ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality: Float = 1.0) {
+    public init(size: CGSize = CGSize.zero, scaleMode: ScaleMode = .None, allowUpscaling: Bool = true, compressionQuality: Float = 1.0) {
         self.size = size
         self.scaleMode = scaleMode
         self.allowUpscaling = allowUpscaling
         self.compressionQuality = compressionQuality
     }
     
-    public func resizeImage(image: UIImage) -> UIImage {
+    public func resizeImage(_ image: UIImage) -> UIImage {
         var resizeToSize: CGSize
         switch self.scaleMode {
         case .Fill:
@@ -87,7 +87,7 @@ public struct ImageResizer {
             return image
         }
         
-        let resizedImage = image.hnk_imageByScalingToSize(resizeToSize)
+        let resizedImage = image.hnk_imageByScaling(toSize: resizeToSize)
         return resizedImage
     }
 }

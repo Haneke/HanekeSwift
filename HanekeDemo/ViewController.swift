@@ -16,9 +16,9 @@ class ViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionView!.registerClass(CollectionViewCell.self, forCellWithReuseIdentifier: CellReuseIdentifier)
+        self.collectionView!.register(CollectionViewCell.self, forCellWithReuseIdentifier: CellReuseIdentifier)
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSizeMake(100, 100)
+        layout.itemSize = CGSize(width: 100, height: 100)
         self.collectionView!.collectionViewLayout = layout
         
         self.initializeItemsWithURLs()
@@ -26,16 +26,16 @@ class ViewController: UICollectionViewController {
 
     // MARK: UIViewCollectionViewDataSource
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let CellIdentifier = "Cell"
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CellIdentifier, forIndexPath: indexPath) as! CollectionViewCell
-        let URLString = self.items[indexPath.row]
-        let URL = NSURL(string:URLString)!
-        cell.imageView.hnk_setImageFromURL(URL)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CellIdentifier, for: indexPath) as! CollectionViewCell
+        let URLString = self.items[(indexPath as NSIndexPath).row]
+        let url = URL(string:URLString)!
+        cell.imageView.hnk_setImageFromURL(url)
         return cell
     }
     
