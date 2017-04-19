@@ -60,13 +60,13 @@ open class DiskCache {
             let path = self.path(forKey: key)
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: path), options: Data.ReadingOptions())
-                DispatchQueue.main.async {
+                HanekeGlobals.Queue.async {
                     succeed(data)
                 }
                 self.updateDiskAccessDate(atPath: path)
             } catch {
                 if let block = fail {
-                    DispatchQueue.main.async {
+                    HanekeGlobals.Queue.async {
                         block(error)
                     }
                 }
@@ -100,7 +100,7 @@ open class DiskCache {
                 Log.error(message: "Failed to list directory", error: error)
             }
             if let completion = completion {
-                DispatchQueue.main.async {
+                HanekeGlobals.Queue.async {
                     completion()
                 }
             }
