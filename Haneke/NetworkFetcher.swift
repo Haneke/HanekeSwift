@@ -69,7 +69,7 @@ open class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             if ((error as NSError).domain == NSURLErrorDomain && (error as NSError).code == NSURLErrorCancelled) { return }
             
             Log.debug(message: "Request \(URL.absoluteString) failed", error: error)
-            DispatchQueue.main.async(execute: { fail(error) })
+            HanekeGlobals.Queue.async(execute: { fail(error) })
             return
         }
         
@@ -93,13 +93,13 @@ open class NetworkFetcher<T : DataConvertible> : Fetcher<T> {
             return
         }
 
-        DispatchQueue.main.async { succeed(value) }
+        HanekeGlobals.Queue.async { succeed(value) }
 
     }
     
     fileprivate func failWithCode(_ code: HanekeGlobals.NetworkFetcher.ErrorCode, localizedDescription: String, failure fail: @escaping ((Error?) -> ())) {
         let error = errorWithCode(code.rawValue, description: localizedDescription)
         Log.debug(message: localizedDescription, error: error)
-        DispatchQueue.main.async { fail(error) }
+        HanekeGlobals.Queue.async { fail(error) }
     }
 }

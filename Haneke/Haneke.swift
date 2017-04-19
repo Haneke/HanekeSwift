@@ -11,6 +11,9 @@ import UIKit
 public struct HanekeGlobals {
     
     public static let Domain = "io.haneke"
+    public static let Queue:DispatchQueue = {
+        return DispatchQueue(label: "io.haneke.callback_queue")
+    }()
     
 }
 

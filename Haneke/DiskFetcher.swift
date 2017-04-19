@@ -59,7 +59,7 @@ open class DiskFetcher<T : DataConvertible> : Fetcher<T> {
         do {
             data = try Data(contentsOf: URL(fileURLWithPath: self.path), options: Data.ReadingOptions())
         } catch {
-            DispatchQueue.main.async {
+            HanekeGlobals.Queue.async {
                 if self.cancelled {
                     return
                 }
@@ -76,13 +76,13 @@ open class DiskFetcher<T : DataConvertible> : Fetcher<T> {
             let localizedFormat = NSLocalizedString("Failed to convert value from data at path %@", comment: "Error description")
             let description = String(format:localizedFormat, self.path)
             let error = errorWithCode(HanekeGlobals.DiskFetcher.ErrorCode.invalidData.rawValue, description: description)
-            DispatchQueue.main.async {
+            HanekeGlobals.Queue.async {
                 fail(error)
             }
             return
         }
         
-        DispatchQueue.main.async(execute: {
+        HanekeGlobals.Queue.async(execute: {
             if self.cancelled {
                 return
             }

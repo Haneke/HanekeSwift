@@ -150,7 +150,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
                 Log.error(message: "Failed to remove path \(path)", error: error)
             }
             if let completion = completion {
-                DispatchQueue.main.async {
+                HanekeGlobals.Queue.async {
                     completion()
                 }
             }
@@ -231,7 +231,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
                 let value = T.convertFromData(data)
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
-                    DispatchQueue.main.async(execute: {
+                    HanekeGlobals.Queue.async(execute: {
                         succeed(descompressedValue)
                         let wrapper = ObjectWrapper(value: descompressedValue)
                         memoryCache.setObject(wrapper, forKey: key as AnyObject)
@@ -264,7 +264,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
                     }
                 }
                 
-                DispatchQueue.main.async {
+                HanekeGlobals.Queue.async {
                     succeed(formatted)
                 }
             }

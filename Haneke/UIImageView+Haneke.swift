@@ -47,7 +47,9 @@ public extension UIImageView {
         if didSetImage { return }
      
         if let placeholder = placeholder {
-            self.image = placeholder
+            DispatchQueue.main.async {
+                self.image = placeholder
+            }
         }
     }
     
@@ -121,9 +123,11 @@ public extension UIImageView {
         if let succeed = succeed {
             succeed(image)
         } else if animated {
-            UIView.transition(with: self, duration: HanekeGlobals.UIKit.SetImageAnimationDuration, options: .transitionCrossDissolve, animations: {
-                self.image = image
-            }, completion: nil)
+            DispatchQueue.main.async {
+                UIView.transition(with: self, duration: HanekeGlobals.UIKit.SetImageAnimationDuration, options: .transitionCrossDissolve, animations: {
+                    self.image = image
+                }, completion: nil)
+            }
         } else {
             self.image = image
         }
