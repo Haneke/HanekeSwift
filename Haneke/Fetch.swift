@@ -19,7 +19,7 @@ enum FetchState<T> {
 
 open class Fetch<T> {
     
-    public typealias Succeeder = (T) -> ()
+    public typealias Succeeder = (T, String?) -> ()
     
     public typealias Failer = (Error?) -> ()
     
@@ -31,11 +31,11 @@ open class Fetch<T> {
     
     public init() {}
     
-    @discardableResult open func onSuccess(_ onSuccess: @escaping Succeeder) -> Self {
+    @discardableResult open func onSuccess(_ onSuccess: @escaping Succeeder, path: String? = nil) -> Self {
         self.onSuccess = onSuccess
         switch self.state {
         case FetchState.success(let wrapper):
-            onSuccess(wrapper.value)
+            onSuccess(wrapper.value, path)
         default:
             break
         }
@@ -53,9 +53,9 @@ open class Fetch<T> {
         return self
     }
     
-    func succeed(_ value: T) {
+    func succeed(_ value: T, path: String? = nil) {
         self.state = FetchState.success(Wrapper(value))
-        self.onSuccess?(value)
+        self.onSuccess?(value, path)
     }
     
     func fail(_ error: Error? = nil) {

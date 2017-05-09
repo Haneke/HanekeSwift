@@ -89,7 +89,7 @@ public extension UIButton {
                 
                 fail?(error)
             }
-            }) { [weak self] image in
+            }) { [weak self] image, path in
                 if let strongSelf = self {
                     if strongSelf.hnk_shouldCancelImageForKey(fetcher.key) { return }
                     
@@ -200,7 +200,7 @@ public extension UIButton {
                 
                 fail?(error)
             }
-            }) { [weak self] image in
+            }) { [weak self] image, path in
                 if let strongSelf = self {
                     if strongSelf.hnk_shouldCancelBackgroundImageForKey(fetcher.key) { return }
                     
