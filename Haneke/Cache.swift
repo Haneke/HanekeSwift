@@ -86,8 +86,8 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
 
             self.fetchFromDiskCache(diskCache, key: key, memoryCache: memoryCache, failure: { error in
                 fetch.fail(error)
-            }) { value in
-                fetch.succeed(value)
+            }) { value, path in
+                fetch.succeed(value, path: path)
             }
 
         } else {
@@ -116,8 +116,8 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
             }
             
             // Unreachable code. Formats can't be removed from Cache.
-        }) { value in
-            fetch.succeed(value)
+        }) { value, path in
+            fetch.succeed(value, path: path)
         }
         return fetch
     }
@@ -214,7 +214,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
         return value.asData()
     }
     
-    fileprivate func fetchFromDiskCache(_ diskCache : DiskCache, key: String, memoryCache : NSCache<AnyObject, AnyObject>, failure fail : ((Error?) -> ())?, success succeed : @escaping (T) -> ()) {
+    fileprivate func fetchFromDiskCache(_ diskCache : DiskCache, key: String, memoryCache : NSCache<AnyObject, AnyObject>, failure fail : ((Error?) -> ())?, success succeed : @escaping (T, String) -> ()) {
         diskCache.fetchData(key: key, failure: { error in
             if let block = fail {
                 if (error as NSError?)?.code == NSFileReadNoSuchFileError {
@@ -226,13 +226,13 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
                     block(error)
                 }
             }
-        }) { data in
+        }) { data, path in
             DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async(execute: {
                 let value = T.convertFromData(data)
                 if let value = value {
                     let descompressedValue = self.decompressedImageIfNeeded(value)
                     DispatchQueue.main.async(execute: {
-                        succeed(descompressedValue)
+                        succeed(descompressedValue, path)
                         let wrapper = ObjectWrapper(value: descompressedValue)
                         memoryCache.setObject(wrapper, forKey: key as AnyObject)
                     })
@@ -303,7 +303,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
         return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }
     
-    open func fetch(URL : Foundation.URL, formatName: String = HanekeGlobals.Cache.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
+    @discardableResult open func fetch(URL : Foundation.URL, formatName: String = HanekeGlobals.Cache.OriginalFormatName,  failure fail : Fetch<T>.Failer? = nil, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
         let fetcher = NetworkFetcher<T>(URL: URL)
         return self.fetch(fetcher: fetcher, formatName: formatName, failure: fail, success: succeed)
     }

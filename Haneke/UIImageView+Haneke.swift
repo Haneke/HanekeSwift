@@ -104,7 +104,7 @@ public extension UIImageView {
                 
                 fail?(error)
             }
-        }) { [weak self] image in
+        }) { [weak self] image, path in
             if let strongSelf = self {
                 if strongSelf.hnk_shouldCancel(forKey: fetcher.key) { return }
                 
