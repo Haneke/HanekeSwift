@@ -8,11 +8,14 @@
 
 import Foundation
 
-extension NSData {
+extension Data {
     
-    class func dataWithLength(length : Int) -> NSData {
-        var buffer: [UInt8] = [UInt8](count:length, repeatedValue:0)
-        return NSData(bytes:&buffer, length: length)
+    static func dataWithLength(_ length : Int) -> Data {
+        let buffer: [UInt8] = [UInt8](repeating: 0, count: length)
+//        return Data(bytes: UnsafePointer<UInt8>(&buffer), count: length)
+        let pointer = UnsafeRawPointer(buffer)
+
+        return NSData(bytes: pointer, length: length) as Data
     }
     
 }

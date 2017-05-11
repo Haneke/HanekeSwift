@@ -14,7 +14,7 @@ class FetcherTests: XCTestCase {
     
     func testSimpleFetcherInit() {
         let key = self.name!
-        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let image = UIImage.imageWithColor(UIColor.green)
         
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
 
@@ -24,9 +24,9 @@ class FetcherTests: XCTestCase {
     
     func testSimpleFetcherFetch() {
         let key = self.name!
-        let image = UIImage.imageWithColor(UIColor.greenColor())
+        let image = UIImage.imageWithColor(UIColor.green)
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
-        let expectation = self.expectationWithDescription(key)
+        let expectation = self.expectation(description: key)
         
         fetcher.fetch(failure: { _ in
             XCTFail("expected success")
@@ -35,29 +35,29 @@ class FetcherTests: XCTestCase {
             expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(0, handler: nil)
+        self.waitForExpectations(timeout: 0, handler: nil)
     }
     
     func testCacheFetch() {
-        let data = NSData.dataWithLength(1)
-        let expectation = self.expectationWithDescription(self.name!)
-        let cache = Cache<NSData>(name: self.name!)
+        let data = Data.dataWithLength(1)
+        let expectation = self.expectation(description: self.name!)
+        let cache = Cache<Data>(name: self.name!)
         
         cache.fetch(key: self.name!, value: data) {
             XCTAssertEqual($0, data)
             expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         
         cache.removeAll()
     }
     
     func testCacheFetch_WithFormat() {
-        let data = NSData.dataWithLength(1)
-        let expectation = self.expectationWithDescription(self.name!)
-        let cache = Cache<NSData>(name: self.name!)
-        let format = Format<NSData>(name: self.name!)
+        let data = Data.dataWithLength(1)
+        let expectation = self.expectation(description: self.name!)
+        let cache = Cache<Data>(name: self.name!)
+        let format = Format<Data>(name: self.name!)
         cache.addFormat(format)
         
         cache.fetch(key: self.name!, value: data, formatName: format.name) {
@@ -65,7 +65,7 @@ class FetcherTests: XCTestCase {
             expectation.fulfill()
         }
         
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
         
         cache.removeAll()
     }
