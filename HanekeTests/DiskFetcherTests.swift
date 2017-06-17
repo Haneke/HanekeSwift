@@ -52,8 +52,13 @@ class DiskFetcherTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.fetch(failure: {
-            XCTAssertEqual($0!._code, NSFileReadNoSuchFileError)
-            XCTAssertNotNil($0!.localizedDescription)
+            guard let error = $0 as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
+            XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
         }) { _ in
             XCTFail("Expected to fail")
@@ -70,9 +75,14 @@ class DiskFetcherTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         
         sut.fetch(failure: {
-            XCTAssertEqual($0!._domain, HanekeGlobals.Domain)
-            XCTAssertEqual($0!._code, HanekeGlobals.DiskFetcher.ErrorCode.invalidData.rawValue)
-            XCTAssertNotNil($0!.localizedDescription)
+            guard let error = $0 as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.code, HanekeGlobals.DiskFetcher.ErrorCode.invalidData.rawValue)
+            XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
         }) { _ in
             XCTFail("Expected to fail")
@@ -87,6 +97,10 @@ class DiskFetcherTests: DiskTestCase {
         let data = UIImagePNGRepresentation(image)!
         try? data.write(to: URL(fileURLWithPath: directoryPath), options: [.atomic])
         sut.fetch(failure: { error in
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                return
+            }
             XCTFail("Unexpected failure with error \(error)")
         }) { _ in
             XCTFail("Unexpected success")
@@ -109,7 +123,7 @@ class DiskFetcherTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         let cache = Cache<Data>(name: self.name!)
         
-        cache.fetch(path: path, failure: {_ in
+        _ = cache.fetch(path: path, failure: {_ in
             XCTFail("expected success")
             expectation.fulfill()
         }) {
@@ -127,7 +141,7 @@ class DiskFetcherTests: DiskTestCase {
         let expectation = self.expectation(description: self.name!)
         let cache = Cache<Data>(name: self.name!)
         
-        cache.fetch(path: path, failure: {_ in
+        _ = cache.fetch(path: path, failure: {_ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected success")
@@ -147,7 +161,7 @@ class DiskFetcherTests: DiskTestCase {
         let format = Format<Data>(name: self.name!)
         cache.addFormat(format)
         
-        cache.fetch(path: path, formatName: format.name, failure: {_ in
+        _ = cache.fetch(path: path, formatName: format.name, failure: {_ in
             XCTFail("expected success")
             expectation.fulfill()
         }) {
