@@ -175,6 +175,13 @@ open class DiskCache {
             try data.write(to: URL(fileURLWithPath: path), options: Data.WritingOptions.atomicWrite)
         } catch {
             Log.error(message: "Failed to write key \(key)", error: error)
+            
+            let nsError = error as NSError
+            
+            if nsError.code == 4 {  //File not exist
+                try? fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+                try? data.write(to: URL(fileURLWithPath: path), options: Data.WritingOptions.atomicWrite)
+            }
         }
         
         if let attributes = previousAttributes {
