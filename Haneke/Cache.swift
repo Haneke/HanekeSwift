@@ -129,47 +129,46 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
         }
     }
     
-    public func removeAllForKey(key: String) {
-        let group = dispatch_group_create()
+    open func removeAllForKey(key: String) {
+        let group = DispatchGroup()
         for (_, (_, memoryCache, diskCache)) in self.formats {
-            memoryCache.removeObjectForKey(key)
-            dispatch_group_enter(group)
-            diskCache.removeData(key) {
-                dispatch_group_leave(group)
-            }
+            memoryCache.removeObject(forKey: key as AnyObject)
+            group.enter()
+            diskCache.removeData(with: key)
+            group.leave()
         }
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(60 * NSEC_PER_SEC))
-            if dispatch_group_wait(group, timeout) != 0 {
-                Log.error("removeAllForKey timed out waiting for disk caches")
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+            var timeout = DispatchTime.now().uptimeNanoseconds
+            timeout += UInt64(60 * NSEC_PER_SEC)
+            //            let timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(60 * NSEC_PER_SEC))
+            if group.wait(timeout: DispatchTime(uptimeNanoseconds: timeout)) == DispatchTimeoutResult.timedOut {
+                Log.error(message: "removeAllForKey timed out waiting for disk caches")
             }
-            let fileManager = NSFileManager.defaultManager()
+            let fileManager = FileManager.default
             let cachePath = self.cachePath
             do {
-                let formatDirsNames = try fileManager.contentsOfDirectoryAtPath(cachePath)
+                let formatDirsNames = try fileManager.contentsOfDirectory(atPath: cachePath)
                 for formatDirName in formatDirsNames {
-                    let formatPath = (cachePath as NSString).stringByAppendingPathComponent(formatDirName)
+                    let formatPath = (cachePath as NSString).appendingPathComponent(formatDirName)
                     var isDirectory: ObjCBool = false
-                    fileManager.fileExistsAtPath(formatPath, isDirectory: &isDirectory)
+                    fileManager.fileExists(atPath: formatPath, isDirectory: &isDirectory)
                     if isDirectory.boolValue {
-                        let filenames = try fileManager.contentsOfDirectoryAtPath(formatPath)
+                        let filenames = try fileManager.contentsOfDirectory(atPath: formatPath)
                         for filename in filenames {
                             if key == filename {
                                 do{
-                                    let filePath = (formatPath as NSString).stringByAppendingPathComponent(filename)
-                                    Log.debug("Removing cache file: \(filePath)")
-                                    try fileManager.removeItemAtPath(filePath)
-                                }
-                                catch let error as NSError {
-                                    Log.error("Failed to delete cached file with key \(key)", error as NSError)
+                                    let filePath = (formatPath as NSString).appendingPathComponent(filename)
+                                    Log.debug(message: "Removing cache file: \(filePath)")
+                                    try fileManager.removeItem(atPath: filePath)
+                                } catch let error as NSError {
+                                    Log.error(message: "Failed to delete cached file with key \(key)", error: error as NSError)
                                 }
                             }
                         }
                     }
                 }
             } catch {
-                Log.error("Failed to list directory",error as NSError)
+                Log.error(message: "Failed to list directory",error: error as NSError)
             }
         }
     }
