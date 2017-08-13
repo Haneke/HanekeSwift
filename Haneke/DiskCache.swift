@@ -74,6 +74,7 @@ open class DiskCache {
         }
     }
 
+
     open func removeData(with key: String) {
         cacheQueue.async(execute: {
             let path = self.path(forKey: key)
