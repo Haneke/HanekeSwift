@@ -15,7 +15,7 @@ extension UIImage {
         draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return resizedImage!
+        return resizedImage ?? self;
     }
 
     func hnk_hasAlpha() -> Bool {
