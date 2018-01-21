@@ -15,7 +15,7 @@ class DiskCacheTests: XCTestCase {
     var sut : DiskCache!
     
     lazy var diskCachePath: String = {
-        let diskCachePath =  (DiskCache.basePath() as NSString).appendingPathComponent(self.name!)
+        let diskCachePath =  (DiskCache.basePath() as NSString).appendingPathComponent(self.name)
         try! FileManager.default.createDirectory(atPath: diskCachePath, withIntermediateDirectories: true, attributes: nil)
         return diskCachePath
     }()
@@ -125,7 +125,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetCapacity() {
-        sut.setData(Data.dataWithLength(1), key: self.name!)
+        sut.setData(Data.dataWithLength(1), key: self.name)
         
         sut.capacity = 0
         
@@ -136,7 +136,7 @@ class DiskCacheTests: XCTestCase {
     
     func testSetData() {
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))!
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         
         sut.setData(data, key: key)
@@ -199,7 +199,7 @@ class DiskCacheTests: XCTestCase {
     func testSetDataReplace() {
         let originalData = Data.dataWithLength(5)
         let data = Data.dataWithLength(14)
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         sut.setData(originalData, key: key)
         
@@ -215,7 +215,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetDataNil() {
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         
         sut.setData({ return nil }(), key: key)
@@ -229,7 +229,7 @@ class DiskCacheTests: XCTestCase {
     
     func testSetDataControlCapacity() {
         let sut = DiskCache(path: diskCachePath, capacity:0)
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         
         sut.setData(Data.dataWithLength(1), key: key)
@@ -243,7 +243,7 @@ class DiskCacheTests: XCTestCase {
     
     func testFetchData() {
         let data = Data.dataWithLength(14)
-        let key = self.name!
+        let key = self.name
         sut.setData(data, key : key)
         
         let expectation = self.expectation(description: key)
@@ -258,7 +258,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testFetchData_Inexisting() {
-        let key = self.name!
+        let key = self.name
         let expectation = self.expectation(description: key)
         
         sut.fetchData(key: key, failure : { error in
@@ -279,7 +279,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testFetchData_Inexisting_NilFailureBlock() {
-        let key = self.name!
+        let key = self.name
         
         sut.fetchData(key: key, success: { _ in
             XCTFail("Expected failure")
@@ -291,7 +291,7 @@ class DiskCacheTests: XCTestCase {
     func testFetchData_UpdateAccessDate() {
         let now = Date()
         let data = Data.dataWithLength(19)
-        let key = self.name!
+        let key = self.name
         sut.setData(data, key : key)
         let path = sut.path(forKey: key)
         let fileManager = FileManager.default
@@ -324,7 +324,7 @@ class DiskCacheTests: XCTestCase {
     func testUpdateAccessDateFileInDisk() {
         let now = Date()
         let data = Data.dataWithLength(10)
-        let key = self.name!
+        let key = self.name
         sut.setData(data, key : key)
         let path = sut.path(forKey: key)
         let fileManager = FileManager.default
@@ -352,7 +352,7 @@ class DiskCacheTests: XCTestCase {
     
     func testUpdateAccessDateFileNotInDisk() {
         let image = UIImage.imageWithColor(UIColor.red)
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         let fileManager = FileManager.default
         
@@ -385,7 +385,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataExisting() {
-        let key = self.name!
+        let key = self.name
         let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))
         let path = sut.path(forKey: key)
         sut.setData(data, key: key)
@@ -400,7 +400,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveDataInexisting() {
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         let fileManager = FileManager.default
         
@@ -411,7 +411,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveAllData_Filled() {
-        let key = self.name!
+        let key = self.name
         let data = Data.dataWithLength(12)
         let path = sut.path(forKey: key)
         sut.setData(data, key: key)
@@ -426,7 +426,7 @@ class DiskCacheTests: XCTestCase {
     }
 
     func testRemoveAllData_Completion_Filled() {
-        let key = self.name!
+        let key = self.name
         let data = Data.dataWithLength(12)
         sut.setData(data, key: key)
         let expectation = self.expectation(description: key)
@@ -442,7 +442,7 @@ class DiskCacheTests: XCTestCase {
     }
 
     func testRemoveAllData_Empty() {
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         let fileManager = FileManager.default
         
@@ -453,7 +453,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testRemoveAllData_ThenSetData() {
-        let key = self.name!
+        let key = self.name
         let path = sut.path(forKey: key)
         let data = Data.dataWithLength(12)
         
