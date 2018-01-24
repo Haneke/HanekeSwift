@@ -172,7 +172,7 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
     
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name!)
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name)
     }
     
     func _testDecompressedImageWithOrientation(_ orientation : ExifOrientation) {
@@ -191,7 +191,7 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
         
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name!)
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name)
     }
     
 }
