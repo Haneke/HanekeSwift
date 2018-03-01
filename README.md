@@ -246,3 +246,4 @@ Haneke Swift is in initial development and its public API should not be consider
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
+
