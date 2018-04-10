@@ -40,7 +40,10 @@ extension UIImage : DataConvertible, DataRepresentable {
     }
     
     public func asData() -> Data! {
-        return self.hnk_data() as Data!
+        guard let data = self.hnk_data() else {
+            fatalError("Haneke Swift does not handle this case.")
+        }
+        return data
     }
     
     fileprivate static let scale = UIScreen.main.scale
