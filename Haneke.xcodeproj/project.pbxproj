@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		192974ED207D320C00A90A6D /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192974EC207D320C00A90A6D /* OHHTTPStubs.framework */; };
 		36BB64F519BECE1E006A1309 /* CGSize+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */; };
 		36C9E04F198C03F80083574B /* UIImage+Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36C9E04E198C03F80083574B /* UIImage+Test.swift */; };
-		63387B981C37728500E3800E /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63387B971C37728500E3800E /* OHHTTPStubs.framework */; };
 		6393C5DC1C3B229200EB1FD8 /* UIView+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C12904A19EE5B040002B336 /* UIView+Haneke.swift */; };
 		6393C5DD1C3B229200EB1FD8 /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01E148219D7FA54000247ED /* Fetch.swift */; };
 		6393C5DE1C3B229200EB1FD8 /* UIButton+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */; };
@@ -107,9 +107,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		192974EC207D320C00A90A6D /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OHHTTPStubs.framework; sourceTree = "<group>"; };
 		36BB64F419BECE1E006A1309 /* CGSize+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Swift.swift"; sourceTree = "<group>"; };
 		36C9E04E198C03F80083574B /* UIImage+Test.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Test.swift"; sourceTree = "<group>"; };
-		63387B971C37728500E3800E /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OHHTTPStubs.framework; path = Carthage/Build/iOS/OHHTTPStubs.framework; sourceTree = SOURCE_ROOT; };
 		6393C5F71C3B229200EB1FD8 /* Haneke.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Haneke.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6393C5F81C3B229200EB1FD8 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-tvOS.plist"; path = "/Users/david/Code/HanekeSwift/Haneke/Info-tvOS.plist"; sourceTree = "<absolute>"; };
 		87BCE4711C37551C0040B92C /* AsyncFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncFetcher.swift; sourceTree = "<group>"; };
@@ -195,7 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				87BCE4791C3767880040B92C /* Haneke.framework in Frameworks */,
-				63387B981C37728500E3800E /* OHHTTPStubs.framework in Frameworks */,
+				192974ED207D320C00A90A6D /* OHHTTPStubs.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +266,7 @@
 		A079D3081ADADC2200B18540 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				63387B971C37728500E3800E /* OHHTTPStubs.framework */,
+				192974EC207D320C00A90A6D /* OHHTTPStubs.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -481,7 +481,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = Haneke;
 				TargetAttributes = {
 					6393C5DA1C3B229200EB1FD8 = {
@@ -795,12 +795,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -851,12 +853,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -937,6 +941,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/HanekeTests",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -960,6 +965,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/HanekeTests",
 				);
 				INFOPLIST_FILE = HanekeTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
