@@ -13,7 +13,7 @@ import XCTest
 class FormatTests: XCTestCase {
 
     func testDefaultInit() {
-        let name = self.name!
+        let name = self.name
         let sut = Format<UIImage>(name: name)
         
         XCTAssertEqual(sut.name, name)
@@ -22,21 +22,21 @@ class FormatTests: XCTestCase {
     }
     
     func testIsIdentity_WithoutTransform_ExpectTrue() {
-        let sut = Format<UIImage>(name: self.name!)
+        let sut = Format<UIImage>(name: self.name)
         
         XCTAssertTrue(sut.isIdentity)
     }
     
     func testIsIdentity_WithTransform_ExpectFalse() {
-        let sut = Format<UIImage>(name: self.name!, transform: { return $0 })
+        let sut = Format<UIImage>(name: self.name, transform: { return $0 })
         
         XCTAssertFalse(sut.isIdentity)
     }
     
     func testResizeImageScaleNone() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
-        let sut = ImageResizer(size: CGSizeMake(30, 5), scaleMode: .None)
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
+        let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .None)
         let resizedImage = sut.resizeImage(originalImage)
         
         XCTAssertEqual(originalImage.size.width, resizedImage.size.width)
@@ -47,8 +47,8 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleFill() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
-        let sut = ImageResizer(size: CGSizeMake(30, 5), scaleMode : .Fill)
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
+        let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode : .Fill)
         let resizedImage = sut.resizeImage(originalImage)
         
         XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
@@ -59,8 +59,8 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleAspectFill() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
-        let sut = ImageResizer(size: CGSizeMake(30, 5), scaleMode: .AspectFill)
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1),  false)
+        let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .AspectFill)
         let resizedImage = sut.resizeImage(originalImage)
         
         XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
@@ -71,8 +71,8 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleAspectFit() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
-        let sut = ImageResizer(size: CGSizeMake(30, 5), scaleMode: .AspectFit)
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
+        let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .AspectFit)
         let resizedImage = sut.resizeImage(originalImage)
         
         XCTAssertNotEqual(originalImage.size.width, resizedImage.size.width)
@@ -83,8 +83,8 @@ class FormatTests: XCTestCase {
     
     func testResizeImageScaleAspectFillWithoutUpscaling() {
         
-        let originalImage = UIImage.imageWithColor(UIColor.redColor(), CGSize(width: 1, height: 1), false)
-        let sut = ImageResizer(size: CGSizeMake(30, 5), scaleMode: .AspectFill, allowUpscaling: false)
+        let originalImage = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
+        let sut = ImageResizer(size: CGSize(width: 30, height: 5), scaleMode: .AspectFill, allowUpscaling: false)
         let resizedImage = sut.resizeImage(originalImage)
         
         XCTAssertEqual(originalImage.size.width, resizedImage.size.width)

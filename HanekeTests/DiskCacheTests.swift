@@ -15,8 +15,8 @@ class DiskCacheTests: XCTestCase {
     var sut : DiskCache!
     
     lazy var diskCachePath: String = {
-        let diskCachePath =  (DiskCache.basePath() as NSString).stringByAppendingPathComponent(self.name!)
-        try! NSFileManager.defaultManager().createDirectoryAtPath(diskCachePath, withIntermediateDirectories: true, attributes: nil)
+        let diskCachePath =  (DiskCache.basePath() as NSString).appendingPathComponent(self.name)
+        try! FileManager.default.createDirectory(atPath: diskCachePath, withIntermediateDirectories: true, attributes: nil)
         return diskCachePath
     }()
     
@@ -33,13 +33,13 @@ class DiskCacheTests: XCTestCase {
         self.wait(5) {
             return completed
         }
-        try! NSFileManager.defaultManager().removeItemAtPath(diskCachePath)
+        try! FileManager.default.removeItem(atPath: diskCachePath)
         super.tearDown()
     }
     
     func testBasePath() {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]
-        let basePath = (cachesPath as NSString).stringByAppendingPathComponent(HanekeGlobals.Domain)
+        let cachesPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+        let basePath = (cachesPath as NSString).appendingPathComponent(HanekeGlobals.Domain)
         XCTAssertEqual(DiskCache.basePath(), basePath)
     }
     
@@ -53,11 +53,11 @@ class DiskCacheTests: XCTestCase {
     func testInitWithOneFile() {
         let path = diskCachePath
         let expectedSize = 8
-        self.writeDataWithLength(expectedSize, directory: path)
+        _ = self.writeDataWithLength(expectedSize, directory: path)
         
         let sut = DiskCache(path: path)
         
-        dispatch_sync(sut.cacheQueue) {
+        sut.cacheQueue.sync {
             XCTAssertEqual(sut.size, UInt64(expectedSize))
         }
     }
@@ -65,13 +65,13 @@ class DiskCacheTests: XCTestCase {
     func testInitWithTwoFiles() {
         let directory = diskCachePath
         let lengths = [4, 7]
-        self.writeDataWithLength(lengths[0], directory: directory)
-        self.writeDataWithLength(lengths[1], directory: directory)
+        _ = self.writeDataWithLength(lengths[0], directory: directory)
+        _ = self.writeDataWithLength(lengths[1], directory: directory)
         
         let sut = DiskCache(path: directory)
         
-        dispatch_sync(sut.cacheQueue) {
-            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, combine: +)))
+        sut.cacheQueue.sync {
+            XCTAssertEqual(sut.size, UInt64(lengths.reduce(0, +)))
         }
     }
     
@@ -81,9 +81,9 @@ class DiskCacheTests: XCTestCase {
         
         let sut = DiskCache(path: directory, capacity : 0)
         
-        dispatch_sync(sut.cacheQueue) {
+        sut.cacheQueue.sync {
             XCTAssertEqual(sut.size, 0)
-            XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path))
+            XCTAssertFalse(FileManager.default.fileExists(atPath: path))
         }
     }
     
@@ -94,10 +94,10 @@ class DiskCacheTests: XCTestCase {
         
         let sut = DiskCache(path: directory, capacity : 0)
         
-        dispatch_sync(sut.cacheQueue, {
+        sut.cacheQueue.sync(execute: {
             XCTAssertEqual(Int(sut.size), 0)
-            XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path1))
-            XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path2))
+            XCTAssertFalse(FileManager.default.fileExists(atPath: path1))
+            XCTAssertFalse(FileManager.default.fileExists(atPath: path2))
         })
     }
     
@@ -105,201 +105,206 @@ class DiskCacheTests: XCTestCase {
         let directory = diskCachePath
         let path1 = self.writeDataWithLength(1, directory: directory)
         let path2 = self.writeDataWithLength(1, directory: directory)
-        try! NSFileManager.defaultManager().setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path2)
+        try! FileManager.default.setAttributes([FileAttributeKey.modificationDate : Date.distantPast], ofItemAtPath: path2)
         
         let sut = DiskCache(path: directory, capacity : 1)
         
-        dispatch_sync(sut.cacheQueue, {
+        sut.cacheQueue.sync(execute: {
             XCTAssertEqual(Int(sut.size), 1)
-            XCTAssertTrue(NSFileManager.defaultManager().fileExistsAtPath(path1))
-            XCTAssertFalse(NSFileManager.defaultManager().fileExistsAtPath(path2))
+            XCTAssertTrue(FileManager.default.fileExists(atPath: path1))
+            XCTAssertFalse(FileManager.default.fileExists(atPath: path2))
         })
     }
     
     func testCacheQueue() {
         let expectedLabel = HanekeGlobals.Domain + "." + (diskCachePath as NSString).lastPathComponent
 
-        let label = String(UTF8String: dispatch_queue_get_label(sut.cacheQueue))!
+        let label = String(validatingUTF8: sut.cacheQueue.label)!
 
         XCTAssertEqual(label, expectedLabel)
     }
     
     func testSetCapacity() {
-        sut.setData(NSData.dataWithLength(1), key: self.name!)
+        sut.setData(Data.dataWithLength(1), key: self.name)
         
         sut.capacity = 0
         
-        dispatch_sync(sut.cacheQueue, {
+        sut.cacheQueue.sync(execute: {
             XCTAssertEqual(Int(self.sut.size), 0)
         })        
     }
     
     func testSetData() {
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))!
-        let key = self.name!
-        let path = sut.pathForKey(key)
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))!
+        let key = self.name
+        let path = sut.path(forKey: key)
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)!
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertTrue(fileManager.fileExists(atPath: path))
+            let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(self.sut.size, UInt64(data.length))
+            XCTAssertEqual(self.sut.size, UInt64(data.count))
         }
     }
     
     func testSetData_WithKeyIncludingSpecialCharacters() {
         let sut = self.sut!
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))!
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))!
         let key = "http://haneke.io"
-        let path = sut.pathForKey(key)
+        let path = sut.path(forKey: key)
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)!
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertTrue(fileManager.fileExists(atPath: path))
+            let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, UInt64(data.length))
+            XCTAssertEqual(sut.size, UInt64(data.count))
         }
     }
     
     func testSetData_WithLongKey() {
         let sut = self.sut!
-        let data = NSData.dataWithLength(10)
+        let data = Data.dataWithLength(10)
         let key = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pretium id nibh a pulvinar. Integer id ex in tellus egestas placerat. Praesent ultricies libero ligula, et convallis ligula imperdiet eu. Sed gravida, turpis sed vulputate feugiat, metus nisl scelerisque diam, ac aliquet metus nisi rutrum ipsum. Nulla vulputate pretium dolor, a pellentesque nulla. Nunc pellentesque tortor porttitor, sollicitudin leo in, sollicitudin ligula. Cras malesuada orci at neque interdum elementum. Integer sed sagittis diam. Mauris non elit sed augue consequat feugiat. Nullam volutpat tortor eget tempus pretium. Sed pharetra sem vitae diam hendrerit, sit amet dapibus arcu interdum. Fusce egestas quam libero, ut efficitur turpis placerat eu. Sed velit sapien, aliquam sit amet ultricies a, bibendum ac nibh. Maecenas imperdiet, quam quis tincidunt sollicitudin, nunc tellus ornare ipsum, nec rhoncus nunc nisi a lacus."
-        let path = sut.pathForKey(key)
+        let path = sut.path(forKey: key)
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)!
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertTrue(fileManager.fileExists(atPath: path))
+            let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(sut.size, UInt64(data.length))
+            XCTAssertEqual(sut.size, UInt64(data.count))
         }
     }
     
     func testSetDataSizeGreaterThanZero() {
         let lengths = [5, 14]
         let keys = ["1", "2"]
-        sut.setData(NSData.dataWithLength(lengths[0]), key: keys[0])
+        sut.setData(Data.dataWithLength(lengths[0]), key: keys[0])
         
-        sut.setData(NSData.dataWithLength(lengths[1]), key: keys[1])
+        sut.setData(Data.dataWithLength(lengths[1]), key: keys[1])
         
-        dispatch_sync(sut.cacheQueue) {
-            XCTAssertEqual(self.sut.size, UInt64(lengths.reduce(0, combine: +)))
+        sut.cacheQueue.sync {
+            XCTAssertEqual(self.sut.size, UInt64(lengths.reduce(0, +)))
         }
     }
     
     func testSetDataReplace() {
-        let originalData = NSData.dataWithLength(5)
-        let data = NSData.dataWithLength(14)
-        let key = self.name!
-        let path = sut.pathForKey(key)
+        let originalData = Data.dataWithLength(5)
+        let data = Data.dataWithLength(14)
+        let key = self.name
+        let path = sut.path(forKey: key)
         sut.setData(originalData, key: key)
         
         sut.setData(data, key: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertTrue(fileManager.fileExistsAtPath(path))
-            let resultData = NSData(contentsOfFile:path)!
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertTrue(fileManager.fileExists(atPath: path))
+            let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
             XCTAssertEqual(resultData, data)
-            XCTAssertEqual(self.sut.size, UInt64(data.length))
+            XCTAssertEqual(self.sut.size, UInt64(data.count))
         }
     }
     
     func testSetDataNil() {
-        let key = self.name!
-        let path = sut.pathForKey(key)
+        let key = self.name
+        let path = sut.path(forKey: key)
         
         sut.setData({ return nil }(), key: key)
         
-        dispatch_sync(sut.cacheQueue, {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync(execute: {
+            let fileManager = FileManager.default
+            XCTAssertFalse(fileManager.fileExists(atPath: path))
             XCTAssertEqual(Int(self.sut.size), 0)
         })
     }
     
     func testSetDataControlCapacity() {
         let sut = DiskCache(path: diskCachePath, capacity:0)
-        let key = self.name!
-        let path = sut.pathForKey(key)
+        let key = self.name
+        let path = sut.path(forKey: key)
         
-        sut.setData(NSData.dataWithLength(1), key: key)
+        sut.setData(Data.dataWithLength(1), key: key)
         
-        dispatch_sync(sut.cacheQueue, {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync(execute: {
+            let fileManager = FileManager.default
+            XCTAssertFalse(fileManager.fileExists(atPath: path))
             XCTAssertEqual(Int(sut.size), 0)
         })
     }
     
     func testFetchData() {
-        let data = NSData.dataWithLength(14)
-        let key = self.name!
+        let data = Data.dataWithLength(14)
+        let key = self.name
         sut.setData(data, key : key)
         
-        let expectation = self.expectationWithDescription(key)
+        let expectation = self.expectation(description: key)
         
         sut.fetchData(key: key, success: {
             expectation.fulfill()
             XCTAssertEqual($0, data)
         })
 
-        dispatch_sync(sut.cacheQueue) {}
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        sut.cacheQueue.sync {}
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testFetchData_Inexisting() {
-        let key = self.name!
-        let expectation = self.expectationWithDescription(key)
+        let key = self.name
+        let expectation = self.expectation(description: key)
         
         sut.fetchData(key: key, failure : { error in
-            XCTAssertEqual(error!.code, NSFileReadNoSuchFileError)
+            guard let error = error as NSError? else {
+                XCTFail("expected non-nil error");
+                expectation.fulfill()
+                return
+            }
+            XCTAssertEqual(error.code, NSFileReadNoSuchFileError)
             expectation.fulfill()
         }) { data in
             XCTFail("Expected failure")
             expectation.fulfill()
         }
 
-        dispatch_sync(sut.cacheQueue) {}
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        sut.cacheQueue.sync {}
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testFetchData_Inexisting_NilFailureBlock() {
-        let key = self.name!
+        let key = self.name
         
         sut.fetchData(key: key, success: { _ in
             XCTFail("Expected failure")
         })
         
-        dispatch_sync(sut.cacheQueue) {}
+        sut.cacheQueue.sync {}
     }
     
     func testFetchData_UpdateAccessDate() {
-        let now = NSDate()
-        let data = NSData.dataWithLength(19)
-        let key = self.name!
+        let now = Date()
+        let data = Data.dataWithLength(19)
+        let key = self.name
         sut.setData(data, key : key)
-        let path = sut.pathForKey(key)
-        let fileManager = NSFileManager.defaultManager()
-        dispatch_sync(sut.cacheQueue, {
-            try! fileManager.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path)
+        let path = sut.path(forKey: key)
+        let fileManager = FileManager.default
+        sut.cacheQueue.sync(execute: {
+            try! fileManager.setAttributes([FileAttributeKey.modificationDate : Date.distantPast], ofItemAtPath: path)
         })
-        let expectation = self.expectationWithDescription(key)
+        let expectation = self.expectation(description: key)
         
         // Preconditions
-        dispatch_sync(sut.cacheQueue) {
-            let attributes = try! fileManager.attributesOfItemAtPath(path)
-            let accessDate = attributes[NSFileModificationDate] as! NSDate
-            XCTAssertTrue(accessDate.laterDate(now).isEqualToDate(now))
+        sut.cacheQueue.sync {
+            let attributes = try! fileManager.attributesOfItem(atPath: path)
+            let accessDate = attributes[FileAttributeKey.modificationDate] as! Date
+            XCTAssertTrue((accessDate as NSDate).laterDate(now) == now)
         }
         
         sut.fetchData(key: key, success: {
@@ -307,124 +312,124 @@ class DiskCacheTests: XCTestCase {
             XCTAssertEqual($0, data)
         })
 
-        dispatch_sync(sut.cacheQueue) {}
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        sut.cacheQueue.sync {}
+        self.waitForExpectations(timeout: 1, handler: nil)
 
-        let attributes = try! fileManager.attributesOfItemAtPath(path)
-        let accessDate = attributes[NSFileModificationDate] as! NSDate
-        let interval = accessDate.timeIntervalSinceDate(now)
+        let attributes = try! fileManager.attributesOfItem(atPath: path)
+        let accessDate = attributes[FileAttributeKey.modificationDate] as! Date
+        let interval = accessDate.timeIntervalSince(now)
         XCTAssertEqualWithAccuracy(interval, 0, accuracy: 1)
     }
 
     func testUpdateAccessDateFileInDisk() {
-        let now = NSDate()
-        let data = NSData.dataWithLength(10)
-        let key = self.name!
+        let now = Date()
+        let data = Data.dataWithLength(10)
+        let key = self.name
         sut.setData(data, key : key)
-        let path = sut.pathForKey(key)
-        let fileManager = NSFileManager.defaultManager()
-        dispatch_sync(sut.cacheQueue) {
-            try! fileManager.setAttributes([NSFileModificationDate : NSDate.distantPast()], ofItemAtPath: path)
+        let path = sut.path(forKey: key)
+        let fileManager = FileManager.default
+        sut.cacheQueue.sync {
+            try! fileManager.setAttributes([FileAttributeKey.modificationDate : Date.distantPast], ofItemAtPath: path)
         }
         
         // Preconditions
-        dispatch_sync(sut.cacheQueue) {
-            let attributes = try! fileManager.attributesOfItemAtPath(path)
-            let accessDate = attributes[NSFileModificationDate] as! NSDate
-            XCTAssertTrue(accessDate.laterDate(now).isEqualToDate(now))
+        sut.cacheQueue.sync {
+            let attributes = try! fileManager.attributesOfItem(atPath: path)
+            let accessDate = attributes[FileAttributeKey.modificationDate] as! Date
+            XCTAssertTrue((accessDate as NSDate).laterDate(now) == now)
         }
         
         sut.updateAccessDate(data, key: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            let attributes = try! fileManager.attributesOfItemAtPath(path)
-            let accessDate = attributes[NSFileModificationDate] as! NSDate
-            let now = NSDate()
-            let interval = accessDate.timeIntervalSinceDate(now)
+        sut.cacheQueue.sync {
+            let attributes = try! fileManager.attributesOfItem(atPath: path)
+            let accessDate = attributes[FileAttributeKey.modificationDate] as! Date
+            let now = Date()
+            let interval = accessDate.timeIntervalSince(now)
             XCTAssertEqualWithAccuracy(interval, 0, accuracy: 1)
         }
     }
     
     func testUpdateAccessDateFileNotInDisk() {
-        let image = UIImage.imageWithColor(UIColor.redColor())
-        let key = self.name!
-        let path = sut.pathForKey(key)
-        let fileManager = NSFileManager.defaultManager()
+        let image = UIImage.imageWithColor(UIColor.red)
+        let key = self.name
+        let path = sut.path(forKey: key)
+        let fileManager = FileManager.default
         
         // Preconditions
-        dispatch_sync(sut.cacheQueue) {
-            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync {
+            XCTAssertFalse(fileManager.fileExists(atPath: path))
         }
         
         sut.updateAccessDate(image.hnk_data(), key: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync {
+            XCTAssertTrue(fileManager.fileExists(atPath: path))
         }
     }
     
     func testRemoveDataTwoKeys() {
         let keys = ["1", "2"]
-        let datas = [NSData.dataWithLength(5), NSData.dataWithLength(7)]
+        let datas = [Data.dataWithLength(5), Data.dataWithLength(7)]
         sut.setData(datas[0], key: keys[0])
         sut.setData(datas[1], key: keys[1])
 
-        sut.removeData(keys[1])
+        sut.removeData(with: keys[1])
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            let path = self.sut.pathForKey(keys[1])
-            XCTAssertFalse(fileManager.fileExistsAtPath(path))
-            XCTAssertEqual(self.sut.size, UInt64(datas[0].length))
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            let path = self.sut.path(forKey: keys[1])
+            XCTAssertFalse(fileManager.fileExists(atPath: path))
+            XCTAssertEqual(self.sut.size, UInt64(datas[0].count))
         }
     }
     
     func testRemoveDataExisting() {
-        let key = self.name!
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.redColor()))
-        let path = sut.pathForKey(key)
+        let key = self.name
+        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))
+        let path = sut.path(forKey: key)
         sut.setData(data, key: key)
         
-        sut.removeData(key)
+        sut.removeData(with: key)
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertFalse(fileManager.fileExists(atPath: path))
             XCTAssertEqual(Int(self.sut.size), 0)
         }
     }
     
     func testRemoveDataInexisting() {
-        let key = self.name!
-        let path = sut.pathForKey(key)
-        let fileManager = NSFileManager.defaultManager()
+        let key = self.name
+        let path = sut.path(forKey: key)
+        let fileManager = FileManager.default
         
         // Preconditions
-        XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        XCTAssertFalse(fileManager.fileExists(atPath: path))
         
-        sut.removeData(key)
+        sut.removeData(with: key)
     }
     
     func testRemoveAllData_Filled() {
-        let key = self.name!
-        let data = NSData.dataWithLength(12)
-        let path = sut.pathForKey(key)
+        let key = self.name
+        let data = Data.dataWithLength(12)
+        let path = sut.path(forKey: key)
         sut.setData(data, key: key)
         
         sut.removeAllData()
         
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertFalse(fileManager.fileExists(atPath: path))
             XCTAssertEqual(Int(self.sut.size), 0)
         }
     }
 
     func testRemoveAllData_Completion_Filled() {
-        let key = self.name!
-        let data = NSData.dataWithLength(12)
+        let key = self.name
+        let data = Data.dataWithLength(12)
         sut.setData(data, key: key)
-        let expectation = self.expectationWithDescription(key)
+        let expectation = self.expectation(description: key)
 
         var completed = false
         sut.removeAllData {
@@ -433,63 +438,63 @@ class DiskCacheTests: XCTestCase {
         }
 
         XCTAssertFalse(completed)
-        self.waitForExpectationsWithTimeout(1, handler: nil)
+        self.waitForExpectations(timeout: 1, handler: nil)
     }
 
     func testRemoveAllData_Empty() {
-        let key = self.name!
-        let path = sut.pathForKey(key)
-        let fileManager = NSFileManager.defaultManager()
+        let key = self.name
+        let path = sut.path(forKey: key)
+        let fileManager = FileManager.default
         
         // Preconditions
-        XCTAssertFalse(fileManager.fileExistsAtPath(path))
+        XCTAssertFalse(fileManager.fileExists(atPath: path))
         
         sut.removeAllData()
     }
     
     func testRemoveAllData_ThenSetData() {
-        let key = self.name!
-        let path = sut.pathForKey(key)
-        let data = NSData.dataWithLength(12)
+        let key = self.name
+        let path = sut.path(forKey: key)
+        let data = Data.dataWithLength(12)
         
         sut.removeAllData()
 
         sut.setData(data, key: key)
-        dispatch_sync(sut.cacheQueue) {
-            let fileManager = NSFileManager.defaultManager()
-            XCTAssertTrue(fileManager.fileExistsAtPath(path))
+        sut.cacheQueue.sync {
+            let fileManager = FileManager.default
+            XCTAssertTrue(fileManager.fileExists(atPath: path))
         }
     }
     
     func testPathForKey_WithShortKey() {
         let key = "test"
-        let expectedPath = (sut.path as NSString).stringByAppendingPathComponent(key.escapedFilename())
+        let expectedPath = (sut.path as NSString).appendingPathComponent(key.escapedFilename())
 
-        XCTAssertEqual(sut.pathForKey(key), expectedPath)
+        XCTAssertEqual(sut.path(forKey: key), expectedPath)
     }
     
     func testPathForKey_WithShortKeyWithSpecialCharacters() {
         let key = "http://haneke.io"
-        let expectedPath = (sut.path as NSString).stringByAppendingPathComponent(key.escapedFilename())
+        let expectedPath = (sut.path as NSString).appendingPathComponent(key.escapedFilename())
         
-        XCTAssertEqual(sut.pathForKey(key), expectedPath)
+        XCTAssertEqual(sut.path(forKey: key), expectedPath)
     }
     
     func testPathForKey_WithLongKey() {
         let key = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pretium id nibh a pulvinar. Integer id ex in tellus egestas placerat. Praesent ultricies libero ligula, et convallis ligula imperdiet eu. Sed gravida, turpis sed vulputate feugiat, metus nisl scelerisque diam, ac aliquet metus nisi rutrum ipsum. Nulla vulputate pretium dolor, a pellentesque nulla. Nunc pellentesque tortor porttitor, sollicitudin leo in, sollicitudin ligula. Cras malesuada orci at neque interdum elementum. Integer sed sagittis diam. Mauris non elit sed augue consequat feugiat. Nullam volutpat tortor eget tempus pretium. Sed pharetra sem vitae diam hendrerit, sit amet dapibus arcu interdum. Fusce egestas quam libero, ut efficitur turpis placerat eu. Sed velit sapien, aliquam sit amet ultricies a, bibendum ac nibh. Maecenas imperdiet, quam quis tincidunt sollicitudin, nunc tellus ornare ipsum, nec rhoncus nunc nisi a lacus."
-        let expectedPath = (sut.path as NSString).stringByAppendingPathComponent(key.MD5Filename())
+        let expectedPath = (sut.path as NSString).appendingPathComponent(key.MD5Filename())
         
-        XCTAssertEqual(sut.pathForKey(key), expectedPath)
+        XCTAssertEqual(sut.path(forKey: key), expectedPath)
     }
     
     // MARK: Helpers
 
     var dataIndex = 0
     
-    func writeDataWithLength(length : Int, directory: String) -> String {
-        let data = NSData.dataWithLength(length)
-        let path = (directory as NSString).stringByAppendingPathComponent("\(dataIndex)")
-        data.writeToFile(path, atomically: true)
+    func writeDataWithLength(_ length : Int, directory: String) -> String {
+        let data = Data.dataWithLength(length)
+        let path = (directory as NSString).appendingPathComponent("\(dataIndex)")
+        try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
         dataIndex += 1
         return path
     }
