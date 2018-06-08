@@ -1,12 +1,14 @@
-language: objective-c
+language: swift
 osx_image: xcode9
+xcode_sdk: iphonesimulator11.0
 before_install:
-- brew update
-- brew install carthage || brew outdated carthage || brew upgrade carthage
-install:
-- carthage bootstrap
+  - brew update
+  - brew install carthage || brew outdated carthage || brew upgrade carthage
+before_script:
+  - carthage bootstrap
 branches:
   only:
     - master
+    - feature/clean-up
 script:
-  - set -o pipefail && xcodebuild build test -scheme Haneke-iOS -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.3.1' | xcpretty --color
+  - xcodebuild -scheme Haneke-iOS -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.0' test
