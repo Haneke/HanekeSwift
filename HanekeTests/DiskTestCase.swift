@@ -27,7 +27,7 @@ class DiskTestCase : XCTestCase {
     }
     
     var dataIndex = 0
-    
+  
     func writeDataWithLength(_ length : Int) -> String {
         let data = Data.dataWithLength(length)
         return self.writeData(data)
