@@ -88,13 +88,6 @@
 		8C0D39C619CF4CB900452BC4 /* DiskFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D39C519CF4CB900452BC4 /* DiskFetcher.swift */; };
 		8C12904B19EE5B040002B336 /* UIView+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C12904A19EE5B040002B336 /* UIView+Haneke.swift */; };
 		8CD6E29919DB65D000F44FCF /* UIButton+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */; };
-		A0026E9F19C9BFBC004DE0C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */; };
-		A0026EA119C9BFBC004DE0C6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026EA019C9BFBC004DE0C6 /* ViewController.swift */; };
-		A0026EA419C9BFBC004DE0C6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A0026EA219C9BFBC004DE0C6 /* Main.storyboard */; };
-		A0026EA619C9BFBC004DE0C6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A0026EA519C9BFBC004DE0C6 /* Images.xcassets */; };
-		A0026EA919C9BFBC004DE0C6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0026EA719C9BFBC004DE0C6 /* LaunchScreen.xib */; };
-		A0026EBF19C9C024004DE0C6 /* Haneke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A095C9561980418C00CD0F4C /* Haneke.framework */; };
-		A0026EC319C9C24C004DE0C6 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0026EC219C9C24C004DE0C6 /* CollectionViewCell.swift */; };
 		A00D360219C355C30007586E /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360119C355C30007586E /* NetworkFetcher.swift */; };
 		A00D360419C36E680007586E /* NSURLResponse+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00D360319C36E680007586E /* NSURLResponse+Haneke.swift */; };
 		A01E148319D7FA54000247ED /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01E148219D7FA54000247ED /* Fetch.swift */; };
@@ -126,13 +119,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6393C5DA1C3B229200EB1FD8;
 			remoteInfo = "Haneke-tvOS";
-		};
-		A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A095C94D1980418C00CD0F4C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A095C9551980418C00CD0F4C;
-			remoteInfo = Haneke;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -182,14 +168,6 @@
 		8C12904A19EE5B040002B336 /* UIView+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Haneke.swift"; sourceTree = "<group>"; };
 		8CD6E29819DB65D000F44FCF /* UIButton+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+Haneke.swift"; sourceTree = "<group>"; };
 		8CD6E29E19E3467F00F44FCF /* UIButton+HanekeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+HanekeTests.swift"; sourceTree = "<group>"; };
-		A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HanekeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A0026E9D19C9BFBC004DE0C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A0026EA019C9BFBC004DE0C6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		A0026EA319C9BFBC004DE0C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		A0026EA519C9BFBC004DE0C6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		A0026EA819C9BFBC004DE0C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		A0026EC219C9C24C004DE0C6 /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		A00D360119C355C30007586E /* NetworkFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
 		A00D360319C36E680007586E /* NSURLResponse+Haneke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLResponse+Haneke.swift"; sourceTree = "<group>"; };
 		A00D364819C6D8870007586E /* NetworkFetcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkFetcherTests.swift; sourceTree = "<group>"; };
@@ -256,14 +234,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A0026E9719C9BFBC004DE0C6 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A0026EBF19C9C024004DE0C6 /* Haneke.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A095C9521980418C00CD0F4C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -284,28 +254,6 @@
 				5098963120CA2ED600987530 /* CryptoSwift.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A0026E9B19C9BFBC004DE0C6 /* HanekeDemo */ = {
-			isa = PBXGroup;
-			children = (
-				A0026E9E19C9BFBC004DE0C6 /* AppDelegate.swift */,
-				A0026EC219C9C24C004DE0C6 /* CollectionViewCell.swift */,
-				A0026EA519C9BFBC004DE0C6 /* Images.xcassets */,
-				A0026EA719C9BFBC004DE0C6 /* LaunchScreen.xib */,
-				A0026EA219C9BFBC004DE0C6 /* Main.storyboard */,
-				A0026E9C19C9BFBC004DE0C6 /* Supporting Files */,
-				A0026EA019C9BFBC004DE0C6 /* ViewController.swift */,
-			);
-			path = HanekeDemo;
-			sourceTree = "<group>";
-		};
-		A0026E9C19C9BFBC004DE0C6 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				A0026E9D19C9BFBC004DE0C6 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		A00D364E19C6E0CB0007586E /* Extensions */ = {
@@ -344,7 +292,6 @@
 			children = (
 				A095C9581980418C00CD0F4C /* Haneke */,
 				A095C9651980418C00CD0F4C /* HanekeTests */,
-				A0026E9B19C9BFBC004DE0C6 /* HanekeDemo */,
 				A095C9571980418C00CD0F4C /* Products */,
 				5098963020CA2ED500987530 /* Frameworks */,
 			);
@@ -354,7 +301,6 @@
 			isa = PBXGroup;
 			children = (
 				A095C9561980418C00CD0F4C /* Haneke.framework */,
-				A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */,
 				6393C5F71C3B229200EB1FD8 /* Haneke.framework */,
 				5098963D20CA31C300987530 /* Haneke-IOSTests.xctest */,
 				5098966B20CA344B00987530 /* Haneke-tvOSTests.xctest */,
@@ -526,24 +472,6 @@
 			productReference = 6393C5F71C3B229200EB1FD8 /* Haneke.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		A0026E9919C9BFBC004DE0C6 /* HanekeDemo */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A0026EBD19C9BFBC004DE0C6 /* Build configuration list for PBXNativeTarget "HanekeDemo" */;
-			buildPhases = (
-				A0026E9619C9BFBC004DE0C6 /* Sources */,
-				A0026E9719C9BFBC004DE0C6 /* Frameworks */,
-				A0026E9819C9BFBC004DE0C6 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A0026EC119C9C02A004DE0C6 /* PBXTargetDependency */,
-			);
-			name = HanekeDemo;
-			productName = HanekeDemo;
-			productReference = A0026E9A19C9BFBC004DE0C6 /* HanekeDemo.app */;
-			productType = "com.apple.product-type.application";
-		};
 		A095C9551980418C00CD0F4C /* Haneke-iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A095C96C1980418C00CD0F4C /* Build configuration list for PBXNativeTarget "Haneke-iOS" */;
@@ -583,10 +511,6 @@
 					6393C5DA1C3B229200EB1FD8 = {
 						LastSwiftMigration = 0800;
 					};
-					A0026E9919C9BFBC004DE0C6 = {
-						CreatedOnToolsVersion = 6.0;
-						LastSwiftMigration = 0800;
-					};
 					A095C9551980418C00CD0F4C = {
 						CreatedOnToolsVersion = 6.0;
 						LastSwiftMigration = 0800;
@@ -610,7 +534,6 @@
 				5098963C20CA31C300987530 /* Haneke-IOSTests */,
 				6393C5DA1C3B229200EB1FD8 /* Haneke-tvOS */,
 				5098966A20CA344B00987530 /* Haneke-tvOSTests */,
-				A0026E9919C9BFBC004DE0C6 /* HanekeDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -634,16 +557,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A0026E9819C9BFBC004DE0C6 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A0026EA419C9BFBC004DE0C6 /* Main.storyboard in Resources */,
-				A0026EA919C9BFBC004DE0C6 /* LaunchScreen.xib in Resources */,
-				A0026EA619C9BFBC004DE0C6 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -741,16 +654,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A0026E9619C9BFBC004DE0C6 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A0026EA119C9BFBC004DE0C6 /* ViewController.swift in Sources */,
-				A0026E9F19C9BFBC004DE0C6 /* AppDelegate.swift in Sources */,
-				A0026EC319C9C24C004DE0C6 /* CollectionViewCell.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A095C9511980418C00CD0F4C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -790,31 +693,7 @@
 			target = 6393C5DA1C3B229200EB1FD8 /* Haneke-tvOS */;
 			targetProxy = 5098967120CA344B00987530 /* PBXContainerItemProxy */;
 		};
-		A0026EC119C9C02A004DE0C6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A095C9551980418C00CD0F4C /* Haneke-iOS */;
-			targetProxy = A0026EC019C9C02A004DE0C6 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		A0026EA219C9BFBC004DE0C6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A0026EA319C9BFBC004DE0C6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		A0026EA719C9BFBC004DE0C6 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A0026EA819C9BFBC004DE0C6 /* Base */,
-			);
-			name = LaunchScreen.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5098964620CA31C300987530 /* Debug */ = {
@@ -981,36 +860,6 @@
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
-			};
-			name = Release;
-		};
-		A0026EB619C9BFBC004DE0C6 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = HanekeDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-			};
-			name = Debug;
-		};
-		A0026EB719C9BFBC004DE0C6 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = HanekeDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.haneke.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -1200,15 +1049,6 @@
 			buildConfigurations = (
 				6393C5F51C3B229200EB1FD8 /* Debug */,
 				6393C5F61C3B229200EB1FD8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A0026EBD19C9BFBC004DE0C6 /* Build configuration list for PBXNativeTarget "HanekeDemo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A0026EB619C9BFBC004DE0C6 /* Debug */,
-				A0026EB719C9BFBC004DE0C6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
