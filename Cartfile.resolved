@@ -1,1 +1,2 @@
-github "AliSoftware/OHHTTPStubs" "624d51619bc88144015c2b275e761b359ae5ecb3"
+github "AliSoftware/OHHTTPStubs" "6.1.0"
+github "krzyzanowskim/CryptoSwift" "0.10.0"

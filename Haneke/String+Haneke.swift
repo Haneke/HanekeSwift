@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CryptoSwift
 
 extension String {
     
@@ -21,9 +22,9 @@ extension String {
         guard let data = self.data(using: String.Encoding.utf8) else {
             return self
         }
-
-        let MD5Calculator = MD5(Array(data))
-        let MD5Data = MD5Calculator.calculate()
+        
+        let MD5Calculator = MD5()
+        let MD5Data = MD5Calculator.calculate(for: Array(data))
         let resultBytes = UnsafeMutablePointer<CUnsignedChar>(mutating: MD5Data)
         let resultEnumerator = UnsafeBufferPointer<CUnsignedChar>(start: resultBytes, count: MD5Data.count)
         let MD5String = NSMutableString()

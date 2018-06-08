@@ -22,19 +22,19 @@ class HanekeTests: XCTestCase {
     }
     
     func testSharedImageCache() {
-        Shared.imageCache
+        _ = Shared.imageCache
     }
     
     func testSharedDataCache() {
-        Shared.dataCache
+        _ = Shared.dataCache
     }
     
     func testSharedStringCache() {
-        Shared.stringCache
+        _ = Shared.stringCache
     }
     
     func testSharedJSONCache() {
-        Shared.JSONCache
+        _ = Shared.JSONCache
     }
     
 }

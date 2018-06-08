@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import CryptoSwift
 @testable import Haneke
 
 class DiskCacheTests: XCTestCase {
@@ -318,7 +319,7 @@ class DiskCacheTests: XCTestCase {
         let attributes = try! fileManager.attributesOfItem(atPath: path)
         let accessDate = attributes[FileAttributeKey.modificationDate] as! Date
         let interval = accessDate.timeIntervalSince(now)
-        XCTAssertEqualWithAccuracy(interval, 0, accuracy: 1)
+        XCTAssertEqual(interval, 0, accuracy: 1)
     }
 
     func testUpdateAccessDateFileInDisk() {
@@ -346,7 +347,7 @@ class DiskCacheTests: XCTestCase {
             let accessDate = attributes[FileAttributeKey.modificationDate] as! Date
             let now = Date()
             let interval = accessDate.timeIntervalSince(now)
-            XCTAssertEqualWithAccuracy(interval, 0, accuracy: 1)
+            XCTAssertEqual(interval, 0, accuracy: 1)
         }
     }
     
