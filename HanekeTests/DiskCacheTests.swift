@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+import CryptoSwift
 @testable import Haneke
 
 class DiskCacheTests: XCTestCase {
