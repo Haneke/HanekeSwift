@@ -1,14 +1,15 @@
 language: swift
-osx_image: xcode9
+osx_image: xcode9.3
 xcode_sdk: iphonesimulator11.0
 before_install:
   - brew update
   - brew install carthage || brew outdated carthage || brew upgrade carthage
 before_script:
-  - carthage bootstrap
+  - carthage bootstrap --platform iOS,tvOS
 branches:
   only:
     - master
     - feature/clean-up
 script:
   - xcodebuild -scheme Haneke-iOS -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.0' test
+  
