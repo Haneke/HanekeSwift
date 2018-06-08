@@ -8,6 +8,5 @@ install:
 branches:
   only:
     - master
-    - feature/swift-3
 script:
-  - set -o pipefail && xcodebuild build test -workspace Haneke.xcworkspace -scheme Haneke-iOS -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.3.1' | xcpretty --color
+  - set -o pipefail && xcodebuild build test -scheme Haneke-iOS -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.3.1' | xcpretty --color
