@@ -11,8 +11,8 @@ import Foundation
 open class DiskCache {
     
     open class func basePath() -> String {
-        let cachesPath = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
-        let hanekePathComponent = HanekeGlobals.Domain
+        let cachesPath = HanekeGlobals.config.cacheRootPath
+        let hanekePathComponent = HanekeGlobals.config.domain
         let basePath = (cachesPath as NSString).appendingPathComponent(hanekePathComponent)
         // TODO: Do not recaculate basePath value
         return basePath
@@ -31,7 +31,7 @@ open class DiskCache {
     }
 
     open lazy var cacheQueue : DispatchQueue = {
-        let queueName = HanekeGlobals.Domain + "." + (self.path as NSString).lastPathComponent
+        let queueName = HanekeGlobals.config.domain + "." + (self.path as NSString).lastPathComponent
         let cacheQueue = DispatchQueue(label: queueName, attributes: [])
         return cacheQueue
     }()
