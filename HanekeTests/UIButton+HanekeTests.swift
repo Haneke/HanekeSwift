@@ -191,7 +191,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let expectation = self.expectation(description: self.name)
         
         sut.hnk_setImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!._domain, HanekeGlobals.config.domain)
             expectation.fulfill()
         })
         
@@ -481,7 +481,7 @@ class UIButton_HanekeTests: DiskTestCase {
         let expectation = self.expectation(description: self.name)
         
         sut.hnk_setBackgroundImageFromURL(URL, failure:{error in
-            XCTAssertEqual(error!._domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error!._domain, HanekeGlobals.config.domain)
             expectation.fulfill()
         })
         

@@ -80,7 +80,7 @@ class DiskFetcherTests: DiskTestCase {
                 expectation.fulfill()
                 return
             }
-            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.domain, HanekeGlobals.config.domain)
             XCTAssertEqual(error.code, HanekeGlobals.DiskFetcher.ErrorCode.invalidData.rawValue)
             XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()

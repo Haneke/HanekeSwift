@@ -193,7 +193,7 @@ class CacheTests: XCTestCase {
                 expectation.fulfill()
                 return
             }
-            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.domain, HanekeGlobals.config.domain)
             XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
             XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
@@ -236,7 +236,7 @@ class CacheTests: XCTestCase {
                 expectation.fulfill()
                 return
             }
-            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.domain, HanekeGlobals.config.domain)
             XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.objectNotFound.rawValue)
             XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
@@ -262,7 +262,7 @@ class CacheTests: XCTestCase {
                 expectation.fulfill()
                 return
             }
-            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.domain, HanekeGlobals.config.domain)
             XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
             XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()
@@ -449,7 +449,7 @@ class CacheTests: XCTestCase {
                 expectation.fulfill()
                 return
             }
-            XCTAssertEqual(error.domain, HanekeGlobals.Domain)
+            XCTAssertEqual(error.domain, HanekeGlobals.config.domain)
             XCTAssertEqual(error.code, HanekeGlobals.Cache.ErrorCode.formatNotFound.rawValue)
             XCTAssertNotNil(error.localizedDescription)
             expectation.fulfill()

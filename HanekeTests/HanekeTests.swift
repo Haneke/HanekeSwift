@@ -16,7 +16,7 @@ class HanekeTests: XCTestCase {
         let description = self.name
         let error = errorWithCode(code, description: description)
         
-        XCTAssertEqual(error._domain, HanekeGlobals.Domain)
+        XCTAssertEqual(error._domain, HanekeGlobals.config.domain)
         XCTAssertEqual(error._code, code)
         XCTAssertEqual(error.localizedDescription, description)
     }
