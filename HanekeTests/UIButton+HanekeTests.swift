@@ -51,7 +51,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImage(image, key: key)
         
-        XCTAssertNil(sut.image(for: UIControlState()))
+        XCTAssertNil(sut.image(for: UIControl.State()))
         XCTAssertEqual(sut.hnk_imageFetcher.key, key)
     }
     
@@ -85,7 +85,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImage(image, key: key, placeholder: placeholder)
         
-        XCTAssertTrue(sut.image(for: UIControlState())?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertTrue(sut.image(for: UIControl.State())?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_imageFetcher == nil)
     }
     
@@ -122,7 +122,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImageFromFile(fetcher.key)
         
-        XCTAssertTrue(sut.image(for: UIControlState())?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertTrue(sut.image(for: UIControl.State())?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_imageFetcher == nil)
     }
     
@@ -160,7 +160,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImageFromURL(URL)
         
-        XCTAssertTrue(sut.image(for: UIControlState())?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertTrue(sut.image(for: UIControl.State())?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_imageFetcher == nil)
     }
     
@@ -195,7 +195,7 @@ class UIButton_HanekeTests: DiskTestCase {
             expectation.fulfill()
         })
         
-        XCTAssertNil(sut.image(for: UIControlState()))
+        XCTAssertNil(sut.image(for: UIControl.State()))
         XCTAssertEqual(sut.hnk_imageFetcher.key, fetcher.key)
         self.waitForExpectations(timeout: 1, handler: nil)
     }
@@ -207,7 +207,7 @@ class UIButton_HanekeTests: DiskTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let URL = Foundation.URL(string: "http://haneke.io")!
@@ -260,7 +260,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setImageFromFetcher(fetcher)
         
-        XCTAssertTrue(sut.image(for: UIControlState())?.isEqualPixelByPixel(expectedImage) == true)
+        XCTAssertTrue(sut.image(for: UIControl.State())?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_imageFetcher == nil)
     }
     
@@ -337,7 +337,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setBackgroundImage(image, key: key)
         
-        XCTAssertNil(sut.backgroundImage(for: UIControlState()))
+        XCTAssertNil(sut.backgroundImage(for: UIControl.State()))
         XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, key)
     }
 
@@ -372,7 +372,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setBackgroundImage(image, key: key, placeholder: placeholder)
         
-        let result = sut.backgroundImage(for: UIControlState())
+        let result = sut.backgroundImage(for: UIControl.State())
         XCTAssertTrue(result?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
@@ -410,7 +410,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setBackgroundImageFromFile(fetcher.key)
         
-        let result = sut.backgroundImage(for: UIControlState())
+        let result = sut.backgroundImage(for: UIControl.State())
         XCTAssertTrue(result?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
@@ -449,7 +449,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setBackgroundImageFromURL(URL)
         
-        let result = sut.backgroundImage(for: UIControlState())
+        let result = sut.backgroundImage(for: UIControl.State())
         XCTAssertTrue(result?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }
@@ -485,7 +485,7 @@ class UIButton_HanekeTests: DiskTestCase {
             expectation.fulfill()
         })
         
-        XCTAssertNil(sut.backgroundImage(for: UIControlState()))
+        XCTAssertNil(sut.backgroundImage(for: UIControl.State()))
         XCTAssertEqual(sut.hnk_backgroundImageFetcher.key, fetcher.key)
         self.waitForExpectations(timeout: 1, handler: nil)
     }
@@ -497,7 +497,7 @@ class UIButton_HanekeTests: DiskTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let URL = Foundation.URL(string: "http://haneke.io")!
@@ -550,7 +550,7 @@ class UIButton_HanekeTests: DiskTestCase {
         
         sut.hnk_setBackgroundImageFromFetcher(fetcher)
 
-        let result = sut.backgroundImage(for: UIControlState())
+        let result = sut.backgroundImage(for: UIControl.State())
         XCTAssertTrue(result?.isEqualPixelByPixel(expectedImage) == true)
         XCTAssertTrue(sut.hnk_backgroundImageFetcher == nil)
     }

@@ -31,7 +31,7 @@ class DiskFetcherTests: DiskTestCase {
     
     func testFetchImage_Success() {
         let image = UIImage.imageWithColor(UIColor.green, CGSize(width: 10, height: 20))
-        let data = UIImagePNGRepresentation(image)!
+        let data = image.pngData()!
         try? data.write(to: URL(fileURLWithPath: sut.path), options: [.atomic])
         
         let expectation = self.expectation(description: self.name)
@@ -94,7 +94,7 @@ class DiskFetcherTests: DiskTestCase {
 
     func testCancelFetch() {
         let image = UIImage.imageWithColor(UIColor.green)
-        let data = UIImagePNGRepresentation(image)!
+        let data = image.pngData()!
         try? data.write(to: URL(fileURLWithPath: directoryPath), options: [.atomic])
         sut.fetch(failure: { error in
             guard let error = error as NSError? else {

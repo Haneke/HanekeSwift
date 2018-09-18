@@ -135,7 +135,7 @@ class DiskCacheTests: XCTestCase {
     }
     
     func testSetData() {
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))!
+        let data = UIImage.imageWithColor(UIColor.red).pngData()!
         let key = self.name
         let path = sut.path(forKey: key)
         
@@ -152,7 +152,7 @@ class DiskCacheTests: XCTestCase {
     
     func testSetData_WithKeyIncludingSpecialCharacters() {
         let sut = self.sut!
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))!
+        let data = UIImage.imageWithColor(UIColor.red).pngData()!
         let key = "http://haneke.io"
         let path = sut.path(forKey: key)
         
@@ -386,7 +386,7 @@ class DiskCacheTests: XCTestCase {
     
     func testRemoveDataExisting() {
         let key = self.name
-        let data = UIImagePNGRepresentation(UIImage.imageWithColor(UIColor.red))
+        let data = UIImage.imageWithColor(UIColor.red).pngData()
         let path = sut.path(forKey: key)
         sut.setData(data, key: key)
         

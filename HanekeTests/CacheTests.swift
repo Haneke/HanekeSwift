@@ -612,7 +612,7 @@ class CacheTests: XCTestCase {
         let sut = CacheMock<UIImage>(name: self.name)
         sut.expectation = expectation // XCode crashes if we use the original expectation directly
         
-        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
+        NotificationCenter.default.post(name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
         
         waitForExpectations(timeout: 0, handler: nil)
     }
@@ -620,7 +620,7 @@ class CacheTests: XCTestCase {
     // MARK: Helpers
     
     func clearMemoryCache() {
-        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
+        NotificationCenter.default.post(name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
     }
 }
 
