@@ -28,7 +28,7 @@ public extension HanekeGlobals {
                     return resizer.resizeImage($0)
             }
             format.convertToData = {(image : UIImage) -> Data in
-                image.hnk_data(compressionQuality: HanekeGlobals.UIKit.DefaultFormat.CompressionQuality) as Data
+                image.hnk_data(compressionQuality: CGFloat(HanekeGlobals.UIKit.DefaultFormat.CompressionQuality)) as Data
             }
             return format
         }
