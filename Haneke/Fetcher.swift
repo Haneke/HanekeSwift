@@ -11,7 +11,7 @@ import UIKit
 // See: http://stackoverflow.com/questions/25915306/generic-closure-in-protocol
 open class Fetcher<T : DataConvertible> {
 
-    open let key: String
+    public let key: String
     
     public init(key: String) {
         self.key = key

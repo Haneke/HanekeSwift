@@ -18,7 +18,7 @@ open class DiskCache {
         return basePath
     }
     
-    open let path: String
+    public let path: String
 
     open var size : UInt64 = 0
 

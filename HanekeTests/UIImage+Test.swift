@@ -18,7 +18,7 @@ extension UIImage {
     
     func normalizedData() -> Data {
         let pixelSize = CGSize(width : self.size.width * self.scale, height : self.size.height * self.scale)
-        NSLog(NSStringFromCGSize(pixelSize))
+        NSLog(NSCoder.string(for: pixelSize))
         UIGraphicsBeginImageContext(pixelSize)
         self.draw(in: CGRect(x: 0, y: 0, width: pixelSize.width, height: pixelSize.height))
         let drawnImage = UIGraphicsGetImageFromCurrentImageContext()

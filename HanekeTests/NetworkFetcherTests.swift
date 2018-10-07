@@ -39,7 +39,7 @@ class NetworkFetcherTests: XCTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
         }, withStubResponse: { _ in
-            let data = UIImagePNGRepresentation(image)
+            let data = image.pngData()
             return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let expectation = self.expectation(description: self.name)
@@ -129,7 +129,7 @@ class NetworkFetcherTests: XCTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
         }, withStubResponse: { _ in
-            let data = UIImagePNGRepresentation(image)
+            let data = image.pngData()
             return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         sut.fetch(failure: {_ in
@@ -158,7 +158,7 @@ class NetworkFetcherTests: XCTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: statusCode, headers:nil)
         })
         let expectation = self.expectation(description: self.name)
