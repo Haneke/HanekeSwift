@@ -437,7 +437,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let URL = Foundation.URL(string: "http://haneke.io")!
@@ -460,7 +460,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil).responseTime(0.1)
         })
         let URL1 = URL(string: "http://haneke.io/1.png")!
@@ -512,7 +512,7 @@ class UIImageView_HanekeTests: DiskTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         let URL = Foundation.URL(string: "http://haneke.io")!

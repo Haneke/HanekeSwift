@@ -44,7 +44,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
         
         let notifications = NotificationCenter.default
         // Using block-based observer to avoid subclassing NSObject
-        memoryWarningObserver = notifications.addObserver(forName: Notification.Name.UIApplicationDidReceiveMemoryWarning,
+        memoryWarningObserver = notifications.addObserver(forName: UIApplication.didReceiveMemoryWarningNotification,
             object: nil,
             queue: OperationQueue.main,
             using: { [unowned self] (notification : Notification!) -> Void in
@@ -58,7 +58,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
     
     deinit {
         let notifications = NotificationCenter.default
-        notifications.removeObserver(memoryWarningObserver, name: Notification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
+        notifications.removeObserver(memoryWarningObserver, name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
     }
     
     open func set(value: T, key: String, formatName: String = HanekeGlobals.Cache.OriginalFormatName, success succeed: ((T) -> ())? = nil) {
