@@ -36,8 +36,8 @@ func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
         bytes[totalBytes - 1 - j] = (bytesPointer + j).pointee
     }
     
-    valuePointer.deinitialize()
-    valuePointer.deallocate(capacity: 1)
+    valuePointer.deinitialize(count: 1)
+    valuePointer.deallocate()
     
     return bytes
 }
