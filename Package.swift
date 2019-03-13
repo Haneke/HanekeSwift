@@ -8,7 +8,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Haneke"
+            name: "Haneke",
+            path: "Haneke"
         )
     ]
 )
