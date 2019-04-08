@@ -1,6 +1,7 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Accio supported](https://img.shields.io/badge/Accio-supported-0A7CF5.svg?style=flat)](https://github.com/JamitLabs/Accio)
 [![Platform](https://cocoapod-badges.herokuapp.com/p/HanekeSwift/badge.png)](http://cocoadocs.org/docsets/HanekeSwift)
 [![Build Status](https://travis-ci.org/Haneke/HanekeSwift.svg?branch=master)](https://travis-ci.org/Haneke/HanekeSwift)
 [![Join the chat at https://gitter.im/Haneke/HanekeSwift](https://badges.gitter.im/Haneke/HanekeSwift.svg)](https://gitter.im/Haneke/HanekeSwift?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -56,6 +57,24 @@ Using [Carthage](https://github.com/Carthage/Carthage):
 
 ```
 github "Haneke/HanekeSwift"
+```
+
+Using [Accio](https://github.com/JamitLabs/Accio):
+
+
+```swift
+.package(url: "https://github.com/Haneke/HanekeSwift.git", .upToNextMajor(from: "0.11.1")),
+```
+
+Then link `Haneke` in your App target like so:
+
+```swift
+.target(
+    name: "App",
+    dependencies: [
+        "Haneke",
+    ]
+),
 ```
 
 Manually:
