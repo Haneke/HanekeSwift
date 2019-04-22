@@ -32,7 +32,7 @@ struct Log {
     }
     
     static func error(message: @autoclosure () -> String, error: Error? = nil) {
-        log(.Error, message, error)
+        log(.Error, message(), error)
     }
     
 }

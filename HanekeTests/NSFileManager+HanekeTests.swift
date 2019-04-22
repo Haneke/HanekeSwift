@@ -21,7 +21,7 @@ class NSFileManager_HanekeTests: DiskTestCase {
     
     func testEnumerateContentsOfDirectoryAtPathStop() {
         let sut = FileManager.default
-        [self.writeDataWithLength(1), self.writeDataWithLength(2)]
+        _ = [self.writeDataWithLength(1), self.writeDataWithLength(2)]
         var count = 0
         
         sut.enumerateContentsOfDirectory(atPath: self.directoryPath, orderedByProperty: URLResourceKey.nameKey.rawValue, ascending: true) { (_ : URL, index : Int, stop : inout Bool) -> Void in

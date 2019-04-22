@@ -43,7 +43,7 @@ class FetcherTests: XCTestCase {
         let expectation = self.expectation(description: self.name)
         let cache = Cache<Data>(name: self.name)
         
-        cache.fetch(key: self.name, value: data) {
+        _ = cache.fetch(key: self.name, value: data) {
             XCTAssertEqual($0, data)
             expectation.fulfill()
         }
@@ -60,7 +60,7 @@ class FetcherTests: XCTestCase {
         let format = Format<Data>(name: self.name)
         cache.addFormat(format)
         
-        cache.fetch(key: self.name, value: data, formatName: format.name) {
+        _ = cache.fetch(key: self.name, value: data, formatName: format.name) {
             XCTAssertEqual($0, data)
             expectation.fulfill()
         }
