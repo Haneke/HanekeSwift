@@ -27,7 +27,7 @@ struct Log {
     
     static func debug(message: @autoclosure () -> String, error: Error? = nil) {
         #if DEBUG
-            log(.Debug, message, error)
+            log(.Debug, message(), error)
         #endif
     }
     
