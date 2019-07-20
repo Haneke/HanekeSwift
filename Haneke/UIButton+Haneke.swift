@@ -10,7 +10,7 @@ import UIKit
 
 public extension UIButton {
     
-    public var hnk_imageFormat : Format<UIImage> {
+    var hnk_imageFormat : Format<UIImage> {
         let bounds = self.bounds
         assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(Mirror(reflecting: self).description) \(#function)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
             let contentRect = self.contentRect(forBounds: bounds)
@@ -21,22 +21,22 @@ public extension UIButton {
             return HanekeGlobals.UIKit.formatWithSize(imageSize, scaleMode: scaleMode, allowUpscaling: scaleMode == ImageResizer.ScaleMode.AspectFit ? false : true)
     }
     
-    public func hnk_setImageFromURL(_ URL: Foundation.URL, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, failure fail: ((Error?) -> ())? = nil, success succeed: ((UIImage) -> ())? = nil) {
+    func hnk_setImageFromURL(_ URL: Foundation.URL, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, failure fail: ((Error?) -> ())? = nil, success succeed: ((UIImage) -> ())? = nil) {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImage(_ image: UIImage, key: String, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, success succeed: ((UIImage) -> ())? = nil) {
+    func hnk_setImage(_ image: UIImage, key: String, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, success succeed: ((UIImage) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, success: succeed)
     }
     
-    public func hnk_setImageFromFile(_ path: String, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, failure fail: ((Error?) -> ())? = nil, success succeed: ((UIImage) -> ())? = nil) {
+    func hnk_setImageFromFile(_ path: String, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, failure fail: ((Error?) -> ())? = nil, success succeed: ((UIImage) -> ())? = nil) {
         let fetcher = DiskFetcher<UIImage>(path: path)
         self.hnk_setImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setImageFromFetcher(_ fetcher: Fetcher<UIImage>, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, failure fail: ((Error?) -> ())? = nil, success succeed: ((UIImage) -> ())? = nil){
+    func hnk_setImageFromFetcher(_ fetcher: Fetcher<UIImage>, state: UIControl.State = .normal, placeholder: UIImage? = nil, format: Format<UIImage>? = nil, failure fail: ((Error?) -> ())? = nil, success succeed: ((UIImage) -> ())? = nil){
         self.hnk_cancelSetImage()
         self.hnk_imageFetcher = fetcher
         
@@ -49,7 +49,7 @@ public extension UIButton {
         }
     }
     
-    public func hnk_cancelSetImage() {
+    func hnk_cancelSetImage() {
         if let fetcher = self.hnk_imageFetcher {
             fetcher.cancelFetch()
             self.hnk_imageFetcher = nil
@@ -124,7 +124,7 @@ public extension UIButton {
     
     // MARK: Background image
         
-    public var hnk_backgroundImageFormat : Format<UIImage> {
+    var hnk_backgroundImageFormat : Format<UIImage> {
         let bounds = self.bounds
         assert(bounds.size.width > 0 && bounds.size.height > 0, "[\(Mirror(reflecting: self).description) \(#function)]: UIButton size is zero. Set its frame, call sizeToFit or force layout first. You can also set a custom format with a defined size if you don't want to force layout.")
             let imageSize = self.backgroundRect(forBounds: bounds).size
@@ -132,22 +132,22 @@ public extension UIButton {
             return HanekeGlobals.UIKit.formatWithSize(imageSize, scaleMode: .Fill)
     }
     
-    public func hnk_setBackgroundImageFromURL(_ URL : Foundation.URL, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((Error?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    func hnk_setBackgroundImageFromURL(_ URL : Foundation.URL, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((Error?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = NetworkFetcher<UIImage>(URL: URL)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setBackgroundImage(_ image : UIImage, key: String, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    func hnk_setBackgroundImage(_ image : UIImage, key: String, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = SimpleFetcher<UIImage>(key: key, value: image)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, success: succeed)
     }
     
-    public func hnk_setBackgroundImageFromFile(_ path: String, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((Error?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    func hnk_setBackgroundImageFromFile(_ path: String, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((Error?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
         let fetcher = DiskFetcher<UIImage>(path: path)
         self.hnk_setBackgroundImageFromFetcher(fetcher, state: state, placeholder: placeholder, format: format, failure: fail, success: succeed)
     }
     
-    public func hnk_setBackgroundImageFromFetcher(_ fetcher : Fetcher<UIImage>, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((Error?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
+    func hnk_setBackgroundImageFromFetcher(_ fetcher : Fetcher<UIImage>, state : UIControl.State = .normal, placeholder : UIImage? = nil, format : Format<UIImage>? = nil, failure fail : ((Error?) -> ())? = nil, success succeed : ((UIImage) -> ())? = nil) {
         self.hnk_cancelSetBackgroundImage()
         self.hnk_backgroundImageFetcher = fetcher
         
@@ -160,7 +160,7 @@ public extension UIButton {
         }
     }
     
-    public func hnk_cancelSetBackgroundImage() {
+    func hnk_cancelSetBackgroundImage() {
         if let fetcher = self.hnk_backgroundImageFetcher {
             fetcher.cancelFetch()
             self.hnk_backgroundImageFetcher = nil

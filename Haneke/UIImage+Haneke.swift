@@ -25,6 +25,8 @@ extension UIImage {
             return true
         case .none, .noneSkipFirst, .noneSkipLast:
             return false
+        @unknown default:
+            fatalError()
         }
     }
     
@@ -50,6 +52,8 @@ extension UIImage {
             break
         case .alphaOnly, .last, .first: // Unsupported
             return self
+        @unknown default:
+            fatalError()
         }
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()

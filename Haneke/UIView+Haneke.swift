@@ -10,7 +10,7 @@ import UIKit
 
 public extension HanekeGlobals {
     
-    public struct UIKit {
+    struct UIKit {
         
         static func formatWithSize(_ size : CGSize, scaleMode : ImageResizer.ScaleMode, allowUpscaling: Bool = true) -> Format<UIImage> {
             let name = "auto-\(size.width)x\(size.height)-\(scaleMode.rawValue)"
