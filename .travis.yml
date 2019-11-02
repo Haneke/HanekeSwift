@@ -2,8 +2,3 @@ language: swift
 osx_image: xcode11.2
 before_script:
 -bundle exec danger
-branches:
-  only:
-    - master
-script:
-  - set -o pipefail && xcodebuild build test -workspace Haneke.xcworkspace -scheme Haneke-iOS -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.3' | xcpretty --color
