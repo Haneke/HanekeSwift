@@ -35,7 +35,7 @@ class ImageDataTests: XCTestCase {
 class StringDataTests: XCTestCase {
     
     func testConvertFromData() {
-        let string = self.name!
+        let string = self.name
         let data = string.data(using: String.Encoding.utf8)!
         
         let result = String.convertFromData(data)
@@ -44,7 +44,7 @@ class StringDataTests: XCTestCase {
     }
     
     func testAsData() {
-        let string = self.name!
+        let string = self.name
         let data = string.data(using: String.Encoding.utf8)!
         
         let result = string.asData()
@@ -77,7 +77,7 @@ class DataDataTests: XCTestCase {
 class JSONDataTests: XCTestCase {
     
     func testConvertFromData_WithArrayData() {
-        let json = [self.name!]
+        let json = [self.name]
         let data = try! JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions())
         
         let result = JSON.convertFromData(data)!
@@ -92,7 +92,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testConvertFromData_WithDictionaryData() {
-        let json = ["test": self.name!]
+        let json = ["test": self.name]
         let data = try! JSONSerialization.data(withJSONObject: json, options: JSONSerialization.WritingOptions())
         
         let result = JSON.convertFromData(data)!
@@ -114,7 +114,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testAsData_Array() {
-        let object = [self.name!]
+        let object = [self.name]
         let json = JSON.Array(object as [AnyObject])
         
         let result = json.asData()
@@ -124,7 +124,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testAsData_Dictionary() {
-        let object = ["test": self.name!]
+        let object = ["test": self.name]
         let json = JSON.Dictionary(object as [String : AnyObject])
         
         let result = json.asData()
@@ -143,7 +143,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testArray_Array() {
-        let object = [self.name!]
+        let object = [self.name]
         let json = JSON.Array(object as [AnyObject])
         
         let result = json.array
@@ -152,7 +152,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testArray_Dictionary() {
-        let object = ["test": self.name!]
+        let object = ["test": self.name]
         let json = JSON.Dictionary(object as [String : AnyObject])
         
         let result = json.array
@@ -161,7 +161,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testDictionary_Array() {
-        let object = [self.name!]
+        let object = [self.name]
         let json = JSON.Array(object as [AnyObject])
         
         let result = json.dictionary
@@ -170,7 +170,7 @@ class JSONDataTests: XCTestCase {
     }
     
     func testDictionary_Dictionary() {
-        let object = ["test": self.name!]
+        let object = ["test": self.name]
         let json = JSON.Dictionary(object as [String : AnyObject])
         
         let result = json.dictionary
