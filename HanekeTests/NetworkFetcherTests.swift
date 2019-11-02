@@ -39,10 +39,10 @@ class NetworkFetcherTests: XCTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
         }, withStubResponse: { _ in
-            let data = UIImagePNGRepresentation(image)
+            let data = image.pngData()
             return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
+        let expectation = self.expectation(description: self.name)
         
         sut.fetch(failure: { _ in
             XCTFail("expected success")
@@ -87,7 +87,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = Data()
             return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
+        let expectation = self.expectation(description: self.name)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!._domain, HanekeGlobals.Domain)
@@ -109,7 +109,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = Data.dataWithLength(100)
             return OHHTTPStubsResponse(data: data, statusCode: 200, headers:["Content-Length":String(data.count * 2)])
         })
-        let expectation = self.expectation(description: self.name!)
+        let expectation = self.expectation(description: self.name)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!._domain, HanekeGlobals.Domain)
@@ -129,7 +129,7 @@ class NetworkFetcherTests: XCTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
         }, withStubResponse: { _ in
-            let data = UIImagePNGRepresentation(image)
+            let data = image.pngData()
             return OHHTTPStubsResponse(data: data!, statusCode: 200, headers:nil)
         })
         sut.fetch(failure: {_ in
@@ -158,10 +158,10 @@ class NetworkFetcherTests: XCTestCase {
         OHHTTPStubs.stubRequests(passingTest: { _ in
             return true
             }, withStubResponse: { _ in
-                let data = UIImagePNGRepresentation(image)
+                let data = image.pngData()
                 return OHHTTPStubsResponse(data: data!, statusCode: statusCode, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
+        let expectation = self.expectation(description: self.name)
         sut.cancelFetch()
 
         sut.fetch(failure: { _ in
@@ -183,7 +183,7 @@ class NetworkFetcherTests: XCTestCase {
             let data = Data.dataWithLength(100)
             return OHHTTPStubsResponse(data: data, statusCode: statusCode, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
+        let expectation = self.expectation(description: self.name)
         
         sut.fetch(failure: {
             XCTAssertEqual($0!._domain, HanekeGlobals.Domain)
@@ -207,10 +207,10 @@ class NetworkFetcherTests: XCTestCase {
             }, withStubResponse: { _ in
                 return OHHTTPStubsResponse(data: data, statusCode: 200, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
-        let cache = Cache<Data>(name: self.name!)
+        let expectation = self.expectation(description: self.name)
+        let cache = Cache<Data>(name: self.name)
 
-        cache.fetch(URL: URL, failure: {_ in
+        _ = cache.fetch(URL: URL, failure: {_ in
             XCTFail("expected success")
             expectation.fulfill()
         }) {
@@ -230,10 +230,10 @@ class NetworkFetcherTests: XCTestCase {
             }, withStubResponse: { _ in
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
-        let cache = Cache<Data>(name: self.name!)
+        let expectation = self.expectation(description: self.name)
+        let cache = Cache<Data>(name: self.name)
         
-        cache.fetch(URL: URL, failure: {_ in
+        _ = cache.fetch(URL: URL, failure: {_ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected success")
@@ -252,12 +252,12 @@ class NetworkFetcherTests: XCTestCase {
             }, withStubResponse: { _ in
                 return OHHTTPStubsResponse(data: data, statusCode: 404, headers:nil)
         })
-        let expectation = self.expectation(description: self.name!)
-        let cache = Cache<Data>(name: self.name!)
-        let format = Format<Data>(name: self.name!)
+        let expectation = self.expectation(description: self.name)
+        let cache = Cache<Data>(name: self.name)
+        let format = Format<Data>(name: self.name)
         cache.addFormat(format)
 
-        cache.fetch(URL: URL, formatName: format.name, failure: {_ in
+        _ = cache.fetch(URL: URL, formatName: format.name, failure: {_ in
             expectation.fulfill()
         }) { _ in
             XCTFail("expected success")

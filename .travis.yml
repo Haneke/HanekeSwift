@@ -2,3 +2,4 @@ language: swift
 osx_image: xcode11.2
 before_script:
 -bundle exec danger
+

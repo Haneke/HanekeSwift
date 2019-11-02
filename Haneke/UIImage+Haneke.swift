@@ -25,12 +25,14 @@ extension UIImage {
             return true
         case .none, .noneSkipFirst, .noneSkipLast:
             return false
+        @unknown default:
+            fatalError()
         }
     }
     
     func hnk_data(compressionQuality: Float = 1.0) -> Data! {
         let hasAlpha = self.hnk_hasAlpha()
-        let data = hasAlpha ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, CGFloat(compressionQuality))
+        let data = hasAlpha ? self.pngData() : self.jpegData(compressionQuality: CGFloat(compressionQuality))
         return data
     }
     
@@ -50,6 +52,8 @@ extension UIImage {
             break
         case .alphaOnly, .last, .first: // Unsupported
             return self
+        @unknown default:
+            fatalError()
         }
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -74,7 +78,7 @@ extension UIImage {
         }
         
         let scale = UIScreen.main.scale
-        let image = UIImage(cgImage: decompressedImageRef, scale:scale, orientation:UIImageOrientation.up)
+        let image = UIImage(cgImage: decompressedImageRef, scale:scale, orientation:UIImage.Orientation.up)
         return image
     }
 

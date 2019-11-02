@@ -40,7 +40,7 @@ extension UIImage : DataConvertible, DataRepresentable {
     }
     
     public func asData() -> Data! {
-        return self.hnk_data() as Data!
+        return self.hnk_data()
     }
     
     fileprivate static let scale = UIScreen.main.scale

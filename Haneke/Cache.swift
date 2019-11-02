@@ -44,7 +44,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
         
         let notifications = NotificationCenter.default
         // Using block-based observer to avoid subclassing NSObject
-        memoryWarningObserver = notifications.addObserver(forName: Notification.Name.UIApplicationDidReceiveMemoryWarning,
+        memoryWarningObserver = notifications.addObserver(forName: UIApplication.didReceiveMemoryWarningNotification,
             object: nil,
             queue: OperationQueue.main,
             using: { [unowned self] (notification : Notification!) -> Void in
@@ -58,7 +58,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
     
     deinit {
         let notifications = NotificationCenter.default
-        notifications.removeObserver(memoryWarningObserver, name: Notification.Name.UIApplicationDidReceiveMemoryWarning, object: nil)
+        notifications.removeObserver(memoryWarningObserver as Any, name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
     }
     
     open func set(value: T, key: String, formatName: String = HanekeGlobals.Cache.OriginalFormatName, success succeed: ((T) -> ())? = nil) {
@@ -294,7 +294,7 @@ open class Cache<T: DataConvertible> where T.Result == T, T : DataRepresentable 
     // Ideally we would put each of these in the respective fetcher file as a Cache extension. Unfortunately, this fails to link when using the framework in a project as of Xcode 6.1.
     
     open func fetch(key: String, value getValue : @autoclosure @escaping () -> T.Result, formatName: String = HanekeGlobals.Cache.OriginalFormatName, success succeed : Fetch<T>.Succeeder? = nil) -> Fetch<T> {
-        let fetcher = SimpleFetcher<T>(key: key, value: getValue)
+        let fetcher = SimpleFetcher<T>(key: key, value: getValue())
         return self.fetch(fetcher: fetcher, formatName: formatName, success: succeed)
     }
     

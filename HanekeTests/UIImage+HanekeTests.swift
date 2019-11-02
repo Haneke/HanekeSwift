@@ -37,7 +37,7 @@ class UIImage_HanekeTests: XCTestCase {
     
     func testDataPNG() {
         let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), false)
-        let expectedData = UIImagePNGRepresentation(image)
+        let expectedData = image.pngData()
         
         let data = image.hnk_data()
         
@@ -46,7 +46,7 @@ class UIImage_HanekeTests: XCTestCase {
     
     func testDataJPEG() {
         let image = UIImage.imageWithColor(UIColor.red, CGSize(width: 1, height: 1), true)
-        let expectedData = UIImageJPEGRepresentation(image, 1)
+        let expectedData = image.jpegData(compressionQuality: 1)
         
         let data = image.hnk_data()
         
@@ -172,7 +172,7 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
     
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name!)
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name)
     }
     
     func _testDecompressedImageWithOrientation(_ orientation : ExifOrientation) {
@@ -191,7 +191,7 @@ class UIImage_HanekeTests: XCTestCase {
         let decompressedImage = image.hnk_decompressedImage()
         
         XCTAssertNotEqual(image, decompressedImage)
-        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name!)
+        XCTAssertTrue((decompressedImage?.isEqualPixelByPixel(image))!, self.name)
     }
     
 }
