@@ -1,13 +1,9 @@
-language: objective-c
-osx_image: xcode8.3
-before_install:
-- brew update
-- brew install carthage || brew outdated carthage || brew upgrade carthage
-install:
-- carthage bootstrap
+language: swift
+osx_image: xcode11.2
+before_script:
+-bundle exec danger
 branches:
   only:
     - master
-    - feature/swift-3
 script:
   - set -o pipefail && xcodebuild build test -workspace Haneke.xcworkspace -scheme Haneke-iOS -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.3' | xcpretty --color

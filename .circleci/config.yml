@@ -1,9 +1,0 @@
-version: 2.1
-jobs:
-  build: 
-    macos:
-      xcode: "11.2.0"
-    
-    steps:
-      - checkout
-      - run: bundle exec danger --verbose
