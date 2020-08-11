@@ -617,6 +617,14 @@ class CacheTests: XCTestCase {
         waitForExpectations(timeout: 0, handler: nil)
     }
     
+    func testNilMemoryCache() {
+        let sut = Format<UIImage>(name: self.name, memoryCapacity: nil)
+        
+        let cache = Cache<UIImage>(name: "Test")
+        cache.addFormat(sut)
+        XCTAssertNil(cache.formats[sut.name]?.1)
+    }
+    
     // MARK: Helpers
     
     func clearMemoryCache() {
