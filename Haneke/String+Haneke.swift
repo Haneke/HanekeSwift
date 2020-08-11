@@ -24,13 +24,12 @@ extension String {
 
         let MD5Calculator = MD5(Array(data))
         let MD5Data = MD5Calculator.calculate()
-        let resultBytes = UnsafeMutablePointer<CUnsignedChar>(mutating: MD5Data)
-        let resultEnumerator = UnsafeBufferPointer<CUnsignedChar>(start: resultBytes, count: MD5Data.count)
-        let MD5String = NSMutableString()
-        for c in resultEnumerator {
-            MD5String.appendFormat("%02x", c)
+        let MD5String = MD5Data.withUnsafeBufferPointer { (ptr) -> String in
+            return ptr.reduce("") { (str, c) -> String in
+                str.appendingFormat("%02x", c)
+            }
         }
-        return MD5String as String
+        return MD5String
     }
     
     func MD5Filename() -> String {

@@ -167,7 +167,7 @@ class MD5 : HashBase {
         let chunkSizeBytes = 512 / 8 // 64
         for chunk in BytesSequence(chunkSize: chunkSizeBytes, data: tmpMessage) {
             // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15
-            var M = sliceToUInt32Array(chunk)
+            let M = sliceToUInt32Array(chunk)
             assert(M.count == 16, "Invalid array")
             
             // Initialize hash value for this chunk:
