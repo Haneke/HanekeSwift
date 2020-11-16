@@ -1,5 +1,5 @@
 ![Haneke](https://raw.githubusercontent.com/Haneke/HanekeSwift/master/Assets/github-header.png)
-
+[![CocoaPods Version](https://cocoapod-badges.herokuapp.com/v/HanekeSwift/badge.png)](http://cocoadocs.org/docsets/HanekeSwift)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![Accio supported](https://img.shields.io/badge/Accio-supported-0A7CF5.svg?style=flat)](https://github.com/JamitLabs/Accio)
@@ -7,7 +7,7 @@
 [![Build Status](https://travis-ci.org/Haneke/HanekeSwift.svg?branch=master)](https://travis-ci.org/Haneke/HanekeSwift)
 [![Join the chat at https://gitter.im/Haneke/HanekeSwift](https://badges.gitter.im/Haneke/HanekeSwift.svg)](https://gitter.im/Haneke/HanekeSwift?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Haneke is a lightweight *generic* cache for iOS and tvOS written in Swift 4. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch objects from a url:
+Haneke is a lightweight *generic* cache for iOS and tvOS written in Swift 5. It's designed to be super-simple to use. Here's how you would initalize a JSON cache and fetch objects from a url:
 
 ```swift
 let cache = Cache<JSON>(name: "github")
@@ -89,7 +89,7 @@ Manually:
 ## Requirements
 
 - iOS 8.0+ or tvOS 9.1+
-- Swift 4
+- Swift 5
 
 ## Using the cache
 
