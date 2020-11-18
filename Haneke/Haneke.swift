@@ -8,9 +8,22 @@
 
 import UIKit
 
+public struct Config {
+    public let domain: String
+    public let cacheRootPath: String
+
+    public init(domain: String, cacheRootPath: String) {
+        self.domain = domain
+        self.cacheRootPath = cacheRootPath
+    }
+}
+
 public struct HanekeGlobals {
     
-    public static let Domain = "io.haneke"
+    public static var config = Config(
+        domain: "io.haneke",
+        cacheRootPath: NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.cachesDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+        )
     
 }
 
@@ -51,5 +64,5 @@ public struct Shared {
 
 func errorWithCode(_ code: Int, description: String) -> Error {
     let userInfo = [NSLocalizedDescriptionKey: description]
-    return NSError(domain: HanekeGlobals.Domain, code: code, userInfo: userInfo) as Error
+    return NSError(domain: HanekeGlobals.config.domain, code: code, userInfo: userInfo) as Error
 }
