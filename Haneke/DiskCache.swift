@@ -170,7 +170,16 @@ open class DiskCache {
         let path = self.path(forKey: key)
         let fileManager = FileManager.default
         let previousAttributes : [FileAttributeKey: Any]? = try? fileManager.attributesOfItem(atPath: path)
-        
+
+        //If the data folder does not exist, it needs to be recreated
+        if (!fileManager.fileExists(atPath: self.path)) {
+            do {
+                try fileManager.createDirectory(atPath: self.path, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                Log.error(message: "Failed to create directory", error: error)
+            }
+        }
+
         do {
             try data.write(to: URL(fileURLWithPath: path), options: Data.WritingOptions.atomicWrite)
         } catch {
